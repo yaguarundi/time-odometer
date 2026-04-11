@@ -281,7 +281,7 @@
             letter-spacing: 0.5px;
             text-align: center;
         }
-        @media (max-width: 650px) {
+        @media (max-width: 748px) {
             body { padding: 10px; }
             .container { padding: 20px 15px; }
             .main-date-group { align-items: flex-start; justify-content: space-between; }
@@ -290,9 +290,9 @@
             .main-dow { width: calc(100% - 75px); text-align: right; margin-top: 8px; }
             .settings-panel { flex-direction: column; gap: 12px; align-items: flex-start; }
             .milestone-container { flex-direction: column; gap: 12px; align-items: stretch; }
-            .ms-date-group { width: 100%; justify-content: space-between; }
-            .ms-date-input { width: 100%; flex-grow: 1; }
-            .ms-dow { text-align: right; min-width: 80px; width: auto; }
+            .ms-date-group { width: 100%; justify-content: space-between; flex-wrap: nowrap; gap: 8px; }
+            .ms-date-input { width: auto; flex-grow: 1; font-size: 0.8em; padding: 8px 6px; }
+            .ms-dow { text-align: right; min-width: 75px; width: auto; font-size: 0.85em; }
             .ms-input { width: 100%; }
             .bold-number { font-size: 1.15em; }
         }
