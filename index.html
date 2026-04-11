@@ -198,7 +198,7 @@
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
             statusEl.innerText = "Precision sync active (Cached). Optimizing...";
-            statusEl.style.color = "#de8538"; 
+            statusEl.style.color = "#b3b3b3"; 
         } else {
             statusEl.innerText = "Syncing atomic precision...";
             statusEl.style.color = "#b3b3b3";
@@ -245,7 +245,7 @@
         };
         await Promise.all([pingServer(), pingServer(), pingServer()]);
         if (successfulPings === 0 && !savedOffset) {
-            statusEl.innerText = "Precision sync failed. Relying on local device clock.";
+            statusEl.innerText = "Sync failed. Relying on local device clock.";
             statusEl.style.color = "#ff4d4d";
         }
     }
