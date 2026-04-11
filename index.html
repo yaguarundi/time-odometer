@@ -429,8 +429,8 @@
         document.getElementById('r-year').innerText = formatNum(calcNow.diff(birthDate, 'years').years); 
         const clean = (n) => Math.floor(n) + 0;
         const detailedDiff = calcNow.diff(birthDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
-        const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.days)} days, ` +
-                            `${clean(detailedDiff.hours)} hours, ${clean(detailedDiff.minutes)} minutes, and ${clean(detailedDiff.seconds)} seconds`;
+        const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.weeks)} weeks, ${clean(detailedDiff.days)} days,` +
+                            `${clean(detailedDiff.hours)} hours, ${clean(detailedDiff.minutes)} minutes, ${clean(detailedDiff.seconds)} seconds`;
         document.getElementById('r-detailed').innerText = detailedAge;
         const timeFormatString = use24hr ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a";
         const currentTimeString = localNow.toFormat(timeFormatString);
