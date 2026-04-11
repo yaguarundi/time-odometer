@@ -18,8 +18,8 @@
     <div class="input-group">
         <label for="birthdatetime">Enter Date and Time:</label>
         <div class="main-date-group">
-            <div class="input-btn-wrapper">
-                <input type="datetime-local" id="birthdatetime" value="2000-01-01T00:00:00" step="1" min="1000-01-01T00:00:00" max="9999-12-31T23:59:59">
+            <div class="input-dow-wrapper">
+                <input type="text" id="birthdatetime" value="2000-01-01T00:00:00" placeholder="Select Date...">
             </div>
             <span class="main-dow" id="main-dow"></span>
             <button type="button" id="btn-now" class="btn-now">Now</button>
@@ -27,7 +27,7 @@
         <div class="error-message" id="errorMsg">Please enter a valid date (Year 1000-9999).</div>
     </div>
     <div class="input-group">
-        <label for="tzLocation">Location:</label>
+        <label for="tzLocation">Origin Location:</label>
         <select id="tzLocation">
             <option value="UTC">UTC</option>
         </select>
@@ -38,6 +38,14 @@
             <option value="UTC">UTC</option>
         </select>
     </div>
+    <div class="settings-panel">
+        <label class="toggle-wrapper">
+            <input type="checkbox" id="toggleCommas" checked> Delimiter
+        </label>
+        <label class="toggle-wrapper">
+            <input type="checkbox" id="toggle24hr"> 24-Hour
+        </label>
+    </div>
     <div class="results" id="resultsPanel">
         <div class="row" data-unit="seconds">
             <div class="row-main">
@@ -47,7 +55,7 @@
             </div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 1,000,000 or -50,000">
@@ -57,7 +65,7 @@
             <div class="row-main"><span class="row-label">Minutes</span> <span id="r-min" class="bold-number">0</span></div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 500,000 or -1,000">
@@ -67,7 +75,7 @@
             <div class="row-main"><span class="row-label">Hours</span> <span id="r-hour" class="bold-number">0</span></div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 10,000 or -500">
@@ -77,7 +85,7 @@
             <div class="row-main"><span class="row-label">Days</span> <span id="r-day" class="bold-number">0</span></div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 5,000 or -100">
@@ -87,7 +95,7 @@
             <div class="row-main"><span class="row-label">Weeks</span> <span id="r-week" class="bold-number">0</span></div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 2,000 or -50">
@@ -97,7 +105,7 @@
             <div class="row-main"><span class="row-label">Months</span> <span id="r-month" class="bold-number">0</span></div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 500 or -12">
@@ -107,20 +115,12 @@
             <div class="row-main"><span class="row-label">Years</span> <span id="r-year" class="bold-number">0</span></div>
             <div class="milestone-container">
                 <div class="ms-date-group">
-                    <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
+                    <input type="text" class="ms-date-input" title="Target Date" placeholder="Select Date...">
                     <span class="ms-dow"></span>
                 </div>
                 <input type="text" class="ms-input" placeholder="e.g. 50 or -5">
             </div>
         </div>
-        <div class="settings-panel">
-        <label class="toggle-wrapper">
-            <input type="checkbox" id="toggleCommas" checked> Delimiter
-        </label>
-        <label class="toggle-wrapper">
-            <input type="checkbox" id="toggle24hr"> 24-Hour
-        </label>
-    </div>
         <div class="detailed-row" id="r-detailed">Loading...</div>
         <div class="current-time" id="r-current-time">--</div>
     </div>
@@ -136,6 +136,39 @@
     let intervalId;
     let clockOffsetMs = 0; 
     let isSynced = false;
+    const baseFpConfig = {
+        enableTime: true,
+        enableSeconds: true,
+        dateFormat: "Y-m-d\\TH:i:S", 
+        minDate: "1000-01-01",
+        allowInput: true,
+        disableMobile: true, //
+        time_24hr: document.getElementById('toggle24hr').checked
+    };
+    const mainDatePicker = flatpickr("#birthdatetime", {
+        ...baseFpConfig,
+        onChange: function(selectedDates, dateStr, instance) {
+            calculate();
+            refreshGlobalMilestones();
+        }
+    });
+    document.getElementById('birthdatetime')._fp = mainDatePicker;
+    document.querySelectorAll('.ms-date-input').forEach(input => {
+        input._fp = flatpickr(input, {
+            ...baseFpConfig,
+            onChange: function(selectedDates, dateStr, instance) {
+                syncAllMilestones(dateStr, instance.element);
+            }
+        });
+    });
+    document.getElementById('toggle24hr').addEventListener('change', (e) => {
+        const is24 = e.target.checked;
+        document.getElementById('birthdatetime')._fp.set('time_24hr', is24);
+        document.querySelectorAll('.ms-date-input').forEach(input => {
+            input._fp.set('time_24hr', is24);
+        });
+        calculate();
+    });
     const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
     const timeZones = Intl.supportedValuesOf('timeZone');
@@ -144,16 +177,13 @@
         const option1 = document.createElement('option');
         option1.value = tz; option1.textContent = tz.replace(/_/g, ' ');
         const option2 = option1.cloneNode(true);
-        if (tz === userTz) { 
-            option1.selected = true; 
-            option2.selected = true; 
-        }
+        if (tz === userTz) { option1.selected = true; option2.selected = true; }
         tzSelect.appendChild(option1);
         targetTzSelect.appendChild(option2);
     });
     async function syncWithServer() {
         const statusEl = document.getElementById('syncStatus');
-        const savedOffset = localStorage.getItem('atomicOffsetMs'); 
+        const savedOffset = localStorage.getItem('atomicOffsetMs');
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
             statusEl.innerText = "Syncing...";
@@ -173,7 +203,6 @@
             if (!response.ok) throw new Error("Server rejected request");
             const data = await response.json();
             const latencyMs = performance.now() - requestSentAt;
-            
             if (latencyMs < bestLatency) {
                 bestLatency = latencyMs;
                 const estimatedOneWayTripMs = latencyMs / 2;
@@ -206,23 +235,17 @@
         "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z",
         "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"
     ].map(iso => DateTime.fromISO(iso));
-
     function countLeapSeconds(startDateTime, endDateTime) {
         return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length;
     }
-    function evaluateDateFromAmount(unit, amountInput, dateInput, dowSpan) {
-        const rawVal = amountInput.value.replace(/,/g, '');
-        const tVal = parseFloat(rawVal);
-        if (!rawVal || isNaN(tVal) || rawVal === '' || rawVal === '-') { 
-            dateInput.value = ''; 
-            dowSpan.innerText = '';
-            return; 
-        }
+    function getTargetDateFromAmount(unit, rawVal) {
+        const tVal = parseFloat(rawVal.replace(/,/g, ''));
+        if (isNaN(tVal)) return null;
         const inputVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value; 
         const birthDate = DateTime.fromISO(inputVal, { zone: originTz }).startOf('second');
-        if (!birthDate.isValid) return;
+        if (!birthDate.isValid) return null;
         let targetDate;
         const isPast = tVal < 0;
         if (unit === 'seconds') {
@@ -232,7 +255,6 @@
                 let d1 = DateTime.fromMillis(Math.min(birthMs, targetMsGuess));
                 let d2 = DateTime.fromMillis(Math.max(birthMs, targetMsGuess));
                 let ls = countLeapSeconds(d1, d2);
-                
                 if (isPast) {
                     targetMsGuess = birthMs + (tVal * 1000) + (ls * 1000);
                 } else {
@@ -245,73 +267,80 @@
             durationObj[unit] = tVal; 
             targetDate = birthDate.plus(durationObj).setZone(targetTz);
         }
-        
-        dateInput.value = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
-        dowSpan.innerText = targetDate.toFormat("EEEE");
+        return targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
     }
-    function evaluateAmountFromDate(unit, dateInput, amountInput, dowSpan) {
-        const dateVal = dateInput.value;
-        if (!dateVal) {
-            amountInput.value = '';
-            dowSpan.innerText = '';
+    function syncAllMilestones(targetDateISO, activeElement) {
+        if (!targetDateISO) {
+            document.querySelectorAll('.row').forEach(row => {
+                const amountInput = row.querySelector('.ms-input');
+                const dateInput = row.querySelector('.ms-date-input');
+                const dowSpan = row.querySelector('.ms-dow');
+                
+                if (amountInput !== activeElement) amountInput.value = '';
+                if (dateInput !== activeElement) {
+                    dateInput._fp.clear(false); 
+                }
+                dowSpan.innerText = '';
+            });
             return;
         }
-
         const inputVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value;
-        
         const birthDate = DateTime.fromISO(inputVal, { zone: originTz }).startOf('second');
-        const targetDate = DateTime.fromISO(dateVal, { zone: targetTz }).startOf('second');
-
+        const targetDate = DateTime.fromISO(targetDateISO, { zone: targetTz }).startOf('second');
         if (!birthDate.isValid || !targetDate.isValid) return;
-
-        let tVal = 0;
-        if (unit === 'seconds') {
-            let diffMs = targetDate.toMillis() - birthDate.toMillis();
-            let unixSeconds = Math.floor(diffMs / 1000); 
-            let d1 = DateTime.fromMillis(Math.min(birthDate.toMillis(), targetDate.toMillis()));
-            let d2 = DateTime.fromMillis(Math.max(birthDate.toMillis(), targetDate.toMillis()));
-            let ls = countLeapSeconds(d1, d2);
-            
-            if (targetDate < birthDate) {
-                tVal = unixSeconds - ls; 
-            } else {
-                tVal = unixSeconds + ls;
-            }
-        } else {
-            let diff = targetDate.diff(birthDate, unit);
-            tVal = parseFloat(diff[unit].toFixed(4)); 
-        }
-        tVal = tVal + 0;
-        let isNegative = tVal < 0;
-        let absVal = Math.abs(tVal);
-        let parts = absVal.toString().split('.');
-        let intPart = parseInt(parts[0], 10).toLocaleString('en-US');
-        let finalStr = parts.length > 1 ? intPart + '.' + parts[1] : intPart;
-        
-        amountInput.value = isNegative ? '-' + finalStr : finalStr;
-        dowSpan.innerText = targetDate.toFormat("EEEE");
-    }
-    function updateAllMilestones() {
         document.querySelectorAll('.row').forEach(row => {
             const unit = row.getAttribute('data-unit');
             const amountInput = row.querySelector('.ms-input');
             const dateInput = row.querySelector('.ms-date-input');
             const dowSpan = row.querySelector('.ms-dow');
-            
-            if (amountInput.value && amountInput.value !== '-') {
-                evaluateDateFromAmount(unit, amountInput, dateInput, dowSpan);
-            } else if (dateInput.value) {
-                evaluateAmountFromDate(unit, dateInput, amountInput, dowSpan);
+            if (dateInput !== activeElement) {
+                dateInput._fp.setDate(targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss"), false);
+            }
+            dowSpan.innerText = targetDate.toFormat("EEEE");
+            if (amountInput !== activeElement) {
+                let tVal = 0;
+                if (unit === 'seconds') {
+                    let diffMs = targetDate.toMillis() - birthDate.toMillis();
+                    let unixSeconds = Math.floor(diffMs / 1000); 
+                    let d1 = DateTime.fromMillis(Math.min(birthDate.toMillis(), targetDate.toMillis()));
+                    let d2 = DateTime.fromMillis(Math.max(birthDate.toMillis(), targetDate.toMillis()));
+                    let ls = countLeapSeconds(d1, d2);
+                    
+                    if (targetDate < birthDate) {
+                        tVal = unixSeconds - ls; 
+                    } else {
+                        tVal = unixSeconds + ls;
+                    }
+                } else {
+                    let diff = targetDate.diff(birthDate, unit);
+                    tVal = parseFloat(diff[unit].toFixed(4)); 
+                }
+                tVal = tVal + 0;
+                let isNegative = tVal < 0;
+                let absVal = Math.abs(tVal);
+                let parts = absVal.toString().split('.');
+                let intPart = parseInt(parts[0], 10).toLocaleString('en-US');
+                let finalStr = parts.length > 1 ? intPart + '.' + parts[1] : intPart;
+                amountInput.value = isNegative ? '-' + finalStr : finalStr;
             }
         });
+    }
+    function refreshGlobalMilestones() {
+        let anchor = null; 
+        document.querySelectorAll('.ms-date-input').forEach(input => { 
+            if (!anchor && input.value) anchor = input; 
+        });
+        if (anchor) {
+            syncAllMilestones(anchor.value, null); 
+        } else {
+            syncAllMilestones(null, null);
+        }
     }
     document.querySelectorAll('.row').forEach(row => {
         const unit = row.getAttribute('data-unit');
         const amountInput = row.querySelector('.ms-input');
-        const dateInput = row.querySelector('.ms-date-input');
-        const dowSpan = row.querySelector('.ms-dow');
         amountInput.addEventListener('input', function(e) {
             let val = this.value;
             let isNegative = val.trim().startsWith('-');
@@ -330,16 +359,7 @@
             } else {
                 this.value = isNegative ? '-' : '';
             }
-            evaluateDateFromAmount(unit, amountInput, dateInput, dowSpan);
-        });
-        dateInput.addEventListener('input', function() {
-            evaluateAmountFromDate(unit, dateInput, amountInput, dowSpan);
-        });
-    });
-    window.addEventListener('DOMContentLoaded', () => {
-        const nativeInputFont = window.getComputedStyle(document.getElementById('birthdatetime')).fontFamily;
-        document.querySelectorAll('.main-dow, .ms-dow').forEach(span => {
-            span.style.fontFamily = nativeInputFont;
+            syncAllMilestones(getTargetDateFromAmount(unit, this.value), this);
         });
     });
     function calculate() {
@@ -395,13 +415,11 @@
         document.getElementById('r-week').innerText = formatNum(calcNow.diff(birthDate, 'weeks').weeks);
         document.getElementById('r-month').innerText = formatNum(calcNow.diff(birthDate, 'months').months);
         document.getElementById('r-year').innerText = formatNum(calcNow.diff(birthDate, 'years').years); 
-        
         const clean = (n) => Math.floor(n) + 0;
         const detailedDiff = calcNow.diff(birthDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
         const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.days)} days, ` +
                             `${clean(detailedDiff.hours)} hours, ${clean(detailedDiff.minutes)} minutes, and ${clean(detailedDiff.seconds)} seconds`;
         document.getElementById('r-detailed').innerText = detailedAge;
-        
         const timeFormatString = use24hr ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a";
         const currentTimeString = localNow.toFormat(timeFormatString);
         document.getElementById('r-current-time').innerText = `${currentTimeString}`;
@@ -410,16 +428,11 @@
         const tzLocation = document.getElementById('tzLocation').value;
         const localNow = DateTime.local().plus({ milliseconds: clockOffsetMs }); 
         const calcNow = localNow.setZone(tzLocation).startOf('second');
-        
-        document.getElementById('birthdatetime').value = calcNow.toFormat("yyyy-MM-dd'T'HH:mm:ss");
-        calculate();
-        updateAllMilestones();
+        document.getElementById('birthdatetime')._fp.setDate(calcNow.toFormat("yyyy-MM-dd'T'HH:mm:ss"), true);
     });
-    document.getElementById('birthdatetime').addEventListener('input', () => { calculate(); updateAllMilestones(); });
-    document.getElementById('tzLocation').addEventListener('change', () => { calculate(); updateAllMilestones(); });
-    document.getElementById('targetTzLocation').addEventListener('change', () => { calculate(); updateAllMilestones(); });
+    document.getElementById('tzLocation').addEventListener('change', () => { calculate(); refreshGlobalMilestones(); });
+    document.getElementById('targetTzLocation').addEventListener('change', () => { calculate(); refreshGlobalMilestones(); });
     document.getElementById('toggleCommas').addEventListener('change', calculate);
-    document.getElementById('toggle24hr').addEventListener('change', calculate);
     syncWithServer();
     var yearText = document.getElementById("current-year");
     if (yearText) {
