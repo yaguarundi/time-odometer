@@ -122,7 +122,7 @@
         </label>
     </div>
         <div class="detailed-row" id="r-detailed">Loading...</div>
-        <div class="current-time" id="r-current-time">--</div>
+        <div class="current-time" id="r-current-time">Current Time</div>
     </div>
     <div class="footer">
         <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links">
@@ -141,11 +141,11 @@
         enableTime: true,
         enableSeconds: true,
         dateFormat: "Y-m-d\\TH:i:S", 
-        altInput: true,
+        altInput: true, 
         altFormat: getAltFormat(document.getElementById('toggle24hr').checked),
         minDate: "1000-01-01",
         allowInput: true,
-        disableMobile: true,
+        disableMobile: true, 
         time_24hr: document.getElementById('toggle24hr').checked
     };
     const mainDatePicker = flatpickr("#birthdatetime", {
@@ -167,12 +167,10 @@
     document.getElementById('toggle24hr').addEventListener('change', (e) => {
         const is24 = e.target.checked;
         const newFormat = getAltFormat(is24);
-        
         const fpMain = document.getElementById('birthdatetime')._fp;
         fpMain.set('time_24hr', is24);
         fpMain.set('altFormat', newFormat);
         fpMain.setDate(fpMain.selectedDates, false); 
-        
         document.querySelectorAll('.ms-date-input').forEach(input => {
             input._fp.set('time_24hr', is24);
             input._fp.set('altFormat', newFormat);
@@ -197,10 +195,11 @@
         const savedOffset = localStorage.getItem('atomicOffsetMs');
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
-            statusEl.innerText = "Precision sync active (Cached). Optimizing...";
-            statusEl.style.color = "#b3b3b3"; 
+            statusEl.innerText = "Syncing... (Using cached precision)";
+            statusEl.style.color = "#de8538"; 
         } else {
-            statusEl.innerText = "Syncing atomic precision...";
+            clockOffsetMs = 0;
+            statusEl.innerText = "Syncing... (Using local device clock)";
             statusEl.style.color = "#b3b3b3";
         }
         calculate();
@@ -208,17 +207,22 @@
         intervalId = setInterval(calculate, 1000);
         let bestLatency = Infinity;
         let successfulPings = 0;
+        const fetchWithTimeout = async (url, options = {}, timeout = 2500) => {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
+            const response = await fetch(url, { ...options, signal: controller.signal });
+            clearTimeout(id);
+            return response;
+        };
         const fetchTimeApi = async () => {
             const reqStart = performance.now();
-            const res = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
-            if (!res.ok) throw new Error("timeapi failed");
+            const res = await fetchWithTimeout('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
             const data = await res.json();
             return { timeStr: data.dateTime, reqStart, source: 'TimeAPI' };
         };
         const fetchWorldTimeApi = async () => {
             const reqStart = performance.now();
-            const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC', { cache: "no-store" });
-            if (!res.ok) throw new Error("worldtimeapi failed");
+            const res = await fetchWithTimeout('https://worldtimeapi.org/api/timezone/Etc/UTC', { cache: "no-store" });
             const data = await res.json();
             return { timeStr: data.utc_datetime, reqStart, source: 'WorldTime' };
         };
@@ -240,14 +244,23 @@
                 }
                 successfulPings++;
             } catch (error) {
-                console.warn("Both APIs failed on this ping attempt.");
+                console.warn("A sync race attempt failed or timed out.");
             }
         };
-        await Promise.all([pingServer(), pingServer(), pingServer()]);
-        if (successfulPings === 0 && !savedOffset) {
-            statusEl.innerText = "Sync failed. Relying on local device clock.";
-            statusEl.style.color = "#ff4d4d";
-        }
+        pingServer();
+        pingServer();
+        pingServer();
+        setTimeout(() => {
+            if (successfulPings === 0) {
+                if (savedOffset) {
+                    statusEl.innerText = "Sync failed. Relying on cached precision.";
+                    statusEl.style.color = "#de8538";
+                } else {
+                    statusEl.innerText = "Sync failed. Relying on local device clock.";
+                    statusEl.style.color = "#ff4d4d";
+                }
+            }
+        }, 3000);
     }
     const leapSecondDates = [
         "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", "1974-12-31T23:59:59Z",
@@ -258,7 +271,6 @@
         "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z",
         "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"
     ].map(iso => DateTime.fromISO(iso));
-
     function countLeapSeconds(startDateTime, endDateTime) {
         return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length;
     }
@@ -274,11 +286,12 @@
         const isPast = tVal < 0;
         if (unit === 'seconds') {
             let birthMs = birthDate.toMillis();
-            let targetMsGuess = birthMs + (tVal * 1000);  
+            let targetMsGuess = birthMs + (tVal * 1000); 
             for(let i=0; i<3; i++) {
                 let d1 = DateTime.fromMillis(Math.min(birthMs, targetMsGuess));
                 let d2 = DateTime.fromMillis(Math.max(birthMs, targetMsGuess));
                 let ls = countLeapSeconds(d1, d2);
+                
                 if (isPast) {
                     targetMsGuess = birthMs + (tVal * 1000) + (ls * 1000);
                 } else {
@@ -317,7 +330,7 @@
             const unit = row.getAttribute('data-unit');
             const amountInput = row.querySelector('.ms-input');
             const dateInput = row.querySelector('.ms-date-input');
-            const dowSpan = row.querySelector('.ms-dow'); 
+            const dowSpan = row.querySelector('.ms-dow');
             if (dateInput !== activeElement) {
                 dateInput._fp.setDate(targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss"), false);
             }
@@ -330,6 +343,7 @@
                     let d1 = DateTime.fromMillis(Math.min(birthDate.toMillis(), targetDate.toMillis()));
                     let d2 = DateTime.fromMillis(Math.max(birthDate.toMillis(), targetDate.toMillis()));
                     let ls = countLeapSeconds(d1, d2);
+                    
                     if (targetDate < birthDate) {
                         tVal = unixSeconds - ls; 
                     } else {
@@ -339,7 +353,6 @@
                     let diff = targetDate.diff(birthDate, unit);
                     tVal = parseFloat(diff[unit].toFixed(4)); 
                 }
-                
                 tVal = tVal + 0;
                 let isNegative = tVal < 0;
                 let absVal = Math.abs(tVal);
@@ -355,6 +368,7 @@
         document.querySelectorAll('.ms-date-input').forEach(input => { 
             if (!anchor && input.value) anchor = input; 
         });
+        
         if (anchor) {
             syncAllMilestones(anchor.value, null); 
         } else {
@@ -369,10 +383,9 @@
             let isNegative = val.trim().startsWith('-');
             let rawStr = (unit === 'seconds') ? val.replace(/\D/g, '') : val.replace(/[^\d.]/g, '');
             let parts = rawStr.split('.');
-            
             if (parts.length > 2) {
                 parts = [parts[0], parts.slice(1).join('')];
-            } 
+            }
             if (parts[0] !== '') {
                 let intPart = parseInt(parts[0], 10).toLocaleString('en-US');
                 let finalStr = parts.length > 1 ? intPart + '.' + parts[1] : intPart;
@@ -382,7 +395,7 @@
                 this.value = isNegative ? '-' + finalStr : finalStr;
             } else {
                 this.value = isNegative ? '-' : '';
-            } 
+            }
             syncAllMilestones(getTargetDateFromAmount(unit, this.value), this);
         });
     });
@@ -402,13 +415,14 @@
         }
         const rawBirthDate = DateTime.fromISO(inputVal, { zone: tzLocation });
         const birthDate = rawBirthDate.startOf('second'); 
+        
         if (birthDate.isValid) {
             mainDowSpan.innerText = birthDate.toFormat("EEEE");
         } else {
             mainDowSpan.innerText = '';
         }
         const localNow = DateTime.local().plus({ milliseconds: clockOffsetMs });  
-        const calcNow = localNow.setZone(tzLocation).startOf('second');
+        const calcNow = localNow.setZone(tzLocation).startOf('second'); 
         if (!birthDate.isValid || birthDate.year < 1000 || birthDate.year > 9999) {
             resultsPanel.style.display = 'none'; errorMsg.style.display = 'block'; return;
         }
@@ -441,7 +455,7 @@
         document.getElementById('r-year').innerText = formatNum(calcNow.diff(birthDate, 'years').years); 
         const clean = (n) => Math.floor(n) + 0;
         const detailedDiff = calcNow.diff(birthDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
-        const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.weeks)} weeks, ${clean(detailedDiff.days)} days,` +
+        const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.weeks)} weeks, ${clean(detailedDiff.days)} days, ` +
                             `${clean(detailedDiff.hours)} hours, ${clean(detailedDiff.minutes)} minutes, ${clean(detailedDiff.seconds)} seconds`;
         document.getElementById('r-detailed').innerText = detailedAge;
         const timeFormatString = use24hr ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a";
