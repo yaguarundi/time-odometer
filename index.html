@@ -7,6 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="stylesheet" href="TimeOdometer.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
 <div class="container">
@@ -140,7 +143,6 @@
     timeZones.forEach(tz => {
         const option1 = document.createElement('option');
         option1.value = tz; option1.textContent = tz.replace(/_/g, ' ');
-        
         const option2 = option1.cloneNode(true);
         if (tz === userTz) { 
             option1.selected = true; 
@@ -149,16 +151,16 @@
         tzSelect.appendChild(option1);
         targetTzSelect.appendChild(option2);
     });
-   async function syncWithServer() {
+    async function syncWithServer() {
         const statusEl = document.getElementById('syncStatus');
-        const savedOffset = localStorage.getItem('atomicOffsetMs');
+        const savedOffset = localStorage.getItem('atomicOffsetMs'); 
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
             statusEl.innerText = "Syncing...";
-            statusEl.style.color = "#b3b3b3"
+            statusEl.style.color = "#b3b3b3";
         } else {
             statusEl.innerText = "Syncing...";
-            statusEl.style.color = "#b3b3b3"
+            statusEl.style.color = "#b3b3b3";
         }
         calculate();
         if (intervalId) clearInterval(intervalId);
@@ -171,6 +173,7 @@
             if (!response.ok) throw new Error("Server rejected request");
             const data = await response.json();
             const latencyMs = performance.now() - requestSentAt;
+            
             if (latencyMs < bestLatency) {
                 bestLatency = latencyMs;
                 const estimatedOneWayTripMs = latencyMs / 2;
@@ -203,6 +206,7 @@
         "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z",
         "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"
     ].map(iso => DateTime.fromISO(iso));
+
     function countLeapSeconds(startDateTime, endDateTime) {
         return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length;
     }
@@ -241,6 +245,7 @@
             durationObj[unit] = tVal; 
             targetDate = birthDate.plus(durationObj).setZone(targetTz);
         }
+        
         dateInput.value = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
         dowSpan.innerText = targetDate.toFormat("EEEE");
     }
@@ -251,12 +256,16 @@
             dowSpan.innerText = '';
             return;
         }
+
         const inputVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value;
+        
         const birthDate = DateTime.fromISO(inputVal, { zone: originTz }).startOf('second');
         const targetDate = DateTime.fromISO(dateVal, { zone: targetTz }).startOf('second');
+
         if (!birthDate.isValid || !targetDate.isValid) return;
+
         let tVal = 0;
         if (unit === 'seconds') {
             let diffMs = targetDate.toMillis() - birthDate.toMillis();
@@ -264,6 +273,7 @@
             let d1 = DateTime.fromMillis(Math.min(birthDate.toMillis(), targetDate.toMillis()));
             let d2 = DateTime.fromMillis(Math.max(birthDate.toMillis(), targetDate.toMillis()));
             let ls = countLeapSeconds(d1, d2);
+            
             if (targetDate < birthDate) {
                 tVal = unixSeconds - ls; 
             } else {
@@ -374,7 +384,6 @@
             }
         };
         document.getElementById('r-sec').innerText = formatNum(physicalSeconds);
-        
         if (leapSecs > 0) {
             document.getElementById('r-leap').innerText = `${diffMs < 0 ? '-' : '+'}${leapSecs} leap seconds`;
         } else {
@@ -386,23 +395,25 @@
         document.getElementById('r-week').innerText = formatNum(calcNow.diff(birthDate, 'weeks').weeks);
         document.getElementById('r-month').innerText = formatNum(calcNow.diff(birthDate, 'months').months);
         document.getElementById('r-year').innerText = formatNum(calcNow.diff(birthDate, 'years').years); 
+        
         const clean = (n) => Math.floor(n) + 0;
         const detailedDiff = calcNow.diff(birthDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
         const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.days)} days, ` +
                             `${clean(detailedDiff.hours)} hours, ${clean(detailedDiff.minutes)} minutes, and ${clean(detailedDiff.seconds)} seconds`;
         document.getElementById('r-detailed').innerText = detailedAge;
+        
         const timeFormatString = use24hr ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a";
         const currentTimeString = localNow.toFormat(timeFormatString);
         document.getElementById('r-current-time').innerText = `${currentTimeString}`;
     }
-        document.getElementById('btn-now').addEventListener('click', () => {
+    document.getElementById('btn-now').addEventListener('click', () => {
         const tzLocation = document.getElementById('tzLocation').value;
         const localNow = DateTime.local().plus({ milliseconds: clockOffsetMs }); 
         const calcNow = localNow.setZone(tzLocation).startOf('second');
         
         document.getElementById('birthdatetime').value = calcNow.toFormat("yyyy-MM-dd'T'HH:mm:ss");
         calculate();
-        refreshGlobalMilestones();
+        updateAllMilestones();
     });
     document.getElementById('birthdatetime').addEventListener('input', () => { calculate(); updateAllMilestones(); });
     document.getElementById('tzLocation').addEventListener('change', () => { calculate(); updateAllMilestones(); });
