@@ -135,25 +135,29 @@
         <p class="copyright">&copy; <span id="current-year"></span> Yago Yaguarundi. All rights reserved.</p>
     </div>
 </div>
-
 <script>
     const DateTime = luxon.DateTime;
     let intervalId;
     let clockOffsetMs = 0; 
     let isSynced = false;
+
+    // --- Format helper to switch between AM/PM and 24Hr ---
     const getAltFormat = (is24hr) => is24hr ? "m-d-Y, H:i:S" : "m-d-Y, h:i:S K";
+
+    // --- FLATPICKR INITIALIZATION ---
     const baseFpConfig = {
         enableTime: true,
         enableSeconds: true,
         dateFormat: "Y-m-d\\TH:i:S", 
-        altInput: true, //
+        altInput: true, // This enables the custom mm-dd-yyyy format display
         altFormat: getAltFormat(document.getElementById('toggle24hr').checked),
         minDate: "1000-01-01",
         allowInput: true,
-        disableMobile: true,
+        disableMobile: true, // Forces custom UI on mobile devices
         time_24hr: document.getElementById('toggle24hr').checked
     };
 
+    // Main Input
     const mainDatePicker = flatpickr("#birthdatetime", {
         ...baseFpConfig,
         onChange: function(selectedDates, dateStr, instance) {
@@ -163,6 +167,7 @@
     });
     document.getElementById('birthdatetime')._fp = mainDatePicker;
 
+    // Milestone Inputs
     document.querySelectorAll('.ms-date-input').forEach(input => {
         input._fp = flatpickr(input, {
             ...baseFpConfig,
@@ -172,6 +177,7 @@
         });
     });
 
+    // Handle 24-hour toggle for Flatpickr display formats
     document.getElementById('toggle24hr').addEventListener('change', (e) => {
         const is24 = e.target.checked;
         const newFormat = getAltFormat(is24);
