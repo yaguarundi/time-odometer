@@ -265,19 +265,4 @@
             letter-spacing: 0.5px;
             text-align: center;
         }
-@media (max-width: 650px) {
-            body { padding: 10px; }
-            .container { padding: 20px 15px; }
-            .input-btn-wrapper { width: 100%; display: flex; justify-content: space-between; }
-            #birthdatetime { width: calc(100% - 70px); flex-grow: 1; }
-            .btn-now { width: 62px; padding: 8px 0; text-align: center; }
-            .main-dow { width: 100%; text-align: right; margin-top: 4px; }
-            .settings-panel { flex-direction: column; gap: 12px; align-items: flex-start; }
-            .milestone-container { flex-direction: column; gap: 12px; align-items: stretch; }
-            .ms-date-group { width: 100%; justify-content: space-between; }
-            .ms-date-input { width: 100%; flex-grow: 1; }
-            .ms-dow { text-align: right; min-width: 80px; width: auto; }
-            .ms-input { width: 100%; }
-            .bold-number { font-size: 1.15em; }
-        }
     </style>
