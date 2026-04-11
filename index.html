@@ -197,10 +197,10 @@
         const savedOffset = localStorage.getItem('atomicOffsetMs');
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
-            statusEl.innerText = "Syncing...";
-            statusEl.style.color = "#b3b3b3";
+            statusEl.innerText = "Precision sync active (Cached). Optimizing...";
+            statusEl.style.color = "#de8538"; 
         } else {
-            statusEl.innerText = "Syncing...";
+            statusEl.innerText = "Syncing atomic precision...";
             statusEl.style.color = "#b3b3b3";
         }
         calculate();
@@ -208,33 +208,45 @@
         intervalId = setInterval(calculate, 1000);
         let bestLatency = Infinity;
         let successfulPings = 0;
-        const pingServer = async () => {
-            const requestSentAt = performance.now(); 
-            const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
-            if (!response.ok) throw new Error("Server rejected request");
-            const data = await response.json();
-            const latencyMs = performance.now() - requestSentAt;
-            if (latencyMs < bestLatency) {
-                bestLatency = latencyMs;
-                const estimatedOneWayTripMs = latencyMs / 2;
-                const serverTime = DateTime.fromISO(data.dateTime, { zone: 'utc' }).plus({ milliseconds: estimatedOneWayTripMs });
-                const localComputerTime = DateTime.utc(); 
-                clockOffsetMs = serverTime.diff(localComputerTime).toMillis();
-                localStorage.setItem('atomicOffsetMs', clockOffsetMs);
-                const offsetSeconds = (clockOffsetMs / 1000).toFixed(3);
-                statusEl.innerText = `Precision sync completed. Adjusted by ${offsetSeconds} s (Latency: ${bestLatency.toFixed(0)} ms).`;
-                statusEl.style.color = "#38d22d";   
-                calculate(); 
-            }
-            successfulPings++;
+        const fetchTimeApi = async () => {
+            const reqStart = performance.now();
+            const res = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
+            if (!res.ok) throw new Error("timeapi failed");
+            const data = await res.json();
+            return { timeStr: data.dateTime, reqStart, source: 'TimeAPI' };
         };
-        try {
-            await Promise.all([pingServer(), pingServer(), pingServer()]);
-        } catch (error) {
-            if (successfulPings === 0 && !savedOffset) {
-                statusEl.innerText = "Precision sync failed. Relying on local device clock.";
-                statusEl.style.color = "#ff4d4d";
+        const fetchWorldTimeApi = async () => {
+            const reqStart = performance.now();
+            const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC', { cache: "no-store" });
+            if (!res.ok) throw new Error("worldtimeapi failed");
+            const data = await res.json();
+            return { timeStr: data.utc_datetime, reqStart, source: 'WorldTime' };
+        };
+        const pingServer = async () => {
+            try {
+                const result = await Promise.any([fetchTimeApi(), fetchWorldTimeApi()]);
+                const latencyMs = performance.now() - result.reqStart;
+                if (latencyMs < bestLatency) {
+                    bestLatency = latencyMs;
+                    const estimatedOneWayTripMs = latencyMs / 2;
+                    const serverTime = DateTime.fromISO(result.timeStr, { zone: 'utc' }).plus({ milliseconds: estimatedOneWayTripMs });
+                    const localComputerTime = DateTime.utc(); 
+                    clockOffsetMs = serverTime.diff(localComputerTime).toMillis();
+                    localStorage.setItem('atomicOffsetMs', clockOffsetMs);
+                    const offsetSeconds = (clockOffsetMs / 1000).toFixed(3);
+                    statusEl.innerText = `Sync complete via ${result.source}. Adjusted by ${offsetSeconds}s (Latency: ${bestLatency.toFixed(0)}ms).`;
+                    statusEl.style.color = "#38d22d";   
+                    calculate(); 
+                }
+                successfulPings++;
+            } catch (error) {
+                console.warn("Both APIs failed on this ping attempt.");
             }
+        };
+        await Promise.all([pingServer(), pingServer(), pingServer()]);
+        if (successfulPings === 0 && !savedOffset) {
+            statusEl.innerText = "Precision sync failed. Relying on local device clock.";
+            statusEl.style.color = "#ff4d4d";
         }
     }
     const leapSecondDates = [
