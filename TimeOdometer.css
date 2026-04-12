@@ -1,5 +1,8 @@
 <style>
         *, *::before, *::after { box-sizing: border-box; }
+        html {
+        touch-action: pan-x pan-y;
+        }
         body {
             font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
             background-color: #121212;
