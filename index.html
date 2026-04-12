@@ -111,7 +111,8 @@
             altInput: true,
             altFormat: "Y-m-d, h:i:S K", 
             altInputClass: "ms-date-input", 
-            disableMobile: "true", 
+            disableMobile: "true",
+            allowInput: true,
             onChange: function(selectedDates, dateStr, instance) {
                 instance.element.dispatchEvent(new Event('input', { bubbles: true }));
             }
