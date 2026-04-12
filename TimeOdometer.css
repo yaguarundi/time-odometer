@@ -258,7 +258,7 @@
             background-color: #b3b3b3;
             mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
             -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
-            transition: background-color 0.3s ease;
+            transition: 0.3s ease;
         }
         .copyright {
             font-size: 0.87em;
@@ -268,7 +268,6 @@
         }
        @media (hover: hover) and (pointer: fine) {
               .linktree-icon:hover {
-              opacity: 0.7; 
               background-color: #42e661;
        }
         @media (max-width: 748px) {
