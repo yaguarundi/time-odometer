@@ -288,6 +288,9 @@
             .input-dow-wrapper { 
                 display: contents; 
             }
+              .input-group {
+                     align-items: center; 
+              }
             .main-date-group { 
                 flex-direction: column; 
                 align-items: center; 
