@@ -38,10 +38,9 @@
             flex-direction: column;
             gap: 10px;
             margin-bottom: 20px;
-            background-color: #1a1a1a;
-            color: #E0CBB9;
+            background-color: transparent;
+            color: #f0f0f0;
             width: 290px;
-            font-family: "Courier New", Courier, monospace;
         }
         label {
             font-size: 0.9em;
@@ -78,14 +77,13 @@
             font-size: 16px; 
             border-radius: 6px; 
             border: 1px solid #444; 
-            background-color: #1a1a1a; 
-            color: #E0CBB9; 
+            background-color: transparent; 
+            color: #f0f0f0; 
             font-style: normal; 
             outline: none;
             width: 290px;
             text-align: center;
             color-scheme: dark;
-            font-family: "Courier New", Courier, monospace;
             font-weight: bold;
         }
         .main-dow {
