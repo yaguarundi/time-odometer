@@ -272,57 +272,53 @@
        }
 }
        @media (max-width: 748px) {
-    body { padding: 10px; }
-    .container { padding: 20px 10px; }
-       .main-date-group { 
+            body { padding: 10px; }
+            .container { padding: 20px 10px; }
+            .main-date-group { 
                 flex-direction: column; 
                 align-items: stretch; 
                 gap: 15px; 
             }
-    .input-dow-wrapper { 
-        flex-direction: column; 
-        width: 100%; 
-        gap: 5px; 
-        align-items: center; 
-    }
-#birthdatetime { 
-                width: 100% !important; 
-                text-align: center; 
+            .input-dow-wrapper { 
+                flex-direction: column; 
+                width: 100%; 
+                gap: 8px; 
+                align-items: center; 
             }
-    .main-dow { 
-        width: 100%; 
-        text-align: center; 
-        min-width: unset; 
-    }
-    .btn-now { 
-        width: 100%; 
-        padding: 12px 0; 
-    }
-    .milestone-container { 
-        flex-direction: column;
-        align-items: stretch; 
-        gap: 12px; 
-    }
-    .ms-date-group { 
-        flex-direction: column; 
-        width: 100%; 
-        gap: 5px; 
-    }
-    .ms-date-input { 
-        width: 100% !important; 
-        text-align: center; 
-    }
-    .ms-dow { 
-        width: 100%; 
-        text-align: center; 
-    }
-    .ms-input { 
-        width: 100% !important; 
-        text-align: center; 
-        margin-top: 0;
-    }
-    .settings-panel {
-        justify-content: space-around;
-    }
-}
+            #birthdatetime, 
+            .ms-date-input, 
+            .ms-input { 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                box-sizing: border-box !important; 
+                text-align: center; 
+                margin: 0; 
+            }
+            .main-dow, 
+            .ms-dow { 
+                width: 100%; 
+                text-align: center; 
+                min-width: unset; 
+            }
+            .btn-now { 
+                width: 100%; 
+                padding: 12px 0; 
+                margin-top: 5px;
+            }
+            .milestone-container { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 15px; 
+            }
+            .ms-date-group { 
+                flex-direction: column; 
+                width: 100%; 
+                gap: 8px; 
+            }
+            .settings-panel {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+        }
     </style>
