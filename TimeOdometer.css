@@ -306,7 +306,8 @@ input:invalid {
                 min-width: 0 !important; 
                 box-sizing: border-box !important; 
             }
-            input-group    {
+            input-group,
+            advise-input-format {
                 text-align: center;
             }
             #birthdatetime,  
