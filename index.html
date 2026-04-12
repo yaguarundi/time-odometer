@@ -190,18 +190,26 @@
         tzSelect.appendChild(option1);
         targetTzSelect.appendChild(option2);
     });
-    async function syncWithServer() {
-        const statusEl = document.getElementById('syncStatus');
-        const savedOffset = localStorage.getItem('atomicOffsetMs');
-        if (savedOffset) {
-            clockOffsetMs = parseFloat(savedOffset);
-            statusEl.innerText = "Syncing... (Using cached precision)";
-            statusEl.style.color = "#de8538"; 
+async function syncWithServer() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    try {
+        const response = await Promise.any([
+            fetch('https://worldtimeapi.org/api/ip', { signal: controller.signal }),
+            fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { signal: controller.signal })
+        ]);
+        const data = await response.json();
+        clearTimeout(timeoutId);
+        console.log("Synced successfully within 3s");
+    } catch (err) {
+        console.error("Sync failed or timed out:", err.name);
+        if (err.name === 'AbortError') {
+            updateStatusUI("Sync timed out (3s limit reached). Using local clock.");
         } else {
-            clockOffsetMs = 0;
-            statusEl.innerText = "Syncing... (Using local device clock)";
-            statusEl.style.color = "#b3b3b3";
+            updateStatusUI("Server error. Using local clock.");
         }
+    }
+}
         calculate();
         if (intervalId) clearInterval(intervalId);
         intervalId = setInterval(calculate, 1000);
