@@ -136,24 +136,18 @@
     let intervalId;
     let clockOffsetMs = 0; 
     let isSynced = false;
-
-    // --- Format helper to switch between AM/PM and 24Hr ---
-    const getAltFormat = (is24hr) => is24hr ? "m-d-Y, H:i:S" : "m-d-Y, h:i:S K";
-
-    // --- FLATPICKR INITIALIZATION ---
+    const is24hrDefault = document.getElementById('toggle24hr').checked;
     const baseFpConfig = {
         enableTime: true,
         enableSeconds: true,
         dateFormat: "Y-m-d\\TH:i:S", 
-        altInput: true, 
-        altFormat: getAltFormat(document.getElementById('toggle24hr').checked),
+        altInput: true,
+        altFormat: is24hrDefault ? "l, m-d-Y, H:i:S" : "l, m-d-Y, h:i:S K", 
         minDate: "1000-01-01",
         allowInput: true,
-        disableMobile: true, 
-        time_24hr: document.getElementById('toggle24hr').checked
+        disableMobile: true,
+        time_24hr: is24hrDefault
     };
-
-    // Main Input
     const mainDatePicker = flatpickr("#birthdatetime", {
         ...baseFpConfig,
         onChange: function(selectedDates, dateStr, instance) {
@@ -162,8 +156,6 @@
         }
     });
     document.getElementById('birthdatetime')._fp = mainDatePicker;
-
-    // Milestone Inputs
     document.querySelectorAll('.ms-date-input').forEach(input => {
         input._fp = flatpickr(input, {
             ...baseFpConfig,
@@ -172,30 +164,18 @@
             }
         });
     });
-
-    // Handle 24-hour toggle for Flatpickr display formats
     document.getElementById('toggle24hr').addEventListener('change', (e) => {
         const is24 = e.target.checked;
-        const newFormat = getAltFormat(is24);
-        
-        const fpMain = document.getElementById('birthdatetime')._fp;
-        fpMain.set('time_24hr', is24);
-        fpMain.set('altFormat', newFormat);
-        fpMain.setDate(fpMain.selectedDates, false); 
-        
+        document.getElementById('birthdatetime')._fp.set('time_24hr', is24);
         document.querySelectorAll('.ms-date-input').forEach(input => {
             input._fp.set('time_24hr', is24);
-            input._fp.set('altFormat', newFormat);
-            input._fp.setDate(input._fp.selectedDates, false);
         });
         calculate();
     });
-
     const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
     const timeZones = Intl.supportedValuesOf('timeZone');
     const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
     timeZones.forEach(tz => {
         const option1 = document.createElement('option');
         option1.value = tz; option1.textContent = tz.replace(/_/g, ' ');
@@ -204,100 +184,63 @@
         tzSelect.appendChild(option1);
         targetTzSelect.appendChild(option2);
     });
-
     async function syncWithServer() {
         const statusEl = document.getElementById('syncStatus');
         const savedOffset = localStorage.getItem('atomicOffsetMs');
-        
-        // 1. INSTANT START: Use cache if we have it, otherwise default to local clock (offset = 0)
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
-            statusEl.innerText = "Syncing... (Using cached precision)";
-            statusEl.style.color = "#de8538"; 
+            statusEl.innerText = "Precision sync active (Cached). Optimizing...";
+            statusEl.style.color = "#b3b3b3"; 
         } else {
-            clockOffsetMs = 0; // Pure local device clock
-            statusEl.innerText = "Syncing... (Using local device clock)";
+            statusEl.innerText = "Syncing atomic precision...";
             statusEl.style.color = "#b3b3b3";
         }
-        
-        // Start the math and UI instantly without waiting for any server
         calculate();
         if (intervalId) clearInterval(intervalId);
         intervalId = setInterval(calculate, 1000);
-        
         let bestLatency = Infinity;
         let successfulPings = 0;
-
-        // 2. BACKGROUND SYNC RACE
-        const fetchWithTimeout = async (url, options = {}, timeout = 2500) => {
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), timeout);
-            const response = await fetch(url, { ...options, signal: controller.signal });
-            clearTimeout(id);
-            return response;
-        };
-
         const fetchTimeApi = async () => {
             const reqStart = performance.now();
-            const res = await fetchWithTimeout('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
+            const res = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
+            if (!res.ok) throw new Error("timeapi failed");
             const data = await res.json();
             return { timeStr: data.dateTime, reqStart, source: 'TimeAPI' };
         };
-
         const fetchWorldTimeApi = async () => {
             const reqStart = performance.now();
-            const res = await fetchWithTimeout('https://worldtimeapi.org/api/timezone/Etc/UTC', { cache: "no-store" });
+            const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC', { cache: "no-store" });
+            if (!res.ok) throw new Error("worldtimeapi failed");
             const data = await res.json();
             return { timeStr: data.utc_datetime, reqStart, source: 'WorldTime' };
         };
-
         const pingServer = async () => {
             try {
-                // Race the servers
                 const result = await Promise.any([fetchTimeApi(), fetchWorldTimeApi()]);
                 const latencyMs = performance.now() - result.reqStart;
-                
                 if (latencyMs < bestLatency) {
                     bestLatency = latencyMs;
                     const estimatedOneWayTripMs = latencyMs / 2;
                     const serverTime = DateTime.fromISO(result.timeStr, { zone: 'utc' }).plus({ milliseconds: estimatedOneWayTripMs });
                     const localComputerTime = DateTime.utc(); 
-                    
                     clockOffsetMs = serverTime.diff(localComputerTime).toMillis();
                     localStorage.setItem('atomicOffsetMs', clockOffsetMs);
-                    
                     const offsetSeconds = (clockOffsetMs / 1000).toFixed(3);
                     statusEl.innerText = `Sync complete via ${result.source}. Adjusted by ${offsetSeconds}s (Latency: ${bestLatency.toFixed(0)}ms).`;
                     statusEl.style.color = "#38d22d";   
-                    
-                    // Nudge the math with the new perfect offset
                     calculate(); 
                 }
                 successfulPings++;
             } catch (error) {
-                console.warn("A sync race attempt failed or timed out.");
+                console.warn("Both APIs failed on this sync attempt.");
             }
         };
-
-        // Fire 3 pings independently. We DO NOT 'await' them, so the UI is never blocked.
-        pingServer();
-        pingServer();
-        pingServer();
-
-        // Fail-safe check after 3 seconds
-        setTimeout(() => {
-            if (successfulPings === 0) {
-                if (savedOffset) {
-                    statusEl.innerText = "Sync failed. Relying on cached precision.";
-                    statusEl.style.color = "#de8538";
-                } else {
-                    statusEl.innerText = "Sync failed. Relying on local device clock.";
-                    statusEl.style.color = "#ff4d4d";
-                }
-            }
-        }, 3000);
+        await Promise.all([pingServer(), pingServer(), pingServer()]);
+        if (successfulPings === 0 && !savedOffset) {
+            statusEl.innerText = "Precision sync failed. Relying on local device clock.";
+            statusEl.style.color = "#ff4d4d";
+        }
     }
-
     const leapSecondDates = [
         "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", "1974-12-31T23:59:59Z",
         "1975-12-31T23:59:59Z", "1976-12-31T23:59:59Z", "1977-12-31T23:59:59Z", "1978-12-31T23:59:59Z",
@@ -307,34 +250,26 @@
         "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z",
         "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"
     ].map(iso => DateTime.fromISO(iso));
-
     function countLeapSeconds(startDateTime, endDateTime) {
         return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length;
     }
-
     function getTargetDateFromAmount(unit, rawVal) {
         const tVal = parseFloat(rawVal.replace(/,/g, ''));
         if (isNaN(tVal)) return null;
-        
         const inputVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value; 
-        
         const birthDate = DateTime.fromISO(inputVal, { zone: originTz }).startOf('second');
         if (!birthDate.isValid) return null;
-
         let targetDate;
         const isPast = tVal < 0;
-
         if (unit === 'seconds') {
             let birthMs = birthDate.toMillis();
             let targetMsGuess = birthMs + (tVal * 1000); 
-            
             for(let i=0; i<3; i++) {
                 let d1 = DateTime.fromMillis(Math.min(birthMs, targetMsGuess));
                 let d2 = DateTime.fromMillis(Math.max(birthMs, targetMsGuess));
                 let ls = countLeapSeconds(d1, d2);
-                
                 if (isPast) {
                     targetMsGuess = birthMs + (tVal * 1000) + (ls * 1000);
                 } else {
@@ -347,10 +282,8 @@
             durationObj[unit] = tVal; 
             targetDate = birthDate.plus(durationObj).setZone(targetTz);
         }
-        
         return targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
     }
-
     function syncAllMilestones(targetDateISO, activeElement) {
         if (!targetDateISO) {
             document.querySelectorAll('.row').forEach(row => {
@@ -366,28 +299,21 @@
             });
             return;
         }
-
         const inputVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value;
-        
         const birthDate = DateTime.fromISO(inputVal, { zone: originTz }).startOf('second');
         const targetDate = DateTime.fromISO(targetDateISO, { zone: targetTz }).startOf('second');
-
         if (!birthDate.isValid || !targetDate.isValid) return;
-
         document.querySelectorAll('.row').forEach(row => {
             const unit = row.getAttribute('data-unit');
             const amountInput = row.querySelector('.ms-input');
             const dateInput = row.querySelector('.ms-date-input');
             const dowSpan = row.querySelector('.ms-dow');
-            
             if (dateInput !== activeElement) {
                 dateInput._fp.setDate(targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss"), false);
             }
-            
             dowSpan.innerText = targetDate.toFormat("EEEE");
-            
             if (amountInput !== activeElement) {
                 let tVal = 0;
                 if (unit === 'seconds') {
@@ -406,46 +332,38 @@
                     let diff = targetDate.diff(birthDate, unit);
                     tVal = parseFloat(diff[unit].toFixed(4)); 
                 }
-                
                 tVal = tVal + 0;
                 let isNegative = tVal < 0;
                 let absVal = Math.abs(tVal);
                 let parts = absVal.toString().split('.');
                 let intPart = parseInt(parts[0], 10).toLocaleString('en-US');
                 let finalStr = parts.length > 1 ? intPart + '.' + parts[1] : intPart;
-                
                 amountInput.value = isNegative ? '-' + finalStr : finalStr;
             }
         });
     }
-
     function refreshGlobalMilestones() {
         let anchor = null; 
         document.querySelectorAll('.ms-date-input').forEach(input => { 
             if (!anchor && input.value) anchor = input; 
         });
-        
         if (anchor) {
             syncAllMilestones(anchor.value, null); 
         } else {
             syncAllMilestones(null, null);
         }
     }
-
     document.querySelectorAll('.row').forEach(row => {
         const unit = row.getAttribute('data-unit');
         const amountInput = row.querySelector('.ms-input');
-        
         amountInput.addEventListener('input', function(e) {
             let val = this.value;
             let isNegative = val.trim().startsWith('-');
             let rawStr = (unit === 'seconds') ? val.replace(/\D/g, '') : val.replace(/[^\d.]/g, '');
             let parts = rawStr.split('.');
-            
             if (parts.length > 2) {
                 parts = [parts[0], parts.slice(1).join('')];
             }
-            
             if (parts[0] !== '') {
                 let intPart = parseInt(parts[0], 10).toLocaleString('en-US');
                 let finalStr = parts.length > 1 ? intPart + '.' + parts[1] : intPart;
@@ -456,11 +374,9 @@
             } else {
                 this.value = isNegative ? '-' : '';
             }
-            
             syncAllMilestones(getTargetDateFromAmount(unit, this.value), this);
         });
     });
-
     function calculate() {
         const inputVal = document.getElementById('birthdatetime').value;
         const tzLocation = document.getElementById('tzLocation').value;
@@ -469,41 +385,31 @@
         const mainDowSpan = document.getElementById('main-dow');
         const useCommas = document.getElementById('toggleCommas').checked;
         const use24hr = document.getElementById('toggle24hr').checked;
-        
         if (!inputVal) {
             resultsPanel.style.display = 'none'; 
             errorMsg.style.display = 'none'; 
             mainDowSpan.innerText = '';
             return;
         }
-        
         const rawBirthDate = DateTime.fromISO(inputVal, { zone: tzLocation });
         const birthDate = rawBirthDate.startOf('second'); 
-        
         if (birthDate.isValid) {
             mainDowSpan.innerText = birthDate.toFormat("EEEE");
         } else {
             mainDowSpan.innerText = '';
         }
-        
         const localNow = DateTime.local().plus({ milliseconds: clockOffsetMs });  
         const calcNow = localNow.setZone(tzLocation).startOf('second');
-        
         if (!birthDate.isValid || birthDate.year < 1000 || birthDate.year > 9999) {
             resultsPanel.style.display = 'none'; errorMsg.style.display = 'block'; return;
         }
-        
         errorMsg.style.display = 'none'; resultsPanel.style.display = 'flex';
-        
         const diffMs = calcNow.diff(birthDate).toMillis();
         const unixSeconds = Math.floor(diffMs / 1000); 
-        
         let d1 = DateTime.fromMillis(Math.min(birthDate.toMillis(), calcNow.toMillis()));
         let d2 = DateTime.fromMillis(Math.max(birthDate.toMillis(), calcNow.toMillis()));
         const leapSecs = countLeapSeconds(d1, d2);
-        
         const physicalSeconds = diffMs < 0 ? unixSeconds - leapSecs : unixSeconds + leapSecs;
-        
         const formatNum = (num) => {
             let safeNum = Math.floor(num) + 0; 
             if (useCommas) {
@@ -512,38 +418,31 @@
                 return safeNum.toString(); 
             }
         };
-        
         document.getElementById('r-sec').innerText = formatNum(physicalSeconds);
-        
         if (leapSecs > 0) {
             document.getElementById('r-leap').innerText = `${diffMs < 0 ? '-' : '+'}${leapSecs} leap seconds`;
         } else {
             document.getElementById('r-leap').innerText = '';
         }
-        
         document.getElementById('r-min').innerText = formatNum(calcNow.diff(birthDate, 'minutes').minutes);
         document.getElementById('r-hour').innerText = formatNum(calcNow.diff(birthDate, 'hours').hours);
         document.getElementById('r-day').innerText = formatNum(calcNow.diff(birthDate, 'days').days);
         document.getElementById('r-week').innerText = formatNum(calcNow.diff(birthDate, 'weeks').weeks);
         document.getElementById('r-month').innerText = formatNum(calcNow.diff(birthDate, 'months').months);
         document.getElementById('r-year').innerText = formatNum(calcNow.diff(birthDate, 'years').years); 
-        
         const clean = (n) => Math.floor(n) + 0;
         const detailedDiff = calcNow.diff(birthDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
         const detailedAge = `${clean(detailedDiff.years)} years, ${clean(detailedDiff.months)} months, ${clean(detailedDiff.days)} days, ` +
                             `${clean(detailedDiff.hours)} hours, ${clean(detailedDiff.minutes)} minutes, and ${clean(detailedDiff.seconds)} seconds`;
         document.getElementById('r-detailed').innerText = detailedAge;
-        
         const timeFormatString = use24hr ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a";
         const currentTimeString = localNow.toFormat(timeFormatString);
         document.getElementById('r-current-time').innerText = `${currentTimeString}`;
     }
-
     document.getElementById('btn-now').addEventListener('click', () => {
         const tzLocation = document.getElementById('tzLocation').value;
         const localNow = DateTime.local().plus({ milliseconds: clockOffsetMs }); 
         const calcNow = localNow.setZone(tzLocation).startOf('second');
-        
         document.getElementById('birthdatetime')._fp.setDate(calcNow.toFormat("yyyy-MM-dd'T'HH:mm:ss"), true);
     });
     document.getElementById('tzLocation').addEventListener('change', () => { calculate(); refreshGlobalMilestones(); });
@@ -555,3 +454,5 @@
         yearText.innerText = new Date().getFullYear();
     }
 </script>
+</body>
+</html>
