@@ -66,6 +66,11 @@ input:invalid {
     width: 100%;
     gap: 15px;
 }
+advise-input-format {
+    font-size: 0.75em;
+    font-weight: normal;
+    font-style: italic;
+}
 .input-dow-wrapper {
     display: flex;
     align-items: center;
