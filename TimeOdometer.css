@@ -200,7 +200,7 @@
         }
         .ms-date-input:focus { border-color: #de8538; }
         .ms-dow {
-            font-size: 0.9em; 
+            font-size: 1em; 
             color: #E0CBB9; 
             width: 85px; 
             text-align: left;
