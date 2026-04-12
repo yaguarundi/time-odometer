@@ -202,6 +202,7 @@
         .ms-dow {
             font-size: 1em; 
             color: #E0CBB9; 
+            font-family: 'Courier New', Courier, monospace;
             width: 85px; 
             text-align: left;
         }
