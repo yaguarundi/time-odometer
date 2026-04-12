@@ -290,15 +290,15 @@
             }
             #birthdatetime,  
             .ms-input { 
-                width: 100% !important; 
-                max-width: 100% !important; 
+                width: fit-content !important; 
+                max-width: fit-content !important; 
                 box-sizing: border-box !important; 
                 text-align: center; 
                 margin: 0; 
             }
               .ms-date-input {
-                width: 80% !important; 
-                max-width: 100% !important; 
+                width: fit-content !important; 
+                max-width: fit-content !important; 
                 box-sizing: border-box !important; 
                 text-align: center; 
                 margin: 0; 
@@ -312,8 +312,10 @@
             .btn-now { 
                 width: fit-content; 
                    text-align: center;
-                padding: 12px 0; 
-                margin-top: 5px;
+       border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 0.85em;
             }
             .milestone-container { 
                 flex-direction: column; 
