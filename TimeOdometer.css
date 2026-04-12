@@ -308,7 +308,8 @@ input:invalid {
             }
             .input-group,
             .advise-input-format {
-                justify-content: center;
+                text-align: center;
+                align-items: center;
             }
             #birthdatetime,  
             .ms-date-input,
