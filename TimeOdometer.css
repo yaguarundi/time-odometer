@@ -283,6 +283,6 @@
             .ms-date-input { width: 100%; flex-grow: 1; }
             .ms-dow { text-align: right; min-width: 80px; width: auto; }
             .ms-input { width: 90%; }
-            .bold-number { font-size: 1.15em; }
+            .bold-number { font-size: 1.25em; }
         }
     </style>
