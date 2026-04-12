@@ -270,17 +270,62 @@
               .linktree-icon:hover {
               background-color: #42e661;
        }
-        @media (max-width: 748px) {
-            body { padding: 10px; }
-            .container { padding: 20px 15px; }
-            .main-date-group { flex-direction: column; align-items: flex-start; }
-            .input-dow-wrapper { width: 100%; justify-content: space-between; }
-            #birthdatetime { width: calc(100% - 95px); text-align: left; }
-            .btn-now { width: 100%; margin-top: 10px; }
-            .ms-date-group { width: 100%; justify-content: space-between; }
-            .ms-date-input { width: calc(100% - 95px); }
-            .ms-input { width: 100%; margin-top: 10px; text-align: left; }
-            .milestone-container { flex-direction: column; }
-            .ms-dow { text-align: right; }
-        }
+       @media (max-width: 748px) {
+    body { padding: 10px; }
+    .container { padding: 20px 10px; }
+    .main-date-group { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 10px; 
+    }
+    .input-dow-wrapper { 
+        flex-direction: column; 
+        width: 100%; 
+        gap: 5px; 
+        align-items: center; 
+    }
+    #birthdatetime { 
+        width: 100% !important; 
+        text-align: center; 
+    }
+    .main-dow { 
+        width: 100%; 
+        text-align: center; 
+        min-width: unset; 
+    }
+    .btn-now { 
+        width: 100%; 
+        padding: 12px 0; 
+    }
+
+    /* Milestone rows stack */
+    .milestone-container { 
+        flex-direction: column; /* Puts the interval input directly below the date */
+        align-items: stretch; 
+        gap: 12px; 
+    }
+    .ms-date-group { 
+        flex-direction: column; 
+        width: 100%; 
+        gap: 5px; 
+    }
+    .ms-date-input { 
+        width: 100% !important; 
+        text-align: center; 
+    }
+    .ms-dow { 
+        width: 100%; 
+        text-align: center; 
+    }
+    .ms-input { 
+        width: 100% !important; 
+        text-align: center; 
+        margin-top: 0; /* Handled by gap in milestone-container */
+    }
+
+    /* Setting toggles stack */
+    .settings-panel {
+        justify-content: space-around;
+    }
+}
     </style>
