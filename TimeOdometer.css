@@ -36,8 +36,15 @@
         .input-group {
             display: flex;
             flex-direction: column;
+            border-radius: 6px; 
+            border: 1px solid #444;
             gap: 10px;
             margin-bottom: 20px;
+            background-color: #1a1a1a;
+            color: #E0CBB9;
+            width: 290px;
+            text-align: center;
+            font-family: "Courier New", Courier, monospace;
         }
         label {
             font-size: 0.9em;
@@ -61,7 +68,7 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            gap: 15px
+            gap: 15px;
         }
         .input-dow-wrapper {
             display: flex;
@@ -73,12 +80,14 @@
             padding: 8px 12px; 
             font-size: 16px; 
             border-radius: 6px; 
-            border: 1px solid #333; 
-            background-color: #2a2a2a; 
-            color: white; 
-            color-scheme: dark;
-            width: 320px;
+            border: 1px solid #444; 
+            background-color: #1a1a1a; 
+            color: #E0CBB9; 
+            font-style: normal; 
+            outline: none;
+            width: 290px;
             text-align: center;
+            color-scheme: dark;
             font-family: "Courier New", Courier, monospace;
             font-weight: bold;
         }
@@ -221,6 +230,7 @@
             color: #000;
             padding: 15px;
             border-radius: 6px;
+            font-family: "Courier New", Courier, monospace;
             font-weight: bold;
             text-align: center;
             line-height: 1.4;
@@ -230,8 +240,9 @@
             text-align: center;
             font-weight: bold;
             font-size: 1.0em;
-            color: #b3b3b3;
+            color: #E0CBB9;
             margin-top: 10px;
+            font-family: "Courier New", Courier, monospace;
         }
         .error-message {
             color: #ff4d4d;
