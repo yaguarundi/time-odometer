@@ -146,18 +146,16 @@
     }
     const leapSecondDates = ["1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", "1974-12-31T23:59:59Z", "1975-12-31T23:59:59Z", "1976-12-31T23:59:59Z", "1977-12-31T23:59:59Z", "1978-12-31T23:59:59Z", "1979-12-31T23:59:59Z", "1981-06-30T23:59:59Z", "1982-06-30T23:59:59Z", "1983-06-30T23:59:59Z", "1985-06-30T23:59:59Z", "1987-12-31T23:59:59Z", "1989-12-31T23:59:59Z", "1990-12-31T23:59:59Z", "1992-06-30T23:59:59Z", "1993-06-30T23:59:59Z", "1994-06-30T23:59:59Z", "1995-12-31T23:59:59Z", "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z", "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"].map(iso => DateTime.fromISO(iso));
     function countLeapSeconds(startDateTime, endDateTime) { return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length; }
-
     function syncMilestones(targetDateISO, activeInput) {
         const rows = document.querySelectorAll('.row');
         if (!targetDateISO) {
             rows.forEach(row => {
-                row.querySelector('.ms-date-input').value = row.querySelector('.ms-input').value = '';
-                row.querySelector('.ms-dow').innerText = '';
+                const di = row.querySelector('.ms-date-input');
+                const ai = row.querySelector('.ms-input');
+                const ds = row.querySelector('.ms-dow');
                 if (di !== activeInput) di.value = '';
                 if (ai !== activeInput) ai.value = '';
                 ds.innerText = '';
-            });
-            return;
             });
             return;
         }
