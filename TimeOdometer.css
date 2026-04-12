@@ -286,17 +286,17 @@
                 gap: 12px; 
             }
             #birthdatetime { order: 1; } 
-            .btn-now { 
-                order: 2; 
-                width: fit-content; 
-                padding: 8px 30px; /* Wider padding for better mobile tapping */
-                margin: 0;
-            }
             .main-dow { 
-                order: 3; 
+                order: 2; 
                 width: 100%; 
                 text-align: center; 
                 min-width: unset; 
+            }
+             .btn-now { 
+                order: 3; 
+                width: fit-content; 
+                padding: 8px 30px; /* Wider padding for better mobile tapping */
+                margin: 0;
             }
             #birthdatetime,  
             .ms-date-input,
