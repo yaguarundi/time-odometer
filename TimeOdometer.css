@@ -53,11 +53,13 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
+               gap: 15px
         }
         .input-dow-wrapper {
             display: flex;
             align-items: center;
             gap: 10px;
+               justify-content: flex-end;
         }
         #birthdatetime {
             padding: 8px 12px; 
@@ -73,7 +75,8 @@
         .main-dow {
             font-size: 0.9em;
             color: #ffffff;
-            /* Font family is now dynamically injected via JS below to ensure a perfect match */
+            white-space: nowrap;
+               min-width: 85px;
         }
         .settings-panel {
             display: flex;
@@ -284,5 +287,17 @@
             .ms-dow { text-align: right; min-width: 80px; width: auto; }
             .ms-input { width: 70%; }
             .bold-number { font-size: 1.25em; }
+               .main-date-group {
+        flex-direction: column; 
+        align-items: flex-start;
+    }
+               .input-dow-wrapper {
+        width: 100%;
+        justify-content: flex-start;
+    }
+               #birthdatetime {
+        width: 210px; /* Keep it fixed so it doesn't look weirdly long */
+        flex-grow: 0; 
+    }
         }
     </style>
