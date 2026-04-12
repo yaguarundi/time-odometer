@@ -24,12 +24,10 @@
         h2 {
             margin-top: 0;
             text-align: center;
-            color: #E0CBB9;
         }
         h3 {
             margin-top: 0;
             text-align: center;
-            color: #E0CBB9;
             font-size: 1rem;
             font-weight: normal;
         }
@@ -38,7 +36,7 @@
             flex-direction: column;
             gap: 10px;
             margin-bottom: 20px;
-            background-color: transparent;
+            color: #eaeaea;
             width: 100%;
         }
         label {
@@ -118,7 +116,7 @@
             align-items: center;
             gap: 8px;
             font-size: 0.85em;
-            color: #ffffff;
+            color: #eaeaea;
             cursor: pointer;
             padding: 5px 0;
         }
@@ -295,7 +293,7 @@
              .btn-now { 
                 order: 3; 
                 width: fit-content; 
-                padding: 8px 30px; /* Wider padding for better mobile tapping */
+                padding: 8px 30px;
                 margin: 0;
             }
             #birthdatetime,  
