@@ -274,53 +274,48 @@
               transition: 0.3s ease;
 }
        }
-       @media (max-width: 748px) {
+@media (max-width: 748px) {
             body { padding: 10px; }
             .container { padding: 20px 10px; }
+            .input-dow-wrapper { 
+                display: contents; 
+            }
             .main-date-group { 
                 flex-direction: column; 
-                align-items: stretch; 
-                gap: 15px; 
-            }
-            .input-dow-wrapper { 
-                flex-direction: column; 
-                width: 100%; 
-                gap: 8px; 
                 align-items: center; 
+                gap: 12px; 
+            }
+            #birthdatetime { order: 1; } 
+            .btn-now { 
+                order: 2; 
+                width: fit-content; 
+                padding: 8px 30px; /* Wider padding for better mobile tapping */
+                margin: 0;
+            }
+            .main-dow { 
+                order: 3; 
+                width: 100%; 
+                text-align: center; 
+                min-width: unset; 
             }
             #birthdatetime,  
+            .ms-date-input,
             .ms-input { 
-                width: fit-content !important; 
-                max-width: fit-content !important; 
+                width: 290px !important; 
+                max-width: 100% !important; 
                 box-sizing: border-box !important; 
                 text-align: center; 
                 margin: 0; 
             }
-              .ms-date-input {
-                width: fit-content !important; 
-                max-width: fit-content !important; 
-                box-sizing: border-box !important; 
-                text-align: center; 
-                margin: 0; 
-              }
-            .main-dow, 
             .ms-dow { 
                 width: 100%; 
                 text-align: center; 
                 min-width: unset; 
             }
-            .btn-now { 
-                width: fit-content; 
-                   text-align: center;
-       border: 1px solid #444;
-            border-radius: 6px;
-            padding: 10px 16px;
-            font-size: 0.85em;
-            }
             .milestone-container { 
                 flex-direction: column; 
-                align-items: stretch; 
-                gap: 15px; 
+                align-items: center; 
+                gap: 12px; 
             }
             .ms-date-group { 
                 flex-direction: column; 
@@ -333,4 +328,4 @@
                 gap: 15px;
             }
         }
-    </style>
+</style>
