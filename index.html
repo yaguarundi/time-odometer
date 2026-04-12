@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Time Odometer</title>
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
     <link rel="stylesheet" href="TimeOdometer.css">
@@ -22,7 +25,7 @@
             </div>
             <button type="button" id="btn-now" class="btn-now">Now</button>
         </div>
-        <div class="error-message" id="errorMsg">Please enter a valid date (Year 1000-9999).</div>
+        <div class="error-message" id="errorMsg">Please enter a valid date (Years 1000-9999).</div>
     </div>
     <div class="input-group">
         <label for="tzLocation">Origin Location:</label>
@@ -100,6 +103,35 @@
             span.style.fontFamily = nativeInputFont;
             span.style.fontWeight = "bold";
         });
+
+        const fpConfig = {
+            enableTime: true,
+            enableSeconds: true,
+            dateFormat: "Y-m-d\\TH:i:S",
+            altInput: true,
+            altFormat: "Y-m-d, h:i:S K",
+            altInputClass: "ms-date-input",
+            disableMobile: "true",
+            onChange: function(selectedDates, dateStr, instance) {
+                instance.element.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        };
+
+        flatpickr("#birthdatetime", {
+            ...fpConfig,
+            onReady: function(selectedDates, dateStr, instance) {
+                // Keeps the top input's background transparent
+                instance.altInput.style.backgroundColor = "transparent";
+                instance.altInput.style.cursor = "pointer";
+            }
+        });
+
+        flatpickr(".milestone-container .ms-date-input", {
+            ...fpConfig,
+            onReady: function(selectedDates, dateStr, instance) {
+                instance.altInput.style.cursor = "pointer";
+            }
+        });
     });
 
     const tzSelect = document.getElementById('tzLocation');
@@ -149,28 +181,45 @@
         const rows = document.querySelectorAll('.row');
         if (!targetDateISO) {
             rows.forEach(row => {
-                const di = row.querySelector('.ms-date-input');
+                // Explicitly target the hidden data input so math doesn't break
+                const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
                 const ai = row.querySelector('.ms-input');
                 const ds = row.querySelector('.ms-dow');
-                if (di !== activeInput) di.value = '';
+                
+                if (di !== activeInput) {
+                    if (di && di._flatpickr) di._flatpickr.clear();
+                    else di.value = '';
+                }
                 if (ai !== activeInput) ai.value = '';
                 ds.innerText = '';
             });
             return;
         }
+        
         const originVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value;
         const originDate = DateTime.fromISO(originVal, { zone: originTz }).startOf('second');
         const targetDate = DateTime.fromISO(targetDateISO, { zone: targetTz }).startOf('second');
+        
         if (!originDate.isValid || !targetDate.isValid) return;
+        
         rows.forEach(row => {
             const unit = row.getAttribute('data-unit');
-            const di = row.querySelector('.ms-date-input');
+            const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
             const ai = row.querySelector('.ms-input');
             const ds = row.querySelector('.ms-dow');
-            if (di !== activeInput) di.value = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
+            
+            if (di !== activeInput) {
+                // Use Flatpickr's API to update the visual UI seamlessly
+                if (di && di._flatpickr) {
+                    di._flatpickr.setDate(targetDate.toJSDate(), false);
+                } else {
+                    di.value = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
+                }
+            }
             ds.innerText = targetDate.toFormat("EEEE");
+            
             if (ai !== activeInput) {
                 let amt = 0;
                 if (unit === 'seconds') {
@@ -187,10 +236,14 @@
 
     function refreshAllMilestones() {
         let anchor = null;
-        document.querySelectorAll('.ms-date-input').forEach(i => { if (!anchor && i.value) anchor = i.value; });
+        const inputs = document.querySelectorAll('.ms-date-input.flatpickr-input');
+        const searchList = inputs.length > 0 ? inputs : document.querySelectorAll('.ms-date-input');
+        
+        searchList.forEach(i => { 
+            if (!anchor && i.value) anchor = i.value; 
+        });
         syncMilestones(anchor, null);
     }
-
     document.querySelectorAll('.row').forEach(row => {
         const unit = row.getAttribute('data-unit');
         const ai = row.querySelector('.ms-input');
@@ -252,10 +305,15 @@
         document.getElementById('r-detailed').innerText = `${Math.floor(dd.years)} years, ${Math.floor(dd.months)} months, ${Math.floor(dd.weeks)} weeks, ${Math.floor(dd.days)} days, ${Math.floor(dd.hours)} hours, ${Math.floor(dd.minutes)} minutes, ${Math.floor(dd.seconds)} seconds`;
         document.getElementById('r-current-time').innerText = now.toFormat(u24 ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a");
     }
-
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
-        document.getElementById('birthdatetime').value = now.toFormat("yyyy-MM-dd'T'HH:mm:ss");
+        const bdInput = document.getElementById('birthdatetime');
+        if (bdInput._flatpickr) {
+            bdInput._flatpickr.setDate(now.toJSDate(), true);
+        } else {
+            bdInput.value = now.toFormat("yyyy-MM-dd'T'HH:mm:ss");
+        }
+        
         calculate(); refreshAllMilestones();
     });
     document.getElementById('birthdatetime').addEventListener('input', () => { calculate(); refreshAllMilestones(); });
