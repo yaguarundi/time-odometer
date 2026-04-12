@@ -327,77 +327,97 @@ input:invalid {
 }
 
 @media (max-width: 748px) {
-    body { padding: 10px; }
-    .container { padding: 0; width: 100%; gap: 15px; }
-    .half-container { padding: 20px 15px; width: 100%; }
-    
-    .input-dow-wrapper { 
-        display: contents; 
-    }
-    
-    .input-group {
-        align-items: stretch; 
-    }
-    
-    .main-date-group { 
-        flex-direction: column; 
-        align-items: stretch; 
-        gap: 12px; 
-    }
-    
-    #birthdatetime { order: 1; } 
-    
-    .main-dow { 
-        order: 2; 
-        width: 100%; 
-        text-align: center; 
-        min-width: unset; 
-        margin-top: 5px;
-    }
-    
-    .btn-now { 
-        order: 3; 
-        width: fit-content; 
-        padding: 8px 30px;
-        margin: 0 auto; /* Centers the button horizontally */
-    }
-    
-    /* FIX: Force inputs to fill container, min-width: 0 ignores placeholder text width */
-    #birthdatetime,  
-    .ms-date-input,
-    .ms-input { 
-        width: 100% !important; 
-        min-width: 0 !important; 
-        box-sizing: border-box !important; 
-        text-align: center; 
-        margin: 0; 
-        height: 44px !important;
-    }
-    
-    .ms-dow { 
-        width: 100%; 
-        text-align: center; 
-        min-width: unset; 
-    }
-    
-    .milestone-container { 
-        flex-direction: column; 
-        align-items: stretch; 
-        gap: 12px; 
-        width: 100%;
-    }
-    
-    .ms-date-group { 
-        flex-direction: column; 
-        width: 100%; 
-        gap: 8px; 
-        align-items: stretch;
-    }
-    
-    .settings-panel {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
+            /* Keep the body from scrolling sideways */
+            body { padding: 10px; overflow-x: hidden; }
+            .container { padding: 0; gap: 15px; width: 100%; }
+            
+            /* Guarantee padding doesn't add to the 100% width */
+            .half-container { 
+                padding: 20px 10px; 
+                width: 100%; 
+                box-sizing: border-box !important; 
+            }
+            
+            /* FIX 1: Scale down the giant numbers so they fit on phones */
+            .bold-number {
+                font-size: 1.25em !important; 
+            }
+            
+            /* Allow the row header to wrap safely if things get too tight */
+            .row-main {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            /* FIX 2: The magic 'min-width: 0' forces inputs to ignore long placeholders */
+            #birthdatetime,  
+            .ms-date-input,
+            .ms-input,
+            select { 
+                width: 100% !important; 
+                min-width: 0 !important; 
+                max-width: 100% !important; 
+                box-sizing: border-box !important; 
+            }
+            
+            #birthdatetime,  
+            .ms-date-input,
+            .ms-input {
+                text-align: center; 
+                margin: 0; 
+                height: 44px !important;
+            }
+
+            .main-date-group { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 12px; 
+            }
+            
+            .input-dow-wrapper { 
+                display: contents; 
+            }
+            
+            #birthdatetime { order: 1; }
+            
+            .main-dow { 
+                order: 2; 
+                width: 100%; 
+                text-align: center; 
+                min-width: unset; 
+            }
+            
+            /* Making this 100% width creates a much better mobile touch target */
+            .btn-now { 
+                order: 3; 
+                width: 100%; 
+                padding: 12px 0;
+                margin-top: 5px;
+                justify-content: center;
+            }
+
+            .milestone-container { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 12px; 
+            }
+            
+            .ms-date-group { 
+                flex-direction: column; 
+                width: 100%; 
+                gap: 8px; 
+            }
+
+            .ms-dow { 
+                width: 100%; 
+                text-align: center; 
+                min-width: unset; 
+            }
+            
+            .settings-panel {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+        }
 </style>
