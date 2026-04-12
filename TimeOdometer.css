@@ -209,7 +209,8 @@
             border: 1px solid #444; 
             background-color: #1a1a1a; 
             color: #fff; 
-            width: 160px; 
+            width: 160px;
+            font-family: "Courier New", Courier, monospace;
             outline: none;
             text-align: right;
         }
