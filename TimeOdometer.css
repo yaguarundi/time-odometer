@@ -1,16 +1,12 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
-
-/* Locks the body width so long placeholders can't slide the screen */
 html, body {
     overflow-x: hidden;
     width: 100%;
 }
-
 html {
     touch-action: pan-x pan-y;
 }
-
 body {
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     background-color: #634E34;
@@ -24,7 +20,6 @@ body {
     padding: 20px;
     overscroll-behavior-y: contain;
 }
-
 .container {
     display: flex;
     flex-direction: column;
@@ -32,7 +27,6 @@ body {
     max-width: 840px;
     width: 100%;
 }
-
 .half-container {
     background-color: #1e1e1e;
     padding: 30px;
@@ -40,19 +34,16 @@ body {
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     width: 100%;
 }
-
 h2 {
     margin-top: 0;
     text-align: center;
 }
-
 h3 {
     margin-top: 0;
     text-align: center;
     font-size: 1rem;
     font-weight: normal;
 }
-
 .input-group {
     display: flex;
     flex-direction: column;
@@ -61,12 +52,10 @@ h3 {
     color: #eaeaea;
     width: 100%;
 }
-
 label {
     font-size: 0.9em;
     color: #b3b3b3;
 }
-
 select {
     padding: 12px;
     font-size: 16px;
@@ -77,11 +66,9 @@ select {
     color-scheme: dark;
     width: 100%;
 }
-
 input:invalid {
     border-color: #ff4d4d;
 }
-
 .main-date-group {
     display: flex;
     align-items: center;
@@ -89,14 +76,12 @@ input:invalid {
     width: 100%;
     gap: 15px;
 }
-
 .input-dow-wrapper {
     display: flex;
     align-items: center;
     gap: 10px;
     justify-content: flex-end;
 }
-
 #birthdatetime {
     padding: 8px 12px; 
     font-size: 16px; 
@@ -110,14 +95,12 @@ input:invalid {
     color-scheme: dark;
     font-weight: bold;
 }
-
 .main-dow {
     font-size: 1em;
     color: #E0CBB9;
     white-space: nowrap;
     min-width: 85px;
 }
-
 .settings-panel {
     display: flex;
     justify-content: space-between;
@@ -126,7 +109,6 @@ input:invalid {
     border-radius: 6px;
     margin-bottom: 20px;
 }
-
 .btn-now {
     background-color: #2a2a2a;
     color: #fafafa;
@@ -142,7 +124,6 @@ input:invalid {
     font-weight: bold;
     -webkit-tap-highlight-color: transparent;
 }
-
 .toggle-wrapper {
     display: flex;
     align-items: center;
@@ -152,14 +133,12 @@ input:invalid {
     cursor: pointer;
     padding: 5px 0;
 }
-
 .toggle-wrapper input[type="checkbox"] {
     cursor: pointer;
     width: 20px;
     height: 20px;
     accent-color: #E0CBB9;
 }
-
 .results { 
     display: flex;
     flex-direction: column;
@@ -167,7 +146,6 @@ input:invalid {
     display: none;
     margin-top: 5px;
 }
-
 .row {
     background-color: #2a2a2a;
     padding: 12px 15px;
@@ -176,7 +154,6 @@ input:invalid {
     flex-direction:column;
     gap: 10px;
 }
-
 .row-main {
     display: flex;
     justify-content: space-between;
@@ -184,19 +161,16 @@ input:invalid {
     font-size: 1.0em;
     position: relative; 
 }
-
 .row-label {
     font-weight: bold;
     font-size: 1.0em;
 }
-
 .bold-number {
     font-weight: bolder;
     font-family: 'Courier New', Courier, monospace;
     font-size: 1.75em; 
     color: #E0CBB9;
 }
-
 .leap-notice { 
     color: #ffffff; 
     font-weight: normal;
@@ -207,7 +181,6 @@ input:invalid {
     white-space: nowrap;
     font-size: 0.75em;
 }
-
 .milestone-container {
     display: flex;
     justify-content: space-between;
@@ -215,14 +188,12 @@ input:invalid {
     padding-top: 12px; 
     border-top: 1px dashed #444;
 }
-
 .ms-date-group {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
 }
-
 .ms-date-input {
     padding: 8px 12px; 
     font-size: 16px; 
@@ -238,9 +209,9 @@ input:invalid {
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
 }
-
-.ms-date-input:focus { border-color: #de8538; }
-
+.ms-date-input:focus { 
+    border-color: #de8538; 
+}
 .ms-dow {
     font-size: 1em; 
     color: #E0CBB9; 
@@ -248,7 +219,6 @@ input:invalid {
     width: 85px; 
     text-align: left;
 }
-
 .ms-input {
     padding: 8px 12px; 
     font-size: 16px; 
@@ -261,9 +231,9 @@ input:invalid {
     outline: none;
     text-align: right;
 }
-
-.ms-input:focus { border-color: #E0CBB9; }
-
+.ms-input:focus { 
+    border-color: #E0CBB9; 
+}
 .detailed-row {
     margin-top: 15px;
     background-color: #E0CBB9;
@@ -276,7 +246,6 @@ input:invalid {
     line-height: 1.4;
     font-size: 0.95rem;
 }
-
 .current-time {
     text-align: center;
     font-weight: bold;
@@ -285,7 +254,6 @@ input:invalid {
     margin-top: 10px;
     font-family: "Courier New", Courier, monospace;
 }
-
 .error-message {
     color: #ff4d4d;
     text-align: center;
@@ -298,7 +266,6 @@ input:invalid {
     margin-top: 40px;
     padding-bottom: 10px;
 }
-
 .linktree-icon {
     display: inline-block;
     width: 40px;
@@ -308,13 +275,11 @@ input:invalid {
     transition: 0.3s ease;
     background-color: #fafafa;
 }
-
 .copyright {
     font-size: 0.87em;
     margin-top: 15px;
     text-align: center;
 }
-
 @media (hover: hover) and (pointer: fine) {
     .linktree-icon:hover {
         background-color: #42e661;
@@ -325,69 +290,53 @@ input:invalid {
         transition: 0.3s ease;
     }
 }
-
 @media (max-width: 748px) {
-            /* Keep the body from scrolling sideways */
             body { padding: 10px; overflow-x: hidden; }
             .container { padding: 0; gap: 15px; width: 100%; }
-            
-            /* Guarantee padding doesn't add to the 100% width */
             .half-container { 
                 padding: 20px 10px; 
                 width: 100%; 
                 box-sizing: border-box !important; 
             }
-            
-            /* FIX 1: Scale down the giant numbers so they fit on phones */
             .bold-number {
                 font-size: 1.25em !important; 
             }
-            
-            /* Allow the row header to wrap safely if things get too tight */
             .row-main {
                 flex-wrap: wrap;
                 gap: 5px;
             }
-
-            /* FIX 2: The magic 'min-width: 0' forces inputs to ignore long placeholders */
-            #birthdatetime,  
-            .ms-date-input,
-            .ms-input,
             select { 
                 width: 100% !important; 
                 min-width: 0 !important; 
-                max-width: 100% !important; 
                 box-sizing: border-box !important; 
             }
-            
             #birthdatetime,  
             .ms-date-input,
-            .ms-input {
+            .ms-input { 
+                width: 290px !important; 
+                max-width: 100% !important; 
+                min-width: 0 !important; 
+                box-sizing: border-box !important; 
                 text-align: center; 
-                margin: 0; 
+                margin: 0 auto !important;
                 height: 44px !important;
+                display: block !important;
             }
-
             .main-date-group { 
                 flex-direction: column; 
                 align-items: stretch; 
                 gap: 12px; 
             }
-            
             .input-dow-wrapper { 
                 display: contents; 
             }
-            
             #birthdatetime { order: 1; }
-            
             .main-dow { 
                 order: 2; 
                 width: 100%; 
                 text-align: center; 
                 min-width: unset; 
             }
-            
-            /* Making this 100% width creates a much better mobile touch target */
             .btn-now { 
                 order: 3; 
                 width: 100%; 
@@ -407,13 +356,11 @@ input:invalid {
                 width: 100%; 
                 gap: 8px; 
             }
-
             .ms-dow { 
                 width: 100%; 
                 text-align: center; 
                 min-width: unset; 
             }
-            
             .settings-panel {
                 flex-wrap: wrap;
                 justify-content: center;
