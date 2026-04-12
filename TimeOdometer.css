@@ -285,8 +285,7 @@
                 gap: 8px; 
                 align-items: center; 
             }
-            #birthdatetime, 
-            .ms-date-input, 
+            #birthdatetime,  
             .ms-input { 
                 width: 100% !important; 
                 max-width: 100% !important; 
@@ -294,6 +293,13 @@
                 text-align: center; 
                 margin: 0; 
             }
+              .ms-date-input, {
+                width: 80% !important; 
+                max-width: 80% !important; 
+                box-sizing: border-box !important; 
+                text-align: center; 
+                margin: 0; 
+              }
             .main-dow, 
             .ms-dow { 
                 width: 100%; 
