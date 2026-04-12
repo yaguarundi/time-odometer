@@ -266,6 +266,11 @@
             margin-top: 15px;
             text-align: center;
         }
+       @media (hover: hover) and (pointer: fine) {
+              .linktree-icon:hover {
+              opacity: 0.7; 
+              background-color: #42e661;
+       }
         @media (max-width: 748px) {
             body { padding: 10px; }
             .container { padding: 20px 15px; }
@@ -278,7 +283,5 @@
             .ms-input { width: 100%; margin-top: 10px; text-align: left; }
             .milestone-container { flex-direction: column; }
             .ms-dow { text-align: right; }
-        }
-    </style>
         }
     </style>
