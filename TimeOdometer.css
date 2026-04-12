@@ -306,6 +306,9 @@ input:invalid {
                 min-width: 0 !important; 
                 box-sizing: border-box !important; 
             }
+            input-group    {
+                text-align: center;
+            }
             #birthdatetime,  
             .ms-date-input,
             .ms-input { 
