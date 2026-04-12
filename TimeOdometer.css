@@ -270,24 +270,25 @@
               .linktree-icon:hover {
               background-color: #42e661;
        }
+}
        @media (max-width: 748px) {
     body { padding: 10px; }
     .container { padding: 20px 10px; }
-    .main-date-group { 
-        flex-direction: column; 
-        align-items: stretch; 
-        gap: 10px; 
-    }
+       .main-date-group { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 15px; 
+            }
     .input-dow-wrapper { 
         flex-direction: column; 
         width: 100%; 
         gap: 5px; 
         align-items: center; 
     }
-    #birthdatetime { 
-        width: 100% !important; 
-        text-align: center; 
-    }
+#birthdatetime { 
+                width: 100% !important; 
+                text-align: center; 
+            }
     .main-dow { 
         width: 100%; 
         text-align: center; 
@@ -297,10 +298,8 @@
         width: 100%; 
         padding: 12px 0; 
     }
-
-    /* Milestone rows stack */
     .milestone-container { 
-        flex-direction: column; /* Puts the interval input directly below the date */
+        flex-direction: column;
         align-items: stretch; 
         gap: 12px; 
     }
@@ -320,10 +319,8 @@
     .ms-input { 
         width: 100% !important; 
         text-align: center; 
-        margin-top: 0; /* Handled by gap in milestone-container */
+        margin-top: 0;
     }
-
-    /* Setting toggles stack */
     .settings-panel {
         justify-content: space-around;
     }
