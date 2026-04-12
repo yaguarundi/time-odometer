@@ -1,5 +1,9 @@
 <style>
         *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+        overflow-x: hidden;
+        width: 100%;
+       }
         html {
         touch-action: pan-x pan-y;
         }
@@ -312,8 +316,8 @@
             #birthdatetime,  
             .ms-date-input,
             .ms-input { 
-                width: 290px !important; 
-                max-width: 100% !important; 
+                width: 100% !important; 
+                min-width: 0 !important;
                 box-sizing: border-box !important; 
                 text-align: center; 
                 margin: 0; 
