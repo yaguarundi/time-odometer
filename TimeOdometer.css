@@ -283,8 +283,8 @@
        }
 @media (max-width: 748px) {
             body { padding: 10px; }
-            .container { padding: 0; }
-            .half-container { padding: 20px 15px; }
+            .container { padding: 0; width: 100%; }
+            .half-container { padding: 20px 15px; width: 100%;}
             .input-dow-wrapper { 
                 display: contents; 
             }
