@@ -70,6 +70,7 @@ advise-input-format {
     font-size: 0.75em;
     font-weight: normal;
     font-style: italic;
+    color: #eaeaea;
 }
 .input-dow-wrapper {
     display: flex;
