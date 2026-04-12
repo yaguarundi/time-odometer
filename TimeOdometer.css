@@ -44,8 +44,8 @@
             color: #b3b3b3;
         }
         select {
-            padding: 12px; /* Increased for touch */
-            font-size: 16px; /* Prevents auto-zoom on iOS */
+            padding: 12px;
+            font-size: 16px;
             border: 1px solid #333;
             border-radius: 6px;
             background-color: #2a2a2a;
@@ -84,7 +84,7 @@
         }
         .main-dow {
             font-size: 0.9em;
-            color: #ffffff;
+            color: #E0CBB9;
             white-space: nowrap;
             min-width: 85px;
         }
@@ -186,7 +186,7 @@
             border-radius: 6px; 
             border: 1px solid #444; 
             background-color: #1a1a1a; 
-            color: #ffffff; 
+            color: #E0CBB9; 
             font-style: normal; 
             outline: none;
             width: 290px;
@@ -198,7 +198,7 @@
         .ms-date-input:focus { border-color: #de8538; }
         .ms-dow {
             font-size: 0.9em; 
-            color: #ffffff; 
+            color: #E0CBB9; 
             width: 85px; 
             text-align: left;
         }
@@ -208,7 +208,7 @@
             border-radius: 6px; 
             border: 1px solid #444; 
             background-color: #1a1a1a; 
-            color: #fff; 
+            color: #E0CBB9; 
             width: 160px;
             font-family: "Courier New", Courier, monospace;
             outline: none;
