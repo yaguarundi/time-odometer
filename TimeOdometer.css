@@ -1,343 +1,403 @@
 <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        html {
-        touch-action: pan-x pan-y;
-        }
-        body {
-            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-            background-color: #634E34;
-            color: #fafafa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            overscroll-behavior-y: contain;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            max-width: 840px;
-            width: 100%;
-        }
-        .half-container {
-            background-color: #1e1e1e;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            width: 100%;
-        }
-        h2 {
-            margin-top: 0;
-            text-align: center;
-        }
-        h3 {
-            margin-top: 0;
-            text-align: center;
-            font-size: 1rem;
-            font-weight: normal;
-        }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: #eaeaea;
-            width: 100%;
-        }
-        label {
-            font-size: 0.9em;
-            color: #b3b3b3;
-        }
-        select {
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #333;
-            border-radius: 6px;
-            background-color: #2a2a2a;
-            color: white;
-            color-scheme: dark;
-            width: 100%;
-        }
-        input:invalid {
-            border-color: #ff4d4d;
-        }
-        .main-date-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            gap: 15px;
-        }
-        .input-dow-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        #birthdatetime {
-            padding: 8px 12px; 
-            font-size: 16px; 
-            border-radius: 6px; 
-            border: 1px solid #444; 
-            background-color: transparent; 
-            font-style: normal; 
-            outline: none;
-            width: 290px;
-            text-align: center;
-            color-scheme: dark;
-            font-weight: bold;
-        }
-        .main-dow {
-            font-size: 1em;
-            color: #E0CBB9;
-            white-space: nowrap;
-            min-width: 85px;
-        }
-        .settings-panel {
-            display: flex;
-            justify-content: space-between;
-            background-color: #2a2a2a;
-            padding: 12px 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-        .btn-now {
-            background-color: #2a2a2a;
-            color: #fafafa;
-            border: 1px solid #444;
-            border-radius: 6px;
-            padding: 10px 16px;
-            font-size: 0.85em;
-               display: flex;
-               justify-self: end;
-            cursor: pointer;
-            width: fit-content;
-            transition: all 0.2s ease;
-            font-weight: bold;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .toggle-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85em;
-            color: #eaeaea;
-            cursor: pointer;
-            padding: 5px 0;
-        }
-        .toggle-wrapper input[type="checkbox"] {
-            cursor: pointer;
-            width: 20px;
-            height: 20px;
-            accent-color: #E0CBB9;
-        }
-        .results { 
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            display: none;
-            margin-top: 5px;
-        }
-        .row {
-            background-color: #2a2a2a;
-            padding: 12px 15px;
-            border-radius: 6px;
-            display: flex;
-            flex-direction:column;
-            gap: 10px;
-        }
-        .row-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.0em;
-            position: relative; 
-        }
-        .row-label {
-            font-weight: bold;
-            font-size: 1.0em;
-        }
-        .bold-number {
-            font-weight: bolder;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.75em; 
-            color: #E0CBB9;
-        }
-        .leap-notice { 
-            color: #ffffff; 
-            font-weight: normal;
-            display: inline;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 0.75em;
-        }
-        .milestone-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 12px; 
-            border-top: 1px dashed #444;
-        }
-        .ms-date-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .ms-date-input {
-            padding: 8px 12px; 
-            font-size: 16px; 
-            border-radius: 6px; 
-            border: 1px solid #444; 
-            background-color: #1a1a1a; 
-            color: #E0CBB9; 
-            font-style: normal; 
-            outline: none;
-            width: 290px;
-            text-align: center;
-            color-scheme: dark;
-            font-family: "Courier New", Courier, monospace;
-            font-weight: bold;
-        }
-        .ms-date-input:focus { border-color: #de8538; }
-        .ms-dow {
-            font-size: 1em; 
-            color: #E0CBB9; 
-            font-family: 'Courier New', Courier, monospace;
-            width: 85px; 
-            text-align: left;
-        }
-        .ms-input {
-            padding: 8px 12px; 
-            font-size: 16px; 
-            border-radius: 6px; 
-            border: 1px solid #444; 
-            background-color: #1a1a1a; 
-            color: #E0CBB9; 
-            width: 290px;
-            font-family: "Courier New", Courier, monospace;
-            outline: none;
-            text-align: right;
-        }
-        .ms-input:focus { border-color: #E0CBB9; }
-        .detailed-row {
-            margin-top: 15px;
-            background-color: #E0CBB9;
-            color: #000;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: "Courier New", Courier, monospace;
-            font-weight: bold;
-            text-align: center;
-            line-height: 1.4;
-            font-size: 0.95rem;
-        }
-        .current-time {
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.0em;
-            color: #E0CBB9;
-            margin-top: 10px;
-            font-family: "Courier New", Courier, monospace;
-        }
-        .error-message {
-            color: #ff4d4d;
-            text-align: center;
-            font-weight: bold;
-            display: none;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-bottom: 10px;
-        }
-        .linktree-icon {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
-            -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
-            transition: 0.3s ease;
-              background-color: #fafafa;
-        }
-        .copyright {
-            font-size: 0.87em;
-            margin-top: 15px;
-            text-align: center;
-        }
-       @media (hover: hover) and (pointer: fine) {
-              .linktree-icon:hover {
-              background-color: #42e661;
-       }
-              .btn-now:hover {
-              background-color: #E0CBB9;
-              color: #1e1e1e;
-              transition: 0.3s ease;
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Locks the body width so long placeholders can't slide the screen */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
 }
-       }
+
+html {
+    touch-action: pan-x pan-y;
+}
+
+body {
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    background-color: #634E34;
+    color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    overscroll-behavior-y: contain;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-width: 840px;
+    width: 100%;
+}
+
+.half-container {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    width: 100%;
+}
+
+h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+h3 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: #eaeaea;
+    width: 100%;
+}
+
+label {
+    font-size: 0.9em;
+    color: #b3b3b3;
+}
+
+select {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+    color: white;
+    color-scheme: dark;
+    width: 100%;
+}
+
+input:invalid {
+    border-color: #ff4d4d;
+}
+
+.main-date-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+}
+
+.input-dow-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+#birthdatetime {
+    padding: 8px 12px; 
+    font-size: 16px; 
+    border-radius: 6px; 
+    border: 1px solid #444; 
+    background-color: transparent; 
+    font-style: normal; 
+    outline: none;
+    width: 290px;
+    text-align: center;
+    color-scheme: dark;
+    font-weight: bold;
+}
+
+.main-dow {
+    font-size: 1em;
+    color: #E0CBB9;
+    white-space: nowrap;
+    min-width: 85px;
+}
+
+.settings-panel {
+    display: flex;
+    justify-content: space-between;
+    background-color: #2a2a2a;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.btn-now {
+    background-color: #2a2a2a;
+    color: #fafafa;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 0.85em;
+    display: flex;
+    justify-self: end;
+    cursor: pointer;
+    width: fit-content;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: #eaeaea;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.toggle-wrapper input[type="checkbox"] {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    accent-color: #E0CBB9;
+}
+
+.results { 
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    display: none;
+    margin-top: 5px;
+}
+
+.row {
+    background-color: #2a2a2a;
+    padding: 12px 15px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction:column;
+    gap: 10px;
+}
+
+.row-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.0em;
+    position: relative; 
+}
+
+.row-label {
+    font-weight: bold;
+    font-size: 1.0em;
+}
+
+.bold-number {
+    font-weight: bolder;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.75em; 
+    color: #E0CBB9;
+}
+
+.leap-notice { 
+    color: #ffffff; 
+    font-weight: normal;
+    display: inline;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.75em;
+}
+
+.milestone-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px; 
+    border-top: 1px dashed #444;
+}
+
+.ms-date-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ms-date-input {
+    padding: 8px 12px; 
+    font-size: 16px; 
+    border-radius: 6px; 
+    border: 1px solid #444; 
+    background-color: #1a1a1a; 
+    color: #E0CBB9; 
+    font-style: normal; 
+    outline: none;
+    width: 290px;
+    text-align: center;
+    color-scheme: dark;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+}
+
+.ms-date-input:focus { border-color: #de8538; }
+
+.ms-dow {
+    font-size: 1em; 
+    color: #E0CBB9; 
+    font-family: 'Courier New', Courier, monospace;
+    width: 85px; 
+    text-align: left;
+}
+
+.ms-input {
+    padding: 8px 12px; 
+    font-size: 16px; 
+    border-radius: 6px; 
+    border: 1px solid #444; 
+    background-color: #1a1a1a; 
+    color: #E0CBB9; 
+    width: 290px;
+    font-family: "Courier New", Courier, monospace;
+    outline: none;
+    text-align: right;
+}
+
+.ms-input:focus { border-color: #E0CBB9; }
+
+.detailed-row {
+    margin-top: 15px;
+    background-color: #E0CBB9;
+    color: #000;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+
+.current-time {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.0em;
+    color: #E0CBB9;
+    margin-top: 10px;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.error-message {
+    color: #ff4d4d;
+    text-align: center;
+    font-weight: bold;
+    display: none;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-bottom: 10px;
+}
+
+.linktree-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
+    -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
+    transition: 0.3s ease;
+    background-color: #fafafa;
+}
+
+.copyright {
+    font-size: 0.87em;
+    margin-top: 15px;
+    text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .linktree-icon:hover {
+        background-color: #42e661;
+    }
+    .btn-now:hover {
+        background-color: #E0CBB9;
+        color: #1e1e1e;
+        transition: 0.3s ease;
+    }
+}
+
 @media (max-width: 748px) {
-            body { padding: 10px; }
-            .container { padding: 0; width: 100%; }
-            .half-container { padding: 20px 15px; width: 100%;}
-            .input-dow-wrapper { 
-                display: contents; 
-            }
-              .input-group {
-                     align-items: center; 
-              }
-            .main-date-group { 
-                flex-direction: column; 
-                align-items: center; 
-                gap: 12px; 
-            }
-            #birthdatetime { order: 1; } 
-            .main-dow { 
-                order: 2; 
-                width: 100%; 
-                text-align: center; 
-                min-width: unset; 
-            }
-             .btn-now { 
-                order: 3; 
-                width: fit-content; 
-                padding: 8px 30px;
-                margin: 0;
-            }
-            #birthdatetime,  
-            .ms-date-input,
-            .ms-input { 
-                width: 290px !important; 
-                max-width: 100% !important;
-                box-sizing: border-box !important; 
-                text-align: center; 
-                margin: 0; 
-                height: 44px !important;
-            }
-            .ms-dow { 
-                width: 100%; 
-                text-align: center; 
-                min-width: unset; 
-            }
-            .milestone-container { 
-                flex-direction: column; 
-                align-items: center; 
-                gap: 12px; 
-            }
-            .ms-date-group { 
-                flex-direction: column; 
-                width: 100%; 
-                gap: 8px; 
-            }
-            .settings-panel {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 15px;
-            }
-        }
+    body { padding: 10px; }
+    .container { padding: 0; width: 100%; gap: 15px; }
+    .half-container { padding: 20px 15px; width: 100%; }
+    
+    .input-dow-wrapper { 
+        display: contents; 
+    }
+    
+    .input-group {
+        align-items: stretch; 
+    }
+    
+    .main-date-group { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 12px; 
+    }
+    
+    #birthdatetime { order: 1; } 
+    
+    .main-dow { 
+        order: 2; 
+        width: 100%; 
+        text-align: center; 
+        min-width: unset; 
+        margin-top: 5px;
+    }
+    
+    .btn-now { 
+        order: 3; 
+        width: fit-content; 
+        padding: 8px 30px;
+        margin: 0 auto; /* Centers the button horizontally */
+    }
+    
+    /* FIX: Force inputs to fill container, min-width: 0 ignores placeholder text width */
+    #birthdatetime,  
+    .ms-date-input,
+    .ms-input { 
+        width: 100% !important; 
+        min-width: 0 !important; 
+        box-sizing: border-box !important; 
+        text-align: center; 
+        margin: 0; 
+        height: 44px !important;
+    }
+    
+    .ms-dow { 
+        width: 100%; 
+        text-align: center; 
+        min-width: unset; 
+    }
+    
+    .milestone-container { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 12px; 
+        width: 100%;
+    }
+    
+    .ms-date-group { 
+        flex-direction: column; 
+        width: 100%; 
+        gap: 8px; 
+        align-items: stretch;
+    }
+    
+    .settings-panel {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+}
 </style>
