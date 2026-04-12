@@ -105,7 +105,8 @@
             border-radius: 6px;
             padding: 10px 16px;
             font-size: 0.85em;
-               margin-right: auto;
+               display: flex;
+               justify-self: end;
             cursor: pointer;
             width: fit-content;
             transition: all 0.2s ease;
@@ -273,6 +274,10 @@
               .linktree-icon:hover {
               background-color: #42e661;
        }
+              .btn-now:hover {
+              background-color: #E0CBB9;
+              color: #1e1e1e;
+              transition: 0.3s ease;
 }
        @media (max-width: 748px) {
             body { padding: 10px; }
