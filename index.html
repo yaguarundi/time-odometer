@@ -5,9 +5,292 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Odometer</title>
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
-    <link rel="icon" type="image/png" href="timeodometer.png">
-    <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-width: 680px;
+            width: 100%;
+        }
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #de8538;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 0.9em;
+            color: #b3b3b3;
+        }
+        select {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+            color: white;
+            color-scheme: dark;
+            width: 100%;
+        }
+        input:invalid {
+            border-color: #ff4d4d;
+        }
+        .main-date-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .input-dow-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #birthdatetime {
+            padding: 8px 12px; 
+            font-size: 1em; 
+            border-radius: 6px; 
+            border: 1px solid #333; 
+            background-color: #2a2a2a; 
+            color: white; 
+            color-scheme: dark;
+            width: 210px;
+            text-align: center;
+        }
+        .main-dow {
+            font-size: 0.9em;
+            color: #ffffff;
+        }
+        .settings-panel {
+            display: flex;
+            justify-content: space-between;
+            background-color: #2a2a2a;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .btn-now {
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 6px 16px;
+            font-size: 0.85em;
+            cursor: pointer;
+            width: fit-content;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .toggle-wrapper input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: #de8538;
+        }
+        .results { display: flex;
+            flex-direction: column;
+            gap: 12px;
+            display: none;
+            margin-top: 5px;
+        }
+        .row {
+            background-color: #2a2a2a;
+            padding: 12px 15px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction:column;
+            gap: 10px;
+        }
+        .row-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.0em;
+            position: relative; 
+        }
+        .row-label {
+            font-weight: bold;
+            font-size: 1.0em;
+            color: #b3b3b3;
+        }
+        .bold-number {
+            font-weight: bold;
+            font-size: 1.5em; 
+            color: #de8538;
+        }
+        .leap-notice { 
+            color: #ffffff; 
+            font-weight: normal;
+            display: inline;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        .milestone-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px; 
+            border-top: 1px dashed #444;
+        }
+        
+        .ms-date-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .ms-date-input {
+            padding: 8px 12px; 
+            font-size: 1em; 
+            border-radius: 6px; 
+            border: 1px solid #444; 
+            background-color: #1a1a1a; 
+            color: #ffffff; 
+            font-style: normal; 
+            outline: none;
+            width: 210px;
+            text-align: center;
+            color-scheme: dark;
+        }
+        .ms-date-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+        .ms-date-input:focus {
+            border-color: #de8538;
+        }
+        .ms-dow {
+            font-size: 0.9em; 
+            color: #ffffff; 
+            width: 85px; 
+            text-align: left;
+        }
+        .ms-input {
+            padding: 8px 12px; 
+            font-size: 0.9em; 
+            border-radius: 6px; 
+            border: 1px solid #444; 
+            background-color: #1a1a1a; 
+            color: #fff; 
+            width: 160px; 
+            outline: none;
+            text-align: right;
+        }
+        .ms-input:focus {
+            border-color: #de8538;
+        }
+        .ms-input::placeholder {
+            color: #666;
+            font-style: italic;
+        }
+        .detailed-row {
+            margin-top: 15px;
+            background-color: #de8538;
+            color: #000;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .current-time {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.0em;
+            color: #b3b3b3;
+            margin-top: 10px;
+        }
+        .error-message {
+            color: #ff4d4d;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        .sync-status {
+            text-align: center;
+            font-size: 0.8em;
+            color: #de8538;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 10px;
+        }
+        .linktree-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #b3b3b3;
+            mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
+            -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
+            transition: background-color 0.3s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .linktree-icon:hover {
+                background-color: #42e661;
+            }
+            .btn-now:hover {
+            background-color: #de8538;
+            color: #121212;
+            border-color: #de8538;
+        }
+        }
+        .copyright {
+            font-size: 0.87em;
+            color: #888;
+            margin-top: 15px;
+            margin-bottom: 0;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        @media (max-width: 748px) {
+            body { padding: 10px; }
+            .container { padding: 20px 15px; }
+            .input-btn-wrapper { width: 100%; display: flex; justify-content: space-between; }
+            #birthdatetime { width: calc(100% - 70px); flex-grow: 1; }
+            .btn-now { width: 62px; padding: 8px 0; text-align: center; }
+            .main-dow { width: 100%; text-align: right; margin-top: 4px; }
+            .settings-panel { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .milestone-container { flex-direction: column; gap: 12px; align-items: stretch; }
+            .ms-date-group { width: 100%; justify-content: space-between; }
+            .ms-date-input { width: 100%; flex-grow: 1; }
+            .ms-dow { text-align: right; min-width: 80px; width: auto; }
+            .ms-input { width: 100%; }
+            .bold-number { font-size: 1.15em; }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -18,8 +301,8 @@
         <div class="main-date-group">
             <div class="input-dow-wrapper">
                 <input type="datetime-local" id="birthdatetime" value="2000-01-01T00:00:00" step="1" min="1000-01-01T00:00:00" max="9999-12-31T23:59:59">
-                <span class="main-dow" id="main-dow"></span>
             </div>
+            <span class="main-dow" id="main-dow"></span>
             <button type="button" id="btn-now" class="btn-now">Now</button>
         </div>
         <div class="error-message" id="errorMsg">Please enter a valid date (Year 1000-9999).</div>
@@ -130,7 +413,6 @@
 </div>
 <script>
     // --- NATIVE FONT CLONING SCRIPT ---
-    // This accurately reads the browser's hidden native input font and clones it to the Day of the Week text.
     window.addEventListener('DOMContentLoaded', () => {
         const nativeInputFont = window.getComputedStyle(document.getElementById('birthdatetime')).fontFamily;
         document.querySelectorAll('.main-dow, .ms-dow').forEach(span => {
@@ -161,47 +443,65 @@
         targetTzSelect.appendChild(option2);
     });
 
+    // --- FIXED SYNC ENGINE ---
     async function syncWithServer() {
         const statusEl = document.getElementById('syncStatus');
         const savedOffset = localStorage.getItem('atomicOffsetMs');
+        
         if (savedOffset) {
             clockOffsetMs = parseFloat(savedOffset);
-            statusEl.innerText = "Syncing...";
-            statusEl.style.color = "#b3b3b3"
+            statusEl.innerText = "Syncing... (Using cached precision)";
+            statusEl.style.color = "#de8538";
         } else {
-            statusEl.innerText = "Syncing...";
-            statusEl.style.color = "#b3b3b3"
+            clockOffsetMs = 0;
+            statusEl.innerText = "Syncing... (Using local device clock)";
+            statusEl.style.color = "#b3b3b3";
         }
+        
+        // Start updating the math instantly so the page doesn't freeze
         calculate();
         if (intervalId) clearInterval(intervalId);
         intervalId = setInterval(calculate, 1000);
-        let bestLatency = Infinity;
-        let successfulPings = 0;
-        const pingServer = async () => {
+
+        try {
+            // Setup a strict 3-second timeout controller
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+
             const requestSentAt = performance.now(); 
-            const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: "no-store" });
+            
+            // We ONLY ask the server ONCE to avoid getting blocked for spam
+            const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { 
+                cache: "no-store",
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId); // Clear timeout if server answers in time
+
             if (!response.ok) throw new Error("Server rejected request");
+            
             const data = await response.json();
             const latencyMs = performance.now() - requestSentAt;
-            if (latencyMs < bestLatency) {
-                bestLatency = latencyMs;
-                const estimatedOneWayTripMs = latencyMs / 2;
-                const serverTime = DateTime.fromISO(data.dateTime, { zone: 'utc' }).plus({ milliseconds: estimatedOneWayTripMs });
-                const localComputerTime = DateTime.utc(); 
-                clockOffsetMs = serverTime.diff(localComputerTime).toMillis();
-                localStorage.setItem('atomicOffsetMs', clockOffsetMs);
-                const offsetSeconds = (clockOffsetMs / 1000).toFixed(3);
-                statusEl.innerText = `Precision sync completed. Adjusted by ${offsetSeconds} s (Latency: ${bestLatency.toFixed(0)} ms).`;
-                statusEl.style.color = "#38d22d";   
-                calculate(); 
-            }
-            successfulPings++;
-        };
-        try {
-            await Promise.all([pingServer(), pingServer(), pingServer()]);
+            const estimatedOneWayTripMs = latencyMs / 2;
+            
+            const serverTime = DateTime.fromISO(data.dateTime, { zone: 'utc' }).plus({ milliseconds: estimatedOneWayTripMs });
+            const localComputerTime = DateTime.utc(); 
+            
+            clockOffsetMs = serverTime.diff(localComputerTime).toMillis();
+            localStorage.setItem('atomicOffsetMs', clockOffsetMs);
+            
+            const offsetSeconds = (clockOffsetMs / 1000).toFixed(3);
+            statusEl.innerText = `Precision sync completed. Adjusted by ${offsetSeconds} s (Latency: ${latencyMs.toFixed(0)} ms).`;
+            statusEl.style.color = "#38d22d";   
+            calculate(); 
+
         } catch (error) {
-            if (successfulPings === 0 && !savedOffset) {
-                statusEl.innerText = "Precision sync failed. Relying on local device clock.";
+            // GUARANTEED TEXT UPDATE: This catch block will absolutely fire if the server blocks you.
+            if (savedOffset) {
+                statusEl.innerText = "Sync failed. Relying on cached precision.";
+                statusEl.style.color = "#de8538";
+            } else {
+                statusEl.innerText = "Sync failed. Relying on local device clock.";
                 statusEl.style.color = "#ff4d4d";
             }
         }
