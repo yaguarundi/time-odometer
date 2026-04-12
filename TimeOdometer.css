@@ -3,7 +3,7 @@
         body {
             font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
             background-color: #121212;
-            color: #ffffff;
+            color: #fafafa;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -78,7 +78,6 @@
             border-radius: 6px; 
             border: 1px solid #444; 
             background-color: transparent; 
-            color: #f0f0f0; 
             font-style: normal; 
             outline: none;
             width: 290px;
@@ -120,11 +119,11 @@
             font-size: 0.85em;
             color: #ffffff;
             cursor: pointer;
-            padding: 5px 0; /* Easier to tap */
+            padding: 5px 0;
         }
         .toggle-wrapper input[type="checkbox"] {
             cursor: pointer;
-            width: 20px; /* Larger for mobile */
+            width: 20px;
             height: 20px;
             accent-color: #E0CBB9;
         }
@@ -153,12 +152,11 @@
         .row-label {
             font-weight: bold;
             font-size: 1.0em;
-            color: #b3b3b3;
         }
         .bold-number {
             font-weight: bolder;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.5em; 
+            font-size: 1.75em; 
             color: #E0CBB9;
         }
         .leap-notice { 
@@ -262,14 +260,12 @@
             display: inline-block;
             width: 40px;
             height: 40px;
-            background-color: #b3b3b3;
             mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
             -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
             transition: 0.3s ease;
         }
         .copyright {
             font-size: 0.87em;
-            color: #888;
             margin-top: 15px;
             text-align: center;
         }
