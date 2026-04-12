@@ -135,7 +135,8 @@
 
     const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
-    const timeZones = Intl.supportedValuesOf('timeZone');
+    const timeZones = Intl.supportedValuesOf('timeZone').filter(tz => tz !== 'UTC');
+    timeZones.unshift('UTC');
     const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     timeZones.forEach(tz => {
