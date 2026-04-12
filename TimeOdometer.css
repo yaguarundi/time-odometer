@@ -264,6 +264,7 @@
             mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
             -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
             transition: 0.3s ease;
+              color: #fafafa;
         }
         .copyright {
             font-size: 0.87em;
