@@ -13,7 +13,6 @@
 <div class="container">
     <h2>Time Odometer</h2>
     <h3>Made by Yago.</h3>
-    <div class="sync-status" id="syncStatus">Initializing...</div>
     <div class="input-group">
         <label for="birthdatetime">Enter Date and Time:</label>
         <div class="main-date-group">
@@ -121,15 +120,10 @@
     async function syncTime() {
         const statusEl = document.getElementById('syncStatus');      
         if (syncRetries >= MAX_SYNC_RETRIES) {
-            // REVERT: Fallback to device clock
-            statusEl.innerText = "Sync failed. Using device clock.";
-            statusEl.style.color = "#de8538";
             timeOffset = 0; 
             return;
         }
         try {
-            statusEl.innerText = "Syncing...";
-            statusEl.style.color = "#b3b3b3";
             const startFetch = performance.now();
             const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: 'no-store' });
             if (!response.ok) throw new Error("API Network Error");  
@@ -139,16 +133,11 @@
             const serverTime = DateTime.fromISO(data.dateTime, { zone: 'UTC' }).toMillis() + latency;
             const localTime = DateTime.local().toMillis();
             timeOffset = serverTime - localTime;
-            statusEl.innerText = "Synced successful.";
-            statusEl.style.color = "#38d22d";
         } catch (err) {
             syncRetries++;
-            statusEl.innerText = `Sync failed. (${syncRetries}/${MAX_SYNC_RETRIES})`;
-            statusEl.style.color = "#ff4d4d";
             setTimeout(syncTime, 4000 * syncRetries);
         }
     }
-
     function startLocalEngine() {
         calculate();
         if (intervalId) clearInterval(intervalId);
