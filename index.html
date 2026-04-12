@@ -7,10 +7,11 @@
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css">
+    <link rel="stylesheet" href="timeodometer-MOD.css">
 </head>
 <body>
 <div class="container">
+    <div class="half-container">
     <h2>Time Odometer</h2>
     <h3>Factors leap seconds!</h3>
     <div class="input-group">
@@ -32,10 +33,8 @@
         <label for="targetTzLocation">Target Location:</label>
         <select id="targetTzLocation"></select>
     </div>
-    <br>
-    <br>
-    <br>
-    <div class="results" id="resultsPanel">
+    </div>
+    <div class="results half-container" id="resultsPanel">
         <div class="row" data-unit="seconds">
             <div class="row-main">
                 <span class="row-label">Seconds</span>
@@ -80,12 +79,13 @@
         </div>
         <div class="detailed-row" id="r-detailed">Loading...</div>
         <div class="current-time" id="r-current-time">--</div>
-    </div>
-    <div class="footer">
+        <div class="footer">
         <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links">
             <span class="linktree-icon"></span>
         </a>
         <p class="copyright">&copy; <span id="current-year">2026</span> Yago Yaguarundi. All rights reserved.</p>
+    </div>
+    </div>
     </div>
 </div>
 <script>
