@@ -14,11 +14,17 @@
             overscroll-behavior-y: contain;
         }
         .container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-width: 840px;
+            width: 100%;
+        }
+        .half-container {
             background-color: #1e1e1e;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            max-width: 840px;
             width: 100%;
         }
         h2 {
@@ -274,7 +280,8 @@
        }
 @media (max-width: 748px) {
             body { padding: 10px; }
-            .container { padding: 20px 10px; }
+            .container { padding: 0; }
+            .half-container { padding: 20px 15px; }
             .input-dow-wrapper { 
                 display: contents; 
             }
