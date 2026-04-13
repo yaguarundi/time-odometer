@@ -364,6 +364,7 @@ input:invalid {
             .btn-clear, {
                 text-align: center;
                 align-items: center;
+                justify-content: center;
             }
             #birthdatetime { order: 1; }
             .main-dow { 
