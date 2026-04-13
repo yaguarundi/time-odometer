@@ -355,7 +355,7 @@
         const p = (val, unit) => `${Math.floor(val)} ${unit}${Math.floor(val) === 1 ? '' : 's'}`;
         document.getElementById('r-detailed').innerText = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}, ${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
         document.getElementById('r-current-time').innerText = now.toFormat(u24 ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a");
-        document.getElementById('r-time-offset').innerText = "UTC " + now.toFormat("ZZ");
+        document.getElementById('r-time-offset').innerText = "\u0028UTC " + now.toFormat("ZZ\u0029");
     }
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
