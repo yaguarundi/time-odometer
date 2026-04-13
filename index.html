@@ -317,7 +317,7 @@
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
         md.innerText = bd.isValid ? bd.toFormat("EEEE") : '';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
-        if (!bd.isValid || bd.year < 1000 || bd.year > 9999) { rp.style.display = 'none'; em.style.display = 'block'; return; }
+        if (!bd.isValid || bd.year < 0001 || bd.year > 9999) { rp.style.display = 'none'; em.style.display = 'block'; return; }
         em.style.display = 'none'; rp.style.display = 'flex';
         const ms = now.diff(bd).toMillis();
         const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
