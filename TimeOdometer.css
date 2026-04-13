@@ -272,13 +272,6 @@ input:invalid {
     margin-top: 10px;
     font-family: "Courier New", Courier, monospace;
 }
-.error-message {
-    color: #ff4d4d;
-    text-align: center;
-    font-weight: bold;
-    display: none;
-}
-
 .footer {
     text-align: center;
     margin-top: 40px;
