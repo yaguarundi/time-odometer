@@ -319,6 +319,7 @@ input:invalid {
             .row-main {
                 flex-wrap: wrap;
                 gap: 5px;
+                align-items: center;
             }
             select { 
                 width: 100% !important; 
