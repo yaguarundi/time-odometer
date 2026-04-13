@@ -183,7 +183,6 @@ input:invalid {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 5px;
 }
 .ms-date-group {
     display: flex;
@@ -311,7 +310,8 @@ input:invalid {
             .half-container { 
                 padding: 20px 10px; 
                 width: 100%; 
-                box-sizing: border-box !important; 
+                box-sizing: border-box !important;
+                box-shadow: none;
             }
             .bold-number {
                 font-size: 1.75em !important; 
