@@ -124,6 +124,7 @@
             minDate: "0001-01-01",
             disableMobile: "true",
             allowInput: true,
+            clickOpens: false,
             formatDate: function(date, formatStr) {
                 if (formatStr === "Y-m-d, h:i:S K") {
                     return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd, hh:mm:ss a");
