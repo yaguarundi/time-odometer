@@ -136,7 +136,7 @@ input:invalid {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.85em;
+    font-size: 0.9em;
     color: #fafafa;
     cursor: pointer;
     padding: 5px 0;
