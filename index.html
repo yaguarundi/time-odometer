@@ -101,12 +101,18 @@
     let syncRetries = 0;
     const MAX_SYNC_RETRIES = 3;
 
-    window.addEventListener('DOMContentLoaded', () => {
+   window.addEventListener('DOMContentLoaded', () => {
         const nativeInputFont = window.getComputedStyle(document.getElementById('birthdatetime')).fontFamily;
         document.querySelectorAll('.main-dow, .ms-dow').forEach(span => {
             span.style.fontFamily = nativeInputFont;
             span.style.fontWeight = "bold";
         });
+        function forceLeadingZero(instance) {
+            if (instance.hourElement) {
+                if (instance.hourElement.type !== 'text') instance.hourElement.type = 'text'; 
+                instance.hourElement.value = String(instance.hourElement.value).padStart(2, '0');
+            }
+        }
 
         const fpConfig = {
             enableTime: true,
@@ -118,16 +124,41 @@
             minDate: "0001-01-01",
             disableMobile: "true",
             allowInput: true,
+            formatDate: function(date, formatStr) {
+                if (formatStr === "Y-m-d, h:i:S K") {
+                    return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd, hh:mm:ss a");
+                }
+                return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd'T'HH:mm:ss");
+            },
             onChange: function(selectedDates, dateStr, instance) {
                 instance.element.dispatchEvent(new Event('input', { bubbles: true }));
+            },
+            onValueUpdate: function(selectedDates, dateStr, instance) {
+                forceLeadingZero(instance);
+            },
+            onOpen: function(selectedDates, dateStr, instance) {
+                forceLeadingZero(instance);
             }
         };
+        document.querySelectorAll('.ms-date-input').forEach(input => {
+            input.addEventListener('keydown', function(e) {
+                const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'];
+                if (allowedKeys.includes(e.key) || e.ctrlKey || e.metaKey) return;
+                if (!/^[0-9\-:, APMampm]$/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        });
 
         flatpickr("#birthdatetime", {
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.backgroundColor = "transparent";
                 instance.altInput.style.cursor = "pointer";
+                forceLeadingZero(instance);
+                if (instance.hourElement) {
+                    instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
+                }
             }
         });
 
@@ -135,10 +166,13 @@
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.cursor = "pointer";
+                forceLeadingZero(instance);
+                if (instance.hourElement) {
+                    instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
+                }
             }
         });
     });
-
     const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
     const timeZones = Intl.supportedValuesOf('timeZone').filter(tz => tz !== 'UTC');
@@ -182,7 +216,6 @@
     }
     const leapSecondDates = ["1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", "1974-12-31T23:59:59Z", "1975-12-31T23:59:59Z", "1976-12-31T23:59:59Z", "1977-12-31T23:59:59Z", "1978-12-31T23:59:59Z", "1979-12-31T23:59:59Z", "1981-06-30T23:59:59Z", "1982-06-30T23:59:59Z", "1983-06-30T23:59:59Z", "1985-06-30T23:59:59Z", "1987-12-31T23:59:59Z", "1989-12-31T23:59:59Z", "1990-12-31T23:59:59Z", "1992-06-30T23:59:59Z", "1993-06-30T23:59:59Z", "1994-06-30T23:59:59Z", "1995-12-31T23:59:59Z", "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z", "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"].map(iso => DateTime.fromISO(iso));
     function countLeapSeconds(startDateTime, endDateTime) { return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length; }
-    
     function syncMilestones(targetDateISO, activeInput) {
         const rows = document.querySelectorAll('.row');
         if (!targetDateISO) {
@@ -190,7 +223,6 @@
                 const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
                 const ai = row.querySelector('.ms-input');
                 const ds = row.querySelector('.ms-dow');
-                
                 if (di !== activeInput) {
                     if (di && di._flatpickr) {
                         di.value = '';
@@ -202,21 +234,17 @@
             });
             return;
         }
-        
         const originVal = document.getElementById('birthdatetime').value;
         const originTz = document.getElementById('tzLocation').value;
         const targetTz = document.getElementById('targetTzLocation').value;
         const originDate = DateTime.fromISO(originVal, { zone: originTz }).startOf('second');
         const targetDate = DateTime.fromISO(targetDateISO, { zone: targetTz }).startOf('second');
-        
         if (!originDate.isValid || !targetDate.isValid) return;
-        
         rows.forEach(row => {
             const unit = row.getAttribute('data-unit');
             const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
             const ai = row.querySelector('.ms-input');
             const ds = row.querySelector('.ms-dow');
-            
             if (di !== activeInput) {
                 const newIso = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
                 if (di && di._flatpickr) {
@@ -227,7 +255,6 @@
                 }
             }
             ds.innerText = targetDate.toFormat("EEEE");
-            
             if (ai !== activeInput) {
                 let amt = 0;
                 if (unit === 'seconds') {
@@ -255,18 +282,15 @@
         const unit = row.getAttribute('data-unit');
         const ai = row.querySelector('.ms-input');
         const di = row.querySelector('.ms-date-input');
-        
         ai.addEventListener('input', function() {
             let val = this.value; 
             if (!val || val === '-' || val === '') { syncMilestones(null, this); return; }
             let cursor = this.selectionStart;
             let oldLen = val.length;
-
             let isNeg = val.trim().startsWith('-');
             let rawStr = (unit === 'seconds') ? val.replace(/\D/g, '') : val.replace(/[^\d.]/g, '');
             let p = rawStr.split('.'); 
             if (p.length > 2) p = [p[0], p.slice(1).join('')];
-            
             if (p[0] !== '') {
                 this.value = (isNeg ? '-' : '') + (parseInt(p[0],10).toLocaleString('en-US') + (p.length > 1 ? '.' + p[1] : ''));
             } else if (p.length > 1) {
@@ -276,14 +300,11 @@
             }
             let newLen = this.value.length;
             cursor += (newLen - oldLen);
-            this.setSelectionRange(cursor, cursor);
-            
+            this.setSelectionRange(cursor, cursor); 
             const tVal = parseFloat(this.value.replace(/,/g, '')); 
             if (isNaN(tVal)) return;
-            
             const originVal = document.getElementById('birthdatetime').value;
             const originDate = DateTime.fromISO(originVal, { zone: document.getElementById('tzLocation').value }).startOf('second');
-            
             let td;
             if (unit === 'seconds') {
                 let ms = originDate.toMillis() + (tVal * 1000);
@@ -299,12 +320,10 @@
 
             syncMilestones(td.toFormat("yyyy-MM-dd'T'HH:mm:ss"), this);
         });
-
         di.addEventListener('input', function() { 
             syncMilestones(this.value || null, this); 
         });
     });
-
     function calculate() {
         const iv = document.getElementById('birthdatetime').value;
         const tz = document.getElementById('tzLocation').value;
@@ -334,17 +353,14 @@
         document.getElementById('r-detailed').innerText = `${Math.floor(dd.years)} years, ${Math.floor(dd.months)} months, ${Math.floor(dd.weeks)} weeks, ${Math.floor(dd.days)} days, ${Math.floor(dd.hours)} hours, ${Math.floor(dd.minutes)} minutes, ${Math.floor(dd.seconds)} seconds`;
         document.getElementById('r-current-time').innerText = now.toFormat(u24 ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a");
     }
-
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
-        
         const bdInput = document.getElementById('birthdatetime');
         if (bdInput._flatpickr) {
             bdInput._flatpickr.setDate(now.toJSDate(), true);
         } else {
             bdInput.value = now.toFormat("yyyy-MM-dd'T'HH:mm:ss");
         }
-        
         calculate(); refreshAllMilestones();
     });
     document.getElementById('btn-clear').addEventListener('click', () => {
