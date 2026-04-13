@@ -85,6 +85,7 @@
         </div>
         <div class="detailed-row" id="r-detailed">Loading...</div>
         <div class="current-time" id="r-current-time">--</div>
+        <div class="time-offset" id="r-time-offset"></div>
         <div class="footer">
         <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links">
             <span class="linktree-icon"></span>
@@ -354,6 +355,7 @@
         const p = (val, unit) => `${Math.floor(val)} ${unit}${Math.floor(val) === 1 ? '' : 's'}`;
         document.getElementById('r-detailed').innerText = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}, ${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
         document.getElementById('r-current-time').innerText = now.toFormat(u24 ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a");
+        document.getElementById('r-time-offset').innerText = "UTC " + now.toFormat("ZZ");
     }
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
