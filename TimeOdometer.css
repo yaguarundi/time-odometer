@@ -182,16 +182,6 @@ input:invalid {
     font-size: 2.0em; 
     color: #E0CBB9;
 }
-.leap-notice { 
-    color: #ffffff; 
-    font-weight: normal;
-    display: inline;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 0.75em;
-}
 .milestone-container {
     display: flex;
     justify-content: space-between;
@@ -271,6 +261,24 @@ input:invalid {
     margin-top: 40px;
     padding-bottom: 10px;
 }
+.donation-section {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px dashed #444;
+}
+.donation-text {
+    font-size: 0.9em;
+    color: #fafafa;
+    margin-bottom: 12px;
+}
+.kofi-icon {
+    display: inline-block;
+    width: 40px;
+    height: auto;
+    transition: 0.3s ease;
+    vertical-align: middle;
+}
 .linktree-icon {
     display: inline-block;
     width: 40px;
@@ -286,6 +294,9 @@ input:invalid {
     text-align: center;
 }
 @media (hover: hover) and (pointer: fine) {
+    .kofi-icon:hover {
+        opacity: 50%;
+    }
     .linktree-icon:hover {
         background-color: #42e661;
     }
