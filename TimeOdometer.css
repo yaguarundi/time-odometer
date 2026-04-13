@@ -185,7 +185,7 @@ input:invalid {
 .bold-number {
     font-weight: bolder;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 1.75em; 
+    font-size: 2.0em; 
     color: #E0CBB9;
 }
 .leap-notice { 
@@ -247,6 +247,7 @@ input:invalid {
     font-family: "Courier New", Courier, monospace;
     outline: none;
     text-align: right;
+    font-weight: bold;
 }
 .ms-input:focus { 
     border-color: #E0CBB9; 
@@ -321,7 +322,7 @@ input:invalid {
                 box-sizing: border-box !important; 
             }
             .bold-number {
-                font-size: 1.50em !important; 
+                font-size: 2.0em !important; 
             }
             .row-main {
                 flex-wrap: wrap;
