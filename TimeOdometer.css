@@ -369,14 +369,14 @@ input:invalid {
             }
             .btn-now { 
                 order: 3; 
-                width: fit-content;
+                width: 140px;
                 padding: 12px 0;
                 margin-top: 5px;
                 justify-content: center;
             }
     .btn-clear { 
                 order: 4; 
-                width: fit-content; 
+                width: 140px; 
                 padding: 12px 0;
                 margin-top: 5px;
                 justify-content: center;
