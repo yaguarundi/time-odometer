@@ -170,11 +170,11 @@ input:invalid {
     position: relative; 
 }
 .row-label {
-    font-weight: bold;
+    font-weight: normal;
     font-size: 1.0em;
 }
 .bold-number {
-    font-weight: bolder;
+    font-weight: bold;
     font-family: 'Courier New', Courier, monospace;
     font-size: 2.0em; 
     color: #E0CBB9;
