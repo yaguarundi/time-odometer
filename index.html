@@ -399,6 +399,10 @@
     document.getElementById('toggle24hr').addEventListener('change', calculate);
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
+    var yearText = document.getElementById("current-year");
+    if (yearText) {
+    yearText.innerText = new Date().getFullYear();
+    }
 </script>
 </body>
 </html>
