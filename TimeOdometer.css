@@ -333,8 +333,12 @@ input:invalid {
                 box-sizing: border-box !important; 
             }
                 .button-group {
-                display: contents;
-                }
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        width: 100%;
+        order: 3; 
+    }
             .input-group,
             .advise-input-format {
                 text-align: center;
@@ -361,11 +365,14 @@ input:invalid {
                 display: contents; 
             }
             .btn-now,
-            .btn-clear, {
-                text-align: center;
-                align-items: center;
-                justify-content: center;
-            }
+            .btn-clear {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        width: 140px;
+        padding: 12px 0;
+        margin-top: 5px;
+    }
             #birthdatetime { order: 1; }
             .main-dow { 
                 order: 2; 
