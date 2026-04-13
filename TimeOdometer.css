@@ -322,7 +322,7 @@ input:invalid {
                 box-sizing: border-box !important; 
             }
             .bold-number {
-                font-size: 2.0em !important; 
+                font-size: 1.75em !important; 
             }
             .row-main {
                 flex-wrap: wrap;
