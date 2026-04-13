@@ -61,10 +61,10 @@ input:invalid {
     gap: 15px;
 }
 .advise-input-format {
-    font-size: 0.75em;
+    font-size: 0.65em;
     font-weight: normal;
     font-style: italic;
-    color: #eaeaea;
+    color: #fafafa;
 }
 .input-dow-wrapper {
     display: flex;
@@ -137,7 +137,7 @@ input:invalid {
     align-items: center;
     gap: 8px;
     font-size: 0.85em;
-    color: #eaeaea;
+    color: #fafafa;
     cursor: pointer;
     padding: 5px 0;
 }
