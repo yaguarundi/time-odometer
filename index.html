@@ -80,8 +80,8 @@
         </div>
 
         <div class="settings-panel">
-            <label class="toggle-wrapper"><input type="checkbox" id="toggleCommas" checked> Delimiter</label>
-            <label class="toggle-wrapper"><input type="checkbox" id="toggle24hr"> 24-Hour</label>
+            <label class="toggle-wrapper"><input type="checkbox" id="toggleCommas" checked>Delimiter</label>
+            <label class="toggle-wrapper"><input type="checkbox" id="toggle24hr">24-Hour Clock</label>
         </div>
         <div class="detailed-row" id="r-detailed">Loading...</div>
         <div class="current-time" id="r-current-time">--</div>
@@ -279,8 +279,10 @@
                     let ls = countLeapSeconds(DateTime.fromMillis(Math.min(originDate.toMillis(), targetDate.toMillis())), DateTime.fromMillis(Math.max(originDate.toMillis(), targetDate.toMillis())));
                     amt = targetDate < originDate ? Math.floor(ms/1000) - ls : Math.floor(ms/1000) + ls;
                 } else { amt = parseFloat(targetDate.diff(originDate, unit)[unit].toFixed(4)); }
+                const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
-                let res = parseInt(s[0], 10).toLocaleString('en-US') + (s.length > 1 ? '.' + s[1] : '');
+                let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
+                let res = formattedInteger + (s.length > 1 ? '.' + s[1] : '');
                 ai.value = (amt < 0 ? '-' : '') + res;
             }
         });
@@ -309,12 +311,14 @@
             let p = rawStr.split('.'); 
             if (p.length > 2) p = [p[0], p.slice(1).join('')];
             if (p[0] !== '') {
-                this.value = (isNeg ? '-' : '') + (parseInt(p[0],10).toLocaleString('en-US') + (p.length > 1 ? '.' + p[1] : ''));
-            } else if (p.length > 1) {
+                const useCommas = document.getElementById('toggleCommas').checked;
+                const formattedBase = useCommas ? parseInt(p[0], 10).toLocaleString('en-US') : p[0];
+                this.value = (isNeg ? '-' : '') + formattedBase + (p.length > 1 ? '.' + p[1] : '');
+                } else if (p.length > 1) {
                 this.value = (isNeg ? '-' : '') + '0.' + p[1];
-            } else {
+                } else {
                 this.value = isNeg ? '-' : '';
-            }
+                }
             let newLen = this.value.length;
             cursor += (newLen - oldLen);
             this.setSelectionRange(cursor, cursor); 
@@ -395,7 +399,7 @@
     document.getElementById('birthdatetime').addEventListener('input', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('tzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('targetTzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
-    document.getElementById('toggleCommas').addEventListener('change', calculate);
+    document.getElementById('toggleCommas').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('toggle24hr').addEventListener('change', calculate);
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
