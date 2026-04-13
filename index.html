@@ -101,7 +101,22 @@
     let timeOffset = 0; 
     let syncRetries = 0;
     const MAX_SYNC_RETRIES = 3;
-
+    const handleManualTyping = (e, instance) => {
+    const val = e.target.value.trim();
+    const parsed = DateTime.fromFormat(val, "yyyy-MM-dd, hh:mm:ss a");
+    
+    if (parsed.isValid) {
+        const iso = parsed.toFormat("yyyy-MM-dd'T'HH:mm:ss");
+        instance.element.value = iso;
+        instance.element.dispatchEvent(new Event('input', { bubbles: true }));
+    } else {
+        instance.element.value = ""; 
+        instance.element.dispatchEvent(new Event('input', { bubbles: true }));
+        if (val === "") {
+            instance.clear();
+        }
+    }
+};
    window.addEventListener('DOMContentLoaded', () => {
         const nativeInputFont = window.getComputedStyle(document.getElementById('birthdatetime')).fontFamily;
         document.querySelectorAll('.main-dow, .ms-dow').forEach(span => {
@@ -114,7 +129,6 @@
                 instance.hourElement.value = String(instance.hourElement.value).padStart(2, '0');
             }
         }
-
         const fpConfig = {
             enableTime: true,
             enableSeconds: true,
@@ -157,6 +171,7 @@
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.backgroundColor = "transparent";
                 instance.altInput.style.cursor = "pointer";
+                instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
                     instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
@@ -168,6 +183,7 @@
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.cursor = "pointer";
+                instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
                     instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
@@ -189,7 +205,6 @@
         tzSelect.appendChild(option1);
         targetTzSelect.appendChild(option2);
     });
-
     async function syncTime() {
         if (syncRetries >= MAX_SYNC_RETRIES) {
             timeOffset = 0; 
