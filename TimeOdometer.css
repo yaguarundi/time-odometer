@@ -313,13 +313,13 @@ input:invalid {
                 box-sizing: border-box !important;
                 box-shadow: none;
             }
-            .bold-number {
-                font-size: 1.75em !important; 
-            }
+    .row-label {
+                text-decoration: underline;
+    }
             .row-main {
             display: flex !important;
             flex-direction: column !important;
-            align-items: flex-start;
+            align-items: center;
             justify-content: flex-start;
             width: 100%;
             gap: 2px;
