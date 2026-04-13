@@ -308,7 +308,7 @@ input:invalid {
         transition: 0.3s ease;
     }
     .btn-clear:hover {
-        background-color: #E0CBB9;
+        background-color: #ff4d4d;
         color: #1e1e1e;
         transition: 0.3s ease;
     }
