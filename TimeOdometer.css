@@ -332,6 +332,9 @@ input:invalid {
                 min-width: 0 !important; 
                 box-sizing: border-box !important; 
             }
+                .button-group {
+                display: contents;
+                }
             .input-group,
             .advise-input-format {
                 text-align: center;
