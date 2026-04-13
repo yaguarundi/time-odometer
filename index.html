@@ -347,16 +347,20 @@
         calculate(); refreshAllMilestones();
     });
     document.getElementById('btn-clear').addEventListener('click', () => {
-        // Passing null clears all 7 interval fields and target dates instantly
+        const bdInput = document.getElementById('birthdatetime');
+        if (bdInput._flatpickr) {
+            bdInput._flatpickr.clear();
+        } else {
+            bdInput.value = '';
+        }
         syncMilestones(null, null);
+        calculate();
     });
-    
     document.getElementById('birthdatetime').addEventListener('input', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('tzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('targetTzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('toggleCommas').addEventListener('change', calculate);
     document.getElementById('toggle24hr').addEventListener('change', calculate);
-
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
 </script>
