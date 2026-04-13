@@ -164,10 +164,11 @@ input:invalid {
 }
 .row-main {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    font-size: 1.0em;
-    position: relative; 
+    justify-content: flex-start;
+    width: 100%;
+    gap: 2px;
 }
 .row-label {
     font-weight: normal;
@@ -176,7 +177,7 @@ input:invalid {
 .bold-number {
     font-weight: bold;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 2.0em; 
+    font-size: 2.5em; 
     color: #E0CBB9;
 }
 .milestone-container {
@@ -313,17 +314,6 @@ input:invalid {
                 box-sizing: border-box !important;
                 box-shadow: none;
             }
-    .row-label {
-                text-decoration: underline;
-    }
-            .row-main {
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center;
-            justify-content: flex-start;
-            width: 100%;
-            gap: 2px;
-        }
             select { 
                 width: 100% !important; 
                 min-width: 0 !important; 
