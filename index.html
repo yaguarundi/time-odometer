@@ -177,7 +177,7 @@
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.backgroundColor = "transparent";
-                instance.altInput.style.cursor = "none";
+                instance.altInput.style.cursor = "default";
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
@@ -189,7 +189,7 @@
         flatpickr(".milestone-container .ms-date-input", {
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
-                instance.altInput.style.cursor = "none";
+                instance.altInput.style.cursor = "default";
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
