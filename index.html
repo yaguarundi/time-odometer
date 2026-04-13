@@ -237,18 +237,16 @@
             }
         });
     }
-
     function refreshAllMilestones() {
         let anchor = null;
-        const inputs = document.querySelectorAll('.ms-date-input.flatpickr-input');
-        const searchList = inputs.length > 0 ? inputs : document.querySelectorAll('.ms-date-input');
+        const inputs = document.querySelectorAll('.milestone-container .ms-date-input.flatpickr-input');
+        const searchList = inputs.length > 0 ? inputs : document.querySelectorAll('.milestone-container .ms-date-input');
         
         searchList.forEach(i => { 
             if (!anchor && i.value) anchor = i.value; 
         });
         syncMilestones(anchor, null);
     }
-
     document.querySelectorAll('.row').forEach(row => {
         const unit = row.getAttribute('data-unit');
         const ai = row.querySelector('.ms-input');
