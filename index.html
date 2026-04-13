@@ -21,7 +21,7 @@
         <span class="advise-input-format">&lpar;yyyy-mm-dd, hh:mm:ss a&rpar;</span><span class="advise-input-format">&lpar;yyyy-mm-dd, HH:mm:ss&rpar;</span>
         <div class="main-date-group">
             <div class="input-dow-wrapper">
-                <input type="datetime-local" class="ms-date-input" id="birthdatetime" value="2000-01-01T00:00:00" step="1" min="1000-01-01T00:00:00" max="9999-12-31T23:59:59">
+                <input type="datetime-local" class="ms-date-input" id="birthdatetime" value="2000-01-01T00:00:00" step="1" min="0001-01-01T00:00:00" max="9999-12-31T23:59:59">
                 <span class="main-dow" id="main-dow"></span>
             </div>
             <div class="button-group">
@@ -29,7 +29,7 @@
                 <button type="button" id="btn-clear" class="btn-clear">Clear</button>
             </div>
         </div>
-        <div class="error-message" id="errorMsg">Please enter a valid date (Year 1000-9999).</div>
+        <div class="error-message" id="errorMsg">Please enter a valid date (Years 1&ndash;9999).</div>
     </div>
     <div class="input-group">
         <label for="tzLocation">Origin Location:</label>
@@ -114,7 +114,8 @@
             dateFormat: "Y-m-d\\TH:i:S", 
             altInput: true,
             altFormat: "Y-m-d, h:i:S K", 
-            altInputClass: "ms-date-input", 
+            altInputClass: "ms-date-input",
+            minDate: "0001-01-01",
             disableMobile: "true",
             allowInput: true,
             onChange: function(selectedDates, dateStr, instance) {
@@ -294,7 +295,7 @@
             } else { 
                 td = originDate.plus({[unit]: tVal}).setZone(document.getElementById('targetTzLocation').value); 
             }
-            if (!td.isValid || td.year > 9999 || td.year < 1000) return;
+            if (!td.isValid || td.year > 9999 || td.year < 0001) return;
 
             syncMilestones(td.toFormat("yyyy-MM-dd'T'HH:mm:ss"), this);
         });
