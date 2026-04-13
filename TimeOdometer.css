@@ -360,6 +360,11 @@ input:invalid {
             .input-dow-wrapper { 
                 display: contents; 
             }
+            .btn-now,
+            .btn-clear, {
+                text-align: center;
+                align-items: center;
+            }
             #birthdatetime { order: 1; }
             .main-dow { 
                 order: 2; 
