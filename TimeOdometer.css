@@ -208,7 +208,7 @@ input:invalid {
     font-weight: bold;
 }
 .ms-date-input:focus { 
-    border-color: #de8538; 
+    border-color: #E0CBB9; 
 }
 .ms-dow {
     font-size: 1em; 
