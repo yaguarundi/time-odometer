@@ -97,7 +97,6 @@ input:invalid {
     background-color: #2a2a2a;
     padding: 12px 15px;
     border-radius: 6px;
-    margin-bottom: 20px;
 }
 .button-group {
     display: flex;
@@ -186,8 +185,7 @@ input:invalid {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 12px; 
-    border-top: 1px dashed #444;
+    padding-top: 5px;
 }
 .ms-date-group {
     display: flex;
@@ -253,18 +251,19 @@ input:invalid {
     font-weight: bold;
     font-size: 16px;
     color: #E0CBB9;
-    margin-top: 10px;
     font-family: "Courier New", Courier, monospace;
 }
 .footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 10px;
+    padding-top: 20px;
     padding-bottom: 10px;
+    border-top: 1px dashed #444;
 }
 .donation-section {
     text-align: center;
-    margin-top: 25px;
-    padding-top: 15px;
+    margin-top: 20px;
+    padding-top: 5px;
     border-top: 1px dashed #444;
 }
 .donation-text {
