@@ -16,6 +16,7 @@
 <div class="container">
     <div class="half-container">
     <h2>Time Odometer</h2>
+    <h3>AD 1&ndash;9999</h3>
     <div class="input-group">
         <label for="birthdatetime">Enter Date and Time:</label>
         <span class="advise-input-format">yyyy-mm-dd, hh:mm:ss AM/PM</span>
@@ -29,7 +30,6 @@
                 <button type="button" id="btn-clear" class="btn-clear">Clear</button>
             </div>
         </div>
-        <div class="error-message" id="errorMsg">Please enter a valid date (Years 1&ndash;9999).</div>
     </div>
     <div class="input-group">
         <label for="tzLocation">Origin Location:</label>
@@ -353,12 +353,12 @@
         const md = document.getElementById('main-dow');
         const uc = document.getElementById('toggleCommas').checked;
         const u24 = document.getElementById('toggle24hr').checked;
-        if (!iv) { rp.style.display = 'none'; em.style.display = 'none'; md.innerText = ''; return; }
+        if (!iv) { rp.style.display = 'none'; md.innerText = ''; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
-        md.innerText = bd.isValid ? bd.toFormat("EEEE") : '';
+        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEEE") : '';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
-        if (!bd.isValid || bd.year < 0001 || bd.year > 9999) { rp.style.display = 'none'; em.style.display = 'block'; return; }
-        em.style.display = 'none'; rp.style.display = 'flex';
+        if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; return; }
+        rp.style.display = 'flex';
         const ms = now.diff(bd).toMillis();
         const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
         const ps = ms < 0 ? Math.floor(ms/1000) - ls : Math.floor(ms/1000) + ls;
