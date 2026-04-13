@@ -398,6 +398,9 @@ input:invalid {
                 text-align: center; 
                 min-width: unset; 
             }
+            .detailed-row {
+                margin-top: 40px;
+            }
             .settings-panel {
                 flex-wrap: wrap;
                 justify-content: center;
