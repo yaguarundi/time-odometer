@@ -206,7 +206,6 @@ input:invalid {
     color-scheme: dark;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
-    cursor: none;
 }
 .ms-date-input:focus { 
     border-color: #E0CBB9; 
