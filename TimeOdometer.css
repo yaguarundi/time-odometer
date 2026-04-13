@@ -264,7 +264,7 @@ input:invalid {
     line-height: 1.4;
     font-size: 0.95rem;
 }
-.current-time {
+.current-time, .time-offset {
     text-align: center;
     font-weight: bold;
     font-size: 1.0em;
