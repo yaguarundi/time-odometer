@@ -24,7 +24,10 @@
                 <input type="datetime-local" class="ms-date-input" id="birthdatetime" value="2000-01-01T00:00:00" step="1" min="1000-01-01T00:00:00" max="9999-12-31T23:59:59">
                 <span class="main-dow" id="main-dow"></span>
             </div>
-            <button type="button" id="btn-now" class="btn-now">Now</button>
+            <div class="button-group">
+                <button type="button" id="btn-now" class="btn-now">Now</button>
+                <button type="button" id="btn-clear" class="btn-clear">Clear</button>
+            </div>
         </div>
         <div class="error-message" id="errorMsg">Please enter a valid date (Year 1000-9999).</div>
     </div>
@@ -342,6 +345,10 @@
         }
         
         calculate(); refreshAllMilestones();
+    });
+    document.getElementById('btn-clear').addEventListener('click', () => {
+        // Passing null clears all 7 interval fields and target dates instantly
+        syncMilestones(null, null);
     });
     
     document.getElementById('birthdatetime').addEventListener('input', () => { calculate(); refreshAllMilestones(); });
