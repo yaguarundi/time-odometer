@@ -367,7 +367,8 @@ input:invalid {
                 order: 2; 
                 width: 100%; 
                 text-align: center; 
-                min-width: unset; 
+                min-width: unset;
+                min-height: 20px;
             }
             .btn-now { 
                 order: 3; 
@@ -397,7 +398,8 @@ input:invalid {
             .ms-dow { 
                 width: 100%; 
                 text-align: center; 
-                min-width: unset; 
+                min-width: unset;
+                min-height: 20px;
             }
             .detailed-row {
                 margin-top: 40px;
