@@ -317,10 +317,13 @@ input:invalid {
                 font-size: 1.75em !important; 
             }
             .row-main {
-                flex-wrap: wrap;
-                gap: 5px;
-                align-items: center;
-            }
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start;
+            justify-content: flex-start;
+            width: 100%;
+            gap: 2px;
+        }
             select { 
                 width: 100% !important; 
                 min-width: 0 !important; 
