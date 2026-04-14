@@ -85,7 +85,7 @@ input:invalid {
 }
 #birthdatetime {
     padding: 8px 12px; 
-    font-size: 16px; 
+    font-size: 1em; 
     border-radius: 6px; 
     border: 1px solid #444; 
     background-color: transparent; 
@@ -208,7 +208,7 @@ input:invalid {
 }
 .ms-date-input {
     padding: 8px 12px; 
-    font-size: 16px; 
+    font-size: 1em; 
     border-radius: 6px; 
     border: 1px solid #444; 
     background-color: #1a1a1a; 
@@ -257,12 +257,12 @@ input:invalid {
     text-align: center;
     line-height: 1.4;
     margin-bottom: 4px;
-    font-size: 16px;
+    font-size: 1em;
 }
 .current-time, .time-offset {
     text-align: center;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1em;
     color: #E0CBB9;
     font-family: "Courier New", Courier, monospace;
 }
@@ -417,11 +417,6 @@ margin-top: 14px;
                 flex-direction: column; 
                 align-items: stretch; 
                 gap: 12px; 
-            }
-            .detailed-row,
-            .current-time,
-            .time-offset {
-                font-size: 14px;
             }
             .ms-date-group { 
                 flex-direction: column; 
