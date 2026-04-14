@@ -265,6 +265,7 @@ input:invalid {
 .donation-text {
     font-size: 0.9em;
     color: #fafafa;
+    padding-top: 12px
     margin-bottom: 12px;
 }
 .kofi-icon {
@@ -320,13 +321,13 @@ input:invalid {
                 min-width: 0 !important; 
                 box-sizing: border-box !important; 
             }
-                .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        width: 100%;
-        order: 3; 
-        margin-top: 20px
+            .button-group {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                width: 100%;
+                order: 3; 
+                margin-top: 20px
     }
             .input-group,
             .advise-input-format {
@@ -353,14 +354,14 @@ input:invalid {
             .input-dow-wrapper { 
                 display: contents; 
             }
-            .btn-now,
-            .btn-clear {
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-        width: 140px;
-        padding: 12px 0;
-        margin-top: 5px;
+                .btn-now,
+                .btn-clear {
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                width: 140px;
+                padding: 12px 0;
+                margin-top: 5px;
     }
             #birthdatetime { order: 1; }
             .main-dow { 
@@ -377,7 +378,7 @@ input:invalid {
                 margin-top: 5px;
                 justify-content: center;
             }
-    .btn-clear { 
+            .btn-clear { 
                 order: 4; 
                 width: 140px; 
                 padding: 12px 0;
