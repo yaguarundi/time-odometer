@@ -392,6 +392,11 @@ input:invalid {
                 align-items: stretch; 
                 gap: 12px; 
             }
+            .detailed-row,
+            .current-time,
+            .time-offset {
+                font-size: 14px;
+            }
             .ms-date-group { 
                 flex-direction: column; 
                 width: 100%; 
