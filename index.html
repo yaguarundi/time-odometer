@@ -314,23 +314,38 @@
             let val = this.value; 
             if (!val || val === '-' || val === '') { syncMilestones(null, this); return; }
             let cursor = this.selectionStart;
-            let oldLen = val.length;
-            let isNeg = val.trim().startsWith('-');
-            let rawStr = (unit === 'seconds') ? val.replace(/\D/g, '') : val.replace(/[^\d.]/g, '');
-            let p = rawStr.split('.'); 
-            if (p.length > 2) p = [p[0], p.slice(1).join('')];
-            if (p[0] !== '') {
-                const useCommas = document.getElementById('toggleCommas').checked;
-                const formattedBase = useCommas ? parseInt(p[0], 10).toLocaleString('en-US') : p[0];
-                this.value = (isNeg ? '-' : '') + formattedBase + (p.length > 1 ? '.' + p[1] : '');
-                } else if (p.length > 1) {
-                this.value = (isNeg ? '-' : '') + '0.' + p[1];
-                } else {
-                this.value = isNeg ? '-' : '';
+        let beforeCursor = val.substring(0, cursor);
+        let digitsBefore = (unit === 'seconds') ? beforeCursor.replace(/\D/g, '').length : beforeCursor.replace(/[^\d.]/g, '').length;
+        let isNeg = val.trim().startsWith('-');
+        let rawStr = (unit === 'seconds') ? val.replace(/\D/g, '') : val.replace(/[^\d.]/g, '');
+        let p = rawStr.split('.'); 
+        if (p.length > 2) p = [p[0], p.slice(1).join('')];       
+        if (p[0] !== '') {
+            const useCommas = document.getElementById('toggleCommas').checked;
+            const formattedBase = useCommas ? parseInt(p[0], 10).toLocaleString('en-US') : p[0];
+            this.value = (isNeg ? '-' : '') + formattedBase + (p.length > 1 ? '.' + p[1] : '');
+        } else if (p.length > 1) {
+            this.value = (isNeg ? '-' : '') + '0.' + p[1];
+        } else {
+            this.value = isNeg ? '-' : '';
+        }
+        let newCursor = 0;
+        let count = 0;
+        let validRegex = (unit === 'seconds') ? /\d/ : /[\d.]/;
+
+        if (digitsBefore === 0) {
+            newCursor = (isNeg && cursor > 0) ? 1 : 0;
+        } else {
+            for (let i = 0; i < this.value.length; i++) {
+                if (validRegex.test(this.value[i])) count++;
+                if (count === digitsBefore) {
+                    newCursor = i + 1;
+                    break;
                 }
-            let newLen = this.value.length;
-            cursor += (newLen - oldLen);
-            this.setSelectionRange(cursor, cursor); 
+            }
+        }
+        if (count > 0 && count < digitsBefore) newCursor = this.value.length;
+        this.setSelectionRange(newCursor, newCursor);  
             const tVal = parseFloat(this.value.replace(/,/g, '')); 
             if (isNaN(tVal)) return;
             const originVal = document.getElementById('birthdatetime').value;
