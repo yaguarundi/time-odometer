@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css">
+    <link rel="stylesheet" href="TimeOdometer.css?v=11">
 </head>
 <body>
 <div class="container">
@@ -40,6 +40,10 @@
         <label for="targetTzLocation">Target Location:</label>
         <select id="targetTzLocation"></select>
     </div>
+            <div class="settings-panel">
+            <label class="toggle-wrapper"><input type="checkbox" id="toggleCommas" checked>Delimiter</label>
+            <label class="toggle-wrapper"><input type="checkbox" id="toggle24hr">24-Hour Clock</label>
+        </div>
         <div class="donation-section">
     <p class="donation-text">Like it? Please consider a small donation!</p>
     <a href="https://ko-fi.com/yaguarundi" target="_blank" rel="noopener noreferrer" title="Support me on Ko-fi.">
@@ -85,11 +89,6 @@
             <div class="row-main"><span class="row-label">Years</span> <span id="r-year" class="bold-number">0</span></div>
             <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
-
-        <div class="settings-panel">
-            <label class="toggle-wrapper"><input type="checkbox" id="toggleCommas" checked>Delimiter</label>
-            <label class="toggle-wrapper"><input type="checkbox" id="toggle24hr">24-Hour Clock</label>
-        </div>
         <div class="detailed-row" id="r-detailed">Loading...</div>
         <div class="current-time" id="r-current-time">--</div>
         <div class="time-offset" id="r-time-offset"></div>
@@ -110,8 +109,9 @@
     const MAX_SYNC_RETRIES = 3;
     const handleManualTyping = (e, instance) => {
     const val = e.target.value.trim();
-    const parsed = DateTime.fromFormat(val, "yyyy-MM-dd, hh:mm:ss a");
-    
+    const is24hr = document.getElementById('toggle24hr').checked;
+    const format = is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a";
+    const parsed = DateTime.fromFormat(val, format);
     if (parsed.isValid) {
         const iso = parsed.toFormat("yyyy-MM-dd'T'HH:mm:ss");
         instance.element.value = iso;
@@ -150,6 +150,8 @@
             formatDate: function(date, formatStr) {
                 if (formatStr === "Y-m-d, h:i:S K") {
                     return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd, hh:mm:ss a");
+                } else if (formatStr === "Y-m-d, H:i:S") {
+                    return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd, HH:mm:ss");
                 }
                 return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd'T'HH:mm:ss");
             },
@@ -172,7 +174,6 @@
                 }
             });
         });
-
         flatpickr("#birthdatetime", {
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
@@ -185,7 +186,6 @@
                 }
             }
         });
-
         flatpickr(".milestone-container .ms-date-input", {
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
@@ -272,8 +272,9 @@
             if (di !== activeInput) {
                 const newIso = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
                 if (di && di._flatpickr) {
+                    const is24hr = document.getElementById('toggle24hr').checked;
                     di.value = newIso;
-                    di._flatpickr.altInput.value = targetDate.toFormat("yyyy-MM-dd, hh:mm:ss a");
+                    di._flatpickr.altInput.value = targetDate.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
                 } else {
                     di.value = newIso;
                 }
@@ -407,7 +408,46 @@
     document.getElementById('tzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('targetTzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('toggleCommas').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
-    document.getElementById('toggle24hr').addEventListener('change', calculate);
+function updateTimeFormat() {
+        const is24hr = document.getElementById('toggle24hr').checked;
+        const newAltFormat = is24hr ? "Y-m-d, H:i:S" : "Y-m-d, h:i:S K";
+        const formatAdvice = document.querySelector('.advise-input-format');
+        if (formatAdvice) {
+            formatAdvice.innerText = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss AM/PM";
+        }
+        const mainInput = document.getElementById('birthdatetime');
+        if (mainInput && mainInput._flatpickr) {
+            const currentDate = mainInput._flatpickr.selectedDates[0];
+            mainInput._flatpickr.set('time_24hr', is24hr);
+            mainInput._flatpickr.set('altFormat', newAltFormat);
+            if (currentDate) {
+                mainInput._flatpickr.setDate(currentDate, false);
+            } else if (mainInput.value) {
+                const dt = DateTime.fromISO(mainInput.value);
+                if (dt.isValid) {
+                    mainInput._flatpickr.setDate(dt.toJSDate(), false);
+                }
+            }
+        }
+        document.querySelectorAll('.milestone-container .ms-date-input').forEach(input => {
+            if (input._flatpickr) {
+                const savedIso = input.value;
+
+                input._flatpickr.set('time_24hr', is24hr);
+                input._flatpickr.set('altFormat', newAltFormat);
+                if (savedIso) {
+                    const dt = DateTime.fromISO(savedIso);
+                    if (dt.isValid) {
+                        input.value = savedIso;
+                        input._flatpickr.altInput.value = dt.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
+                    }
+                }
+            }
+        });
+        calculate();
+        refreshAllMilestones(); 
+    }
+    document.getElementById('toggle24hr').addEventListener('change', updateTimeFormat);
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
     const yearText = document.getElementById("current-year");
