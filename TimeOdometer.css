@@ -243,6 +243,8 @@ input:invalid {
     text-align: center;
     line-height: 1.4;
     font-size: 16px;
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 .current-time, .time-offset {
     text-align: center;
@@ -390,7 +392,6 @@ input:invalid {
                 align-items: stretch; 
                 gap: 12px; 
             }
-            
             .ms-date-group { 
                 flex-direction: column; 
                 width: 100%; 
@@ -401,10 +402,6 @@ input:invalid {
                 text-align: center; 
                 min-width: unset;
                 min-height: 20px;
-            }
-            .detailed-row {
-                margin-top: 40px;
-                margin-bottom: 40px;
             }
             .settings-panel {
                 flex-wrap: wrap;
