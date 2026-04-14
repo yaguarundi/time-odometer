@@ -319,7 +319,9 @@ input:invalid {
             select { 
                 width: 100% !important; 
                 min-width: 0 !important; 
-                box-sizing: border-box !important; 
+                box-sizing: border-box !important;
+                text-align: center;
+                text-align-last: center;
             }
             .button-group {
                 display: flex;
