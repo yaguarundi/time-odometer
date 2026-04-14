@@ -239,6 +239,7 @@ input:invalid {
     background-color: #E0CBB9;
     color: #1e1e1e;
     padding: 15px;
+    margin-bottom: 4px;
     border-radius: 6px;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
