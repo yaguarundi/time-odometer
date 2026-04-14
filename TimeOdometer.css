@@ -239,12 +239,12 @@ input:invalid {
     background-color: #E0CBB9;
     color: #1e1e1e;
     padding: 15px;
-    margin-bottom: 4px;
     border-radius: 6px;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
     text-align: center;
     line-height: 1.4;
+    margin-bottom: 4px;
     font-size: 16px;
 }
 .current-time, .time-offset {
