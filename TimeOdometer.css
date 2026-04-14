@@ -27,6 +27,7 @@ body {
 h2 {
     margin-top: 0;
     text-align: center;
+    font-family: Georgia;
 }
 .input-group {
     display: flex;
@@ -183,7 +184,7 @@ input:invalid {
 .bold-number {
     font-weight: bold;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 2.25em; 
+    font-size: 2.5em; 
     color: #E0CBB9;
     padding-top: 5px;
 }
@@ -334,6 +335,9 @@ margin-top: 14px;
                 text-align: center;
                 text-align-last: center;
                 margin: 0 auto !important;
+            }
+            .bold-number {
+                font-size: 2.25em;
             }
             .button-group {
                 display: flex;
