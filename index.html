@@ -389,7 +389,7 @@
         const ms = now.diff(bd).toMillis();
         const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
         const ps = ms < 0 ? Math.floor(ms/1000) - ls : Math.floor(ms/1000) + ls;
-        const f = (n) => uc ? Math.floor(n).toLocaleString('en-US') : Math.floor(n).toString();
+        const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
         document.getElementById('r-sec').innerText = f(ps);
         document.getElementById('r-min').innerText = f(now.diff(bd, 'minutes').minutes);
         document.getElementById('r-hour').innerText = f(now.diff(bd, 'hours').hours);
@@ -398,7 +398,7 @@
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
-        const p = (val, unit) => `${Math.floor(val)} ${unit}${Math.floor(val) === 1 ? '' : 's'}`;
+        const p = (val, unit) => `${Math.trunc(val) + 0} ${unit}${Math.abs(Math.trunc(val)) === 1 ? '' : 's'}`;
         document.getElementById('r-detailed').innerText = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}, ${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
         document.getElementById('r-current-time').innerText = now.toFormat(u24 ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a");
         document.getElementById('r-time-offset').innerText = "\u0028UTC " + now.toFormat("ZZ\u0029");
