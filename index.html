@@ -401,9 +401,11 @@
         const p = (val, unit) => `${Math.trunc(val) + 0} ${unit}${Math.abs(Math.trunc(val)) === 1 ? '' : 's'}`;
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}`;
         const timePart = `${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
-        const safeLimit = 36;
+        const safeLimit = 36; 
         let dateScale = datePart.length > safeLimit ? Math.max(safeLimit / datePart.length, 0.65) : 1;
         let timeScale = timePart.length > safeLimit ? Math.max(safeLimit / timePart.length, 0.65) : 1;
+        const uniformScale = Math.min(dateScale, timeScale);
+        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${uniformScale}em;">${datePart},</span><span class="detail-time" style="font-size: ${uniformScale}em;">${timePart}</span>`;
         document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${dateScale}em;">${datePart},</span><span class="detail-time" style="font-size: ${timeScale}em;">${timePart}</span>`;
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
         const dateFormat = "EEEE, MMMM d, yyyy";
