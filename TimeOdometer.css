@@ -33,7 +33,7 @@ h2 {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
-    color: #eaeaea;
+    color: #fafafa;
     width: 100%;
 }
 label {
@@ -42,8 +42,8 @@ label {
 }
 select {
     padding: 12px;
-    font-size: 16px;
-    border: 1px solid #634E34;
+    font-size: 1em;
+    border: 1px solid #444;
     border-radius: 6px;
     background-color: #333;
     color: white;
@@ -51,6 +51,10 @@ select {
     width: 100%;
     color: #E0CBB9;
     font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+select:foucs {
+    border-color: #634E34;
 }
 input:invalid {
     border-color: #ff4d4d;
@@ -139,7 +143,7 @@ input:invalid {
     align-items: center;
     gap: 8px;
     font-size: 0.9em;
-    color: #fafafa;
+    color: #b3b3b3;
     cursor: pointer;
     padding: 5px 0;
 }
@@ -223,7 +227,7 @@ input:invalid {
 }
 .ms-input {
     padding: 8px 12px; 
-    font-size: 16px; 
+    font-size: 1em; 
     border-radius: 6px; 
     border: 1px solid #444; 
     background-color: #1a1a1a; 
