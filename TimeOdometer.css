@@ -357,6 +357,11 @@ margin-top: 14px;
                 text-align: center;
                 align-items: center;
             }
+            .detail-date, 
+            .detail-time {
+            display: block;
+            line-height: 1.6; 
+            }
             #birthdatetime,  
             .ms-date-input,
             .ms-input { 
