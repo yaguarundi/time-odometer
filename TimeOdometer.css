@@ -43,12 +43,14 @@ label {
 select {
     padding: 12px;
     font-size: 16px;
-    border: 1px solid #333;
+    border: 1px solid #634E34;
     border-radius: 6px;
-    background-color: #2a2a2a;
+    background-color: #333;
     color: white;
     color-scheme: dark;
     width: 100%;
+    color: #E0CBB9;
+    font-family: 'Courier New', Courier, monospace;
 }
 input:invalid {
     border-color: #ff4d4d;
@@ -101,7 +103,7 @@ input:invalid {
     gap: 10px;
 }
 .btn-now {
-    background-color: #2a2a2a;
+    background-color: #333;
     color: #fafafa;
     border: 1px solid #444;
     border-radius: 6px;
@@ -118,7 +120,7 @@ input:invalid {
 }
 .btn-clear{
         background-color: #ff4d4d;
-    color: #2a2a2a;
+    color: #333;
     border: 1px solid #444;
     border-radius: 6px;
     padding: 10px 16px;
@@ -155,7 +157,7 @@ input:invalid {
     margin-top: 5px;
 }
 .row {
-    background-color: #2a2a2a;
+    background-color: #333;
     padding: 12px 15px;
     border-radius: 6px;
     display: flex;
@@ -300,11 +302,11 @@ input:invalid {
     }
     .btn-now:hover {
         background-color: #fafafa;
-        color: #2a2a2a;
+        color: #333;
         transition: 0.3s ease;
     }
     .btn-clear:hover {
-        background-color: #2a2a2a;
+        background-color: #333;
         color: #ff4d4d;
         transition: 0.3s ease;
     }
