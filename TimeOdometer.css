@@ -311,7 +311,7 @@ input:invalid {
             body { padding: 10px; }
             .container { padding: 0; gap: 15px; width: 100%; }
             .half-container { 
-                padding: 10px; 
+                padding: 25px 10 px 10px 10px; 
                 width: 100%; 
                 box-sizing: border-box !important;
                 box-shadow: none;
@@ -330,7 +330,7 @@ input:invalid {
                 gap: 15px;
                 width: 100%;
                 order: 3; 
-                margin-top: 20px
+                margin-top: 0;
     }
             .input-group,
             .advise-input-format {
@@ -364,7 +364,7 @@ input:invalid {
                 justify-content: center;
                 width: 140px;
                 padding: 12px 0;
-                margin-top: 5px;
+                margin-top: 0;
     }
             #birthdatetime { order: 1; }
             .main-dow { 
@@ -378,14 +378,14 @@ input:invalid {
                 order: 3; 
                 width: 140px;
                 padding: 12px 0;
-                margin-top: 5px;
+                margin-top: 0;
                 justify-content: center;
             }
             .btn-clear { 
                 order: 4; 
                 width: 140px; 
                 padding: 12px 0;
-                margin-top: 5px;
+                margin-top: 0;
                 justify-content: center;
             }
             .milestone-container { 
