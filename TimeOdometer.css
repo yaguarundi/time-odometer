@@ -414,5 +414,8 @@ input:invalid {
                 justify-content: center;
                 gap: 15px;
             }
+    .donation-section {
+         padding-bottom: 14px;
+    }
         }
 </style>
