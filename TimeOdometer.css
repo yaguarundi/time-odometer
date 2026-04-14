@@ -185,7 +185,7 @@ input:invalid {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px #fafafa dashed;
+    border-top: 1px #634E34 dashed;
     padding-top: 12px;
 }
 .ms-date-group {
