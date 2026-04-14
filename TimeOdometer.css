@@ -410,10 +410,10 @@ input:invalid {
                 min-height: 20px;
             }
             .settings-panel {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 15px;
-            }
+    width: 295px;
+    margin: 0 auto;
+    justify-content: space-between;
+}
     .donation-section {
          padding-bottom: 14px;
     }
