@@ -183,7 +183,6 @@ input:invalid {
 }
 .row-label {
     font-weight: normal;
-    font-style: italic;
     font-size: 0.9em;
 }
 .bold-number {
