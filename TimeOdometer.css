@@ -156,7 +156,7 @@ input:invalid {
 }
 .row {
     background-color: #2a2a2a;
-    padding: 12px;
+    padding: 12px 15px;
     border-radius: 6px;
     display: flex;
     flex-direction:column;
@@ -185,8 +185,8 @@ input:invalid {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 12px;
     border-top: 1px #fafafa dashed;
+    padding-top: 12px;
 }
 .ms-date-group {
     display: flex;
@@ -245,8 +245,6 @@ input:invalid {
     text-align: center;
     line-height: 1.4;
     font-size: 16px;
-    margin-top: 40px;
-    margin-bottom: 40px;
 }
 .current-time, .time-offset {
     text-align: center;
