@@ -409,7 +409,7 @@
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
         const dateFormat = "EEEE, MMMM d, yyyy";
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date">${now.toFormat(dateFormat)},</span> <span class="detail-time">${now.toFormat(timeFormat)}</span>`;
-        document.getElementById('r-time-offset').innerText = "\u0028UTC " + now.toFormat("ZZ\u0029");
+        document.getElementById('r-time-offset').innerText = `(UTC ${now.toFormat("ZZ")})`;
     }
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
