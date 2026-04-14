@@ -311,7 +311,7 @@ input:invalid {
             body { padding: 10px; }
             .container { padding: 0; gap: 15px; width: 100%; }
             .half-container { 
-                padding: 25px 10 px 10px 10px; 
+                padding: 24px 10 px 10px 10px; 
                 width: 100%; 
                 box-sizing: border-box !important;
                 box-shadow: none;
@@ -415,7 +415,7 @@ input:invalid {
     justify-content: space-between;
 }
     .donation-section {
-         padding-bottom: 15px;
+         padding-bottom: 14px;
     }
         }
 </style>
