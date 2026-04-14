@@ -402,7 +402,9 @@
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}`;
         const timePart = `${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
         document.getElementById('r-detailed').innerHTML = `<span class="detail-date">${datePart},</span> <span class="detail-time">${timePart}</span>`;
-        document.getElementById('r-current-time').innerText = now.toFormat(u24 ? "EEEE, MMMM d, yyyy, HH:mm:ss" : "EEEE, MMMM d, yyyy, hh:mm:ss a");
+        const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
+        const dateFormat = "EEEE, MMMM d, yyyy";
+        document.getElementById('r-current-time').innerHTML = `<span class="detail-date">${now.toFormat(dateFormat)},</span> <span class="detail-time">${now.toFormat(timeFormat)}</span>`;
         document.getElementById('r-time-offset').innerText = "\u0028UTC " + now.toFormat("ZZ\u0029");
     }
     document.getElementById('btn-now').addEventListener('click', () => {
