@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css">
+    <link rel="stylesheet" href="TimeOdometer.css?v=14">
 </head>
 <body>
 <div class="container">
@@ -89,6 +89,7 @@
             <div class="row-main"><span class="row-label">Years</span> <span id="r-year" class="bold-number">0</span></div>
             <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
+    </div> <div class="results half-container" id="extraPanel">
         <div class="detailed-row" id="r-detailed">Loading...</div>
         <div class="current-time" id="r-current-time">--</div>
         <div class="time-offset" id="r-time-offset"></div>
@@ -357,16 +358,17 @@
         const iv = document.getElementById('birthdatetime').value;
         const tz = document.getElementById('tzLocation').value;
         const rp = document.getElementById('resultsPanel');
+        const ep = document.getElementById('extraPanel');
         const em = document.getElementById('errorMsg');
         const md = document.getElementById('main-dow');
         const uc = document.getElementById('toggleCommas').checked;
         const u24 = document.getElementById('toggle24hr').checked;
-        if (!iv) { rp.style.display = 'none'; md.innerText = ''; return; }
+        if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = ''; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
         md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEEE") : '';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
-        if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; return; }
-        rp.style.display = 'flex';
+        if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
+        rp.style.display = 'flex'; ep.style.display = 'flex';
         const ms = now.diff(bd).toMillis();
         const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
         const ps = ms < 0 ? Math.floor(ms/1000) - ls : Math.floor(ms/1000) + ls;
