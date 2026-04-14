@@ -156,7 +156,7 @@ input:invalid {
 }
 .row {
     background-color: #2a2a2a;
-    padding: 12px 15px;
+    padding: 12px;
     border-radius: 6px;
     display: flex;
     flex-direction:column;
@@ -185,6 +185,8 @@ input:invalid {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: 12px;
+    border-top: 1px #fafafa dashed;
 }
 .ms-date-group {
     display: flex;
