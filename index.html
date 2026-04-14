@@ -361,8 +361,10 @@
             } else { 
                 td = originDate.plus({[unit]: tVal}).setZone(document.getElementById('targetTzLocation').value); 
             }
-            if (!td.isValid || td.year > 9999 || td.year < 0001) return;
-
+            if (!td.isValid || td.year > 9999 || td.year < 0001) {
+            syncMilestones(null, this);
+            return;
+        }
             syncMilestones(td.toFormat("yyyy-MM-dd'T'HH:mm:ss"), this);
         });
         di.addEventListener('input', function() { 
