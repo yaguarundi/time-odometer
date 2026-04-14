@@ -57,6 +57,10 @@ select {
 select:foucs {
     border-color: #634E34;
 }
+#tzLocation option, 
+#targetTzLocation option {
+    font-weight: bold;
+}
 input:invalid {
     border-color: #ff4d4d;
 }
