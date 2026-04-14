@@ -317,11 +317,12 @@ input:invalid {
                 box-shadow: none;
             }
             select { 
-                width: 100% !important; 
+                width: 295px !important; 
                 min-width: 0 !important; 
                 box-sizing: border-box !important;
                 text-align: center;
                 text-align-last: center;
+                margin: 0 auto !important;
             }
             .button-group {
                 display: flex;
@@ -339,7 +340,7 @@ input:invalid {
             #birthdatetime,  
             .ms-date-input,
             .ms-input { 
-                width: 290px !important; 
+                width: 295px !important; 
                 max-width: 100% !important; 
                 min-width: 0 !important; 
                 box-sizing: border-box !important; 
