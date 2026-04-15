@@ -281,7 +281,7 @@
                     di.value = newIso;
                 }
             }
-            ds.innerText = targetDate.toFormat("EEEE");
+            ds.innerText = targetDate.toFormat("EEE");
             if (ai !== activeInput) {
                 let amt = 0;
                 if (unit === 'seconds') {
@@ -383,7 +383,7 @@
         const u24 = document.getElementById('toggle24hr').checked;
         if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = ''; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
-        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEEE") : '';
+        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE") : '';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
         if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
