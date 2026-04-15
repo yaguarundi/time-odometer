@@ -398,6 +398,9 @@ input:invalid {
             display: block;
             line-height: 1.6; 
         }
+        .detail-date {
+            margin-bottom: 6px;
+        }
         .donation-section {
             margin-top: 10px;
         }
