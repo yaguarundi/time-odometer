@@ -1,6 +1,5 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
-
 body {
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     background-color: #634E34;
@@ -27,7 +26,6 @@ body {
 h2 {
     margin-top: 0;
     text-align: center;
-    font-family: Georgia;
 }
 .input-group {
     display: flex;
@@ -70,12 +68,6 @@ input:invalid {
     justify-content: space-between;
     width: 100%;
     gap: 15px;
-}
-.advise-input-format {
-    font-size: 0.65em;
-    font-weight: normal;
-    font-style: italic;
-    color: #fafafa;
 }
 .input-dow-wrapper {
     display: flex;
@@ -246,6 +238,11 @@ input:invalid {
 .ms-input:focus { 
     border-color: #634E34; 
 }
+.ms-date-input::placeholder,
+.ms-input::placeholder {
+    color: #634E34;
+    opacity: 1;
+}
 .detailed-row {
     background-color: #E0CBB9;
     color: #1e1e1e;
@@ -321,120 +318,125 @@ input:invalid {
     }
 }
 @media (max-width: 748px) {
-            body { padding: 10px; }
-            .container { padding: 0; gap: 15px; width: 100%; }
-            .half-container { 
-                padding: 10px; 
-                width: 100%; 
-                box-sizing: border-box !important;
-                box-shadow: none;
-            }
-    h2 {
-margin-top: 14px;
-    }
-            select { 
-                width: 295px !important; 
-                min-width: 0 !important; 
-                box-sizing: border-box !important;
-                text-align: center;
-                text-align-last: center;
-                margin: 0 auto !important;
-            }
-            .bold-number {
-                font-size: 2em;
-            }
-            .button-group {
-                display: flex;
-                justify-content: center;
-                gap: 15px;
-                width: 100%;
-                order: 3; 
-                margin-top: 0;
-    }
-            .input-group,
-            .advise-input-format {
-                text-align: center;
-                align-items: center;
-            }
-            .detail-date, 
-            .detail-time {
+        body { 
+            padding: 10px;
+        }
+        .container { 
+            padding: 0;
+            gap: 15px;
+            width: 100%;
+        }
+        .half-container { 
+            padding: 10px; 
+            width: 100%; 
+            box-sizing: border-box !important;
+            box-shadow: none;
+        }
+        h2 {
+            margin-top: 14px;
+        }
+        select { 
+            width: 295px !important; 
+            min-width: 0 !important; 
+            box-sizing: border-box !important;
+            text-align: center;
+            text-align-last: center;
+            margin: 0 auto !important;
+        }
+        .bold-number {
+            font-size: 2em;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            order: 3; 
+            margin-top: 0;
+        }
+        .input-group {
+            text-align: center;
+            align-items: center;
+        }
+        .detail-date, 
+        .detail-time {
             display: block;
             line-height: 1.6; 
-            }
-            #birthdatetime,  
-            .ms-date-input,
-            .ms-input { 
-                width: 295px !important; 
-                max-width: 100% !important; 
-                min-width: 0 !important; 
-                box-sizing: border-box !important; 
-                text-align: center; 
-                margin: 0 auto !important;
-                height: 44px !important;
-                display: block !important;
-            }
-            .main-date-group { 
-                flex-direction: column; 
-                align-items: stretch; 
-                gap: 12px; 
-            }
-            .input-dow-wrapper { 
-                display: contents; 
-            }
-                .btn-now,
-                .btn-clear {
-                text-align: center;
-                align-items: center;
-                justify-content: center;
-                width: 140px;
-                padding: 12px 0;
-                margin-top: 0;
-    }
-            #birthdatetime { order: 1; }
-            .main-dow { 
-                order: 2; 
-                width: 100%; 
-                text-align: center; 
-                min-width: unset;
-                min-height: 20px;
-            }
-            .btn-now { 
-                order: 3; 
-                width: 140px;
-                padding: 12px 0;
-                margin-top: 0;
-                justify-content: center;
-            }
-            .btn-clear { 
-                order: 4; 
-                width: 140px; 
-                padding: 12px 0;
-                margin-top: 0;
-                justify-content: center;
-            }
-            .milestone-container { 
-                flex-direction: column; 
-                align-items: stretch; 
-                gap: 12px; 
-            }
-            .ms-date-group { 
-                flex-direction: column; 
-                width: 100%; 
-                gap: 8px; 
-            }
-            .ms-dow { 
-                width: 100%; 
-                text-align: center; 
-                min-width: unset;
-                min-height: 20px;
-            }
-            .settings-panel {
-    width: 295px;
-    margin: 0 auto;
-    justify-content: space-between;
-}
-    .donation-section {
-         padding-bottom: 14px;
-    }
         }
+        #birthdatetime,  
+        .ms-date-input,
+        .ms-input { 
+            width: 295px !important; 
+            max-width: 100% !important; 
+            min-width: 0 !important; 
+            box-sizing: border-box !important; 
+            text-align: center; 
+            margin: 0 auto !important;
+            height: 44px !important;
+            display: block !important;
+        }
+        .main-date-group { 
+            flex-direction: column; 
+            align-items: stretch; 
+            gap: 12px; 
+        }
+        .input-dow-wrapper { 
+            display: contents; 
+        }
+        .btn-now,
+        .btn-clear {
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            width: 140px;
+            padding: 12px 0;
+            margin-top: 0;
+        }
+        #birthdatetime { order: 1; }
+        .main-dow { 
+            order: 2; 
+            width: 100%; 
+            text-align: center; 
+            min-width: unset;
+            min-height: 20px;
+        }
+        .btn-now { 
+            order: 3; 
+            width: 140px;
+            padding: 12px 0;
+            margin-top: 0;
+            justify-content: center;
+        }
+        .btn-clear { 
+            order: 4; 
+            width: 140px; 
+            padding: 12px 0;
+            margin-top: 0;
+            justify-content: center;
+        }
+        .milestone-container { 
+            flex-direction: column; 
+            align-items: stretch; 
+            gap: 12px; 
+        }
+        .ms-date-group { 
+            flex-direction: column; 
+            width: 100%; 
+            gap: 8px; 
+        }
+        .ms-dow { 
+            width: 100%; 
+            text-align: center; 
+            min-width: unset;
+            min-height: 20px;
+        }
+            .settings-panel {
+            width: 295px;
+            margin: 0 auto;
+            justify-content: space-between;
+        }
+            .donation-section {
+            padding-bottom: 14px;
+        }
+    }
 </style>
