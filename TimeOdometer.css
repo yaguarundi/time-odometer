@@ -18,7 +18,7 @@ body {
 }
 .half-container {
     background-color: #1e1e1e;
-    padding: 25px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     width: 100%;
@@ -172,17 +172,16 @@ input:invalid {
 .results { 
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
     display: none;
     margin-top: 5px;
 }
 .row {
     background-color: #333;
-    padding: 12px 15px;
+    padding: 10px;
     border-radius: 6px;
     display: flex;
     flex-direction:column;
-    gap: 10px;
 }
 .row-main {
     display: flex;
@@ -363,6 +362,9 @@ input:invalid {
             text-align: center;
             text-align-last: center;
             margin: 0 auto !important;
+        }
+            .results {
+            gap: 10px; 
         }
         .dropdown-row .input-group:last-child {
             text-align: center;
