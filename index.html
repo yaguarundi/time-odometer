@@ -422,7 +422,7 @@
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
         const curUniformScale = Math.min(curDateScale, curTimeScale);
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
-        document.getElementById('r-time-offset').innerText = `(UTC ${now.toFormat("ZZ")})`;
+        document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
     }
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
