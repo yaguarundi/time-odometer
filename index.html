@@ -23,7 +23,7 @@
         <div class="main-date-group">
             <div class="input-dow-wrapper">
                 <input type="datetime-local" class="ms-date-input" id="birthdatetime" step="1" min="0001-01-01T00:00:00" max="9999-12-31T23:59:59">
-                <span class="main-dow" id="main-dow"></span>
+                <span class="main-dow" id="main-dow" style="color: #634E34;">EEE</span>
             </div>
             <div class="button-group">
                 <button type="button" id="btn-now" class="btn-now">Now</button>
@@ -59,34 +59,34 @@
             <div class="milestone-container">
                 <div class="ms-date-group">
                     <input type="datetime-local" class="ms-date-input" step="1" title="Target Date">
-                    <span class="ms-dow"></span>
+                    <span class="ms-dow" style="color: #634E34;">EEE</span>
                 </div>
                 <input type="text" class="ms-input" placeholder="&plusmn;0">
             </div>
         </div>
         <div class="row" data-unit="minutes">
             <div class="row-main"><span class="row-label">Minutes</span> <span id="r-min" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
         <div class="row" data-unit="hours">
             <div class="row-main"><span class="row-label">Hours</span> <span id="r-hour" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
         <div class="row" data-unit="days">
             <div class="row-main"><span class="row-label">Days</span> <span id="r-day" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
         <div class="row" data-unit="weeks">
             <div class="row-main"><span class="row-label">Weeks</span> <span id="r-week" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
         <div class="row" data-unit="months">
             <div class="row-main"><span class="row-label">Months</span> <span id="r-month" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
         <div class="row" data-unit="years">
             <div class="row-main"><span class="row-label">Years</span> <span id="r-year" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow"></span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
         </div>
     </div> <div class="results half-container" id="extraPanel">
         <div class="detailed-row" id="r-detailed">Loading...</div>
@@ -256,7 +256,8 @@
                     } else di.value = '';
                 }
                 if (ai !== activeInput) ai.value = '';
-                ds.innerText = '';
+                ds.innerText = 'EEE';
+                ds.style.color = '#634E34';
             });
             return;
         }
@@ -271,6 +272,8 @@
             const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
             const ai = row.querySelector('.ms-input');
             const ds = row.querySelector('.ms-dow');
+            ds.innerText = targetDate.toFormat("EEE");
+            ds.style.color = '#E0CBB9';
             if (di !== activeInput) {
                 const newIso = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
                 if (di && di._flatpickr) {
@@ -381,9 +384,10 @@
         const md = document.getElementById('main-dow');
         const uc = document.getElementById('toggleCommas').checked;
         const u24 = document.getElementById('toggle24hr').checked;
-        if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = ''; return; }
+        if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = 'EEE'; md.style.color = '#634E34'; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
-        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE") : '';
+        if (bd.isValid && bd.year >= 1) { md.innerText = bd.toFormat("EEE"); md.style.color = '#E0CBB9'; } else { md.innerText = 'EEE'; md.style.color = '#634E34'; }
+        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE") : 'EEE';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
         if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
