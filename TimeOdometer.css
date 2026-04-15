@@ -175,7 +175,7 @@ input:invalid {
 .toggle-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     font-size: 0.9em;
     color: #b3b3b3;
     cursor: pointer;
@@ -497,7 +497,7 @@ input:invalid {
             min-height: 20px;
         }
             .settings-panel {
-            width: 295px;
+            width: 301px;
             margin: 0 auto;
             justify-content: space-between;
         }
