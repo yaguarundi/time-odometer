@@ -402,7 +402,7 @@ input:invalid {
             margin-top: 10px;
         }
         .donation-text {
-            padding-top: 10px;
+            padding-top: 0;
         }
         #birthdatetime,  
         .ms-date-input,
