@@ -352,9 +352,6 @@ input:invalid {
             box-sizing: border-box !important;
             box-shadow: none;
         }
-        h2 {
-            margin-top: 14px;
-        }
         select { 
             width: 295px !important; 
             min-width: 0 !important; 
@@ -471,9 +468,6 @@ input:invalid {
             width: 295px;
             margin: 0 auto;
             justify-content: space-between;
-        }
-            .donation-section {
-            padding-bottom: 14px;
         }
     }
 </style>
