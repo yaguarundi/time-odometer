@@ -409,18 +409,22 @@
         const p = (val, unit) => `${Math.trunc(val) + 0} ${unit}${Math.abs(Math.trunc(val)) === 1 ? '' : 's'}`;
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}`;
         const timePart = `${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
-        const safeLimit = 36; 
-        let dateScale = datePart.length > safeLimit ? Math.max(safeLimit / datePart.length, 0.65) : 1;
-        let timeScale = timePart.length > safeLimit ? Math.max(safeLimit / timePart.length, 0.65) : 1;
-        const uniformScale = Math.min(dateScale, timeScale);
-        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${uniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${uniformScale}em;">${timePart}</span>`;
+        const detailSafeLimit = 28; 
+        let dateScale = datePart.length > detailSafeLimit ? Math.max(detailSafeLimit / datePart.length, 0.60) : 1;
+        let timeScale = timePart.length > detailSafeLimit ? Math.max(detailSafeLimit / timePart.length, 0.60) : 1;
+        let detailUniformScale = Math.min(dateScale, timeScale);
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
         const curDateStr = now.toLocaleString(DateTime.DATE_HUGE);
         const curTimeStr = now.toFormat(timeFormat);
         const monoSafeLimit = 28; 
         let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
-        const curUniformScale = Math.min(curDateScale, curTimeScale);
+        let curUniformScale = Math.min(curDateScale, curTimeScale);
+        if (window.innerWidth > 748) {
+        detailUniformScale = 1;
+        curUniformScale = 1;
+        }
+        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
     }
