@@ -176,6 +176,8 @@ input:invalid {
 .row-label {
     font-weight: normal;
     font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 .bold-number {
     font-weight: bold;
