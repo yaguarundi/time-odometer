@@ -415,7 +415,13 @@
         const uniformScale = Math.min(dateScale, timeScale);
         document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${uniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${uniformScale}em;">${timePart}</span>`;
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
-        document.getElementById('r-current-time').innerHTML = `<span class="detail-date">${now.toLocaleString(DateTime.DATE_HUGE)}</span> <span class="detail-time">${now.toFormat(timeFormat)}</span>`;
+        const curDateStr = now.toLocaleString(DateTime.DATE_HUGE);
+        const curTimeStr = now.toFormat(timeFormat);
+        const monoSafeLimit = 28; 
+        let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
+        let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
+        const curUniformScale = Math.min(curDateScale, curTimeScale);
+        document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerText = `(UTC ${now.toFormat("ZZ")})`;
     }
     document.getElementById('btn-now').addEventListener('click', () => {
