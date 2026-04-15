@@ -20,10 +20,9 @@
     <h2>Time Odometer</h2>
     <div class="input-group">
         <label for="birthdatetime">Enter Date and Time:</label>
-        <span class="advise-input-format">yyyy-mm-dd, hh:mm:ss AM/PM</span>
         <div class="main-date-group">
             <div class="input-dow-wrapper">
-                <input type="datetime-local" class="ms-date-input" id="birthdatetime" step="1" value="2000-01-01T00:00:00" min="0001-01-01T00:00:00" max="9999-12-31T23:59:59">
+                <input type="datetime-local" class="ms-date-input" id="birthdatetime" step="1" min="0001-01-01T00:00:00" max="9999-12-31T23:59:59">
                 <span class="main-dow" id="main-dow"></span>
             </div>
             <div class="button-group">
@@ -180,6 +179,7 @@
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.backgroundColor = "transparent";
                 instance.altInput.style.cursor = "text";
+                instance.altInput.placeholder = document.getElementById('toggle24hr').checked ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss AM/PM";
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
@@ -191,6 +191,7 @@
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.cursor = "text";
+                instance.altInput.placeholder = document.getElementById('toggle24hr').checked ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss AM/PM";
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
@@ -438,15 +439,13 @@
 function updateTimeFormat() {
         const is24hr = document.getElementById('toggle24hr').checked;
         const newAltFormat = is24hr ? "Y-m-d, H:i:S" : "Y-m-d, h:i:S K";
-        const formatAdvice = document.querySelector('.advise-input-format');
-        if (formatAdvice) {
-            formatAdvice.innerText = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss AM/PM";
-        }
+        const placeholderStr = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss AM/PM";
         const mainInput = document.getElementById('birthdatetime');
         if (mainInput && mainInput._flatpickr) {
             const currentDate = mainInput._flatpickr.selectedDates[0];
             mainInput._flatpickr.set('time_24hr', is24hr);
             mainInput._flatpickr.set('altFormat', newAltFormat);
+            mainInput._flatpickr.altInput.placeholder = placeholderStr; 
             if (currentDate) {
                 mainInput._flatpickr.setDate(currentDate, false);
             } else if (mainInput.value) {
@@ -459,9 +458,9 @@ function updateTimeFormat() {
         document.querySelectorAll('.milestone-container .ms-date-input').forEach(input => {
             if (input._flatpickr) {
                 const savedIso = input.value;
-
                 input._flatpickr.set('time_24hr', is24hr);
                 input._flatpickr.set('altFormat', newAltFormat);
+                input._flatpickr.altInput.placeholder = placeholderStr;
                 if (savedIso) {
                     const dt = DateTime.fromISO(savedIso);
                     if (dt.isValid) {
