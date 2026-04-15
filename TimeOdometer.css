@@ -346,7 +346,7 @@ input:invalid {
             margin: 0 auto !important;
         }
         .bold-number {
-            font-size: 2em;
+            font-size: 2.5em;
         }
         .button-group {
             display: flex;
