@@ -234,7 +234,7 @@ input:invalid {
     width: 290px;
     font-family: "Courier New", Courier, monospace;
     outline: none;
-    text-align: right;
+    text-align: center;
     font-weight: bold;
 }
 .ms-input:focus { 
@@ -368,8 +368,7 @@ input:invalid {
             width: 295px !important; 
             max-width: 100% !important; 
             min-width: 0 !important; 
-            box-sizing: border-box !important; 
-            text-align: center; 
+            box-sizing: border-box !important;
             margin: 0 auto !important;
             height: 44px !important;
             display: block !important;
