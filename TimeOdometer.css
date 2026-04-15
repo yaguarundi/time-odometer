@@ -385,6 +385,16 @@ input:invalid {
             text-align: center;
             align-items: center;
         }
+        .dropdown-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        }
+        .dropdown-row .input-group {
+        width: 100% !important; 
+        margin-bottom: 0;
+        }
         .detail-date, 
         .detail-time {
             display: block;
