@@ -516,7 +516,16 @@ function updateTimeFormat() {
         refreshAllMilestones(); 
     }
     document.getElementById('toggle24hr').addEventListener('change', updateTimeFormat);
-    document.getElementById('btn-now').click();
+    const currentYearNum = new Date().getFullYear();
+    const newYearString = `${currentYearNum}-01-01T00:00:00`;
+    const bdInput = document.getElementById('birthdatetime');
+    if (bdInput._flatpickr) {
+        bdInput._flatpickr.setDate(newYearString, true);
+    } else {
+        bdInput.value = newYearString;
+    }
+    calculate();
+    refreshAllMilestones();
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
         const yearText = document.getElementById("current-year");
