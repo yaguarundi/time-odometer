@@ -445,11 +445,9 @@
         let curUniformScale = Math.min(curDateScale, curTimeScale);
         let curComma = "";
         let detailComma = " ";
-        if (window.innerWidth > 748) {
+        if (window.innerWidth > 1366) {
             detailUniformScale = 1;
             curUniformScale = 1;
-            curComma = ",";
-            detailComma = ", ";
         }
         document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}${detailComma}</span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}${curComma}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
