@@ -367,7 +367,7 @@ input:invalid {
         transition: 0.3s ease;
     }
 }
-@media (max-width: 748px) {
+@media (max-width: 1024px) {
         body { 
             padding: 10px;
         }
