@@ -425,6 +425,9 @@ input:invalid {
             width: 100% !important; 
             margin-bottom: 0;
         }
+        .bold-number {
+            font-size: 2.25em;
+        }
         .detail-date, 
         .detail-time {
             display: block;
