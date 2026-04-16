@@ -432,9 +432,6 @@ input:invalid {
         .bold-number {
             font-size: 2.25em;
         }
-        .detailed-row {
-            font-size: 1.1em;
-        }
         .detail-date, 
         .detail-time {
             display: block;
