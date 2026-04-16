@@ -292,12 +292,11 @@ input:invalid {
 .detailed-row {
     background-color: #E0CBB9;
     color: #1e1e1e;
-    padding: 15px;
+    padding: 10px;
     border-radius: 6px;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
     text-align: center;
-    line-height: 1.4;
     margin-bottom: 4px;
     font-size: 1em;
 }
@@ -430,6 +429,9 @@ input:invalid {
         }
         .bold-number {
             font-size: 2.25em;
+        }
+        .detailed-row {
+            font-size: 1.1em;
         }
         .detail-date, 
         .detail-time {
