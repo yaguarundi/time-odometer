@@ -519,4 +519,9 @@ input:invalid {
             justify-content: space-between;
         }
     }
+    @media screen and (min-width: 600px) and (max-width: 1366px) {
+            .bold-number {
+            font-size: 2.5em;
+        }
+}
 </style>
