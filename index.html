@@ -105,7 +105,7 @@
 </div>
 <script>
     const DateTime = luxon.DateTime;
-    luxon.Settings.defaultLocale = navigator.language;
+    luxon.Settings.defaultLocale = "en-US";
     let intervalId;
     let timeOffset = 0; 
     let syncRetries = 0;
@@ -413,9 +413,10 @@
         let dateScale = datePart.length > detailSafeLimit ? Math.max(detailSafeLimit / datePart.length, 0.60) : 1;
         let timeScale = timePart.length > detailSafeLimit ? Math.max(detailSafeLimit / timePart.length, 0.60) : 1;
         let detailUniformScale = Math.min(dateScale, timeScale);
+        const userBrowserLocale = navigator.language || 'en-US';
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
-        const curDateStr = now.toLocaleString(DateTime.DATE_HUGE);
-        const curTimeStr = now.toFormat(timeFormat);
+        const curDateStr = now.setLocale(userBrowserLocale).toLocaleString(DateTime.DATE_HUGE);
+        const curTimeStr = now.setLocale(userBrowserLocale).toFormat(timeFormat);
         const monoSafeLimit = 28; 
         let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
