@@ -421,12 +421,14 @@
         let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
         let curUniformScale = Math.min(curDateScale, curTimeScale);
+        let curComma = "";
         if (window.innerWidth > 748) {
         detailUniformScale = 1;
         curUniformScale = 1;
-        }
+        curComma = ",";
+        } 
         document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
-        document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
+        document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}${curComma}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
     }
     document.getElementById('btn-now').addEventListener('click', () => {
