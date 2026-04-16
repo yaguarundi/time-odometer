@@ -516,7 +516,7 @@ input:invalid {
             min-height: 20px;
         }
             .settings-panel {
-            width: 301px;
+            width: 300px;
             margin: 0 auto;
             justify-content: space-between;
         }
