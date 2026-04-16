@@ -6,7 +6,7 @@ body {
     color: #fafafa;
     min-height: 100vh;
     margin: 0;
-    padding: 60px 20px; 
+    padding: 20px; 
 }
 .container {
     display: flex;
@@ -371,9 +371,8 @@ input:invalid {
         body { 
             padding: 10px;
         }
-        .container { 
-            padding: 0;
-            gap: 15px;
+        .container {
+            gap: 5px;
             width: 100%;
         }
         .half-container { 
