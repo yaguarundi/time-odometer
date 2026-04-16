@@ -38,9 +38,7 @@ h2 {
     .sync-warning {
     display: none;
     color: #ff4d4d;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 6px;
+    padding-bottom: 25px;
     text-align: center;
     font-size: 0.9em;
     font-weight: bold;
