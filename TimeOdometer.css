@@ -348,7 +348,7 @@ input:invalid {
     margin-bottom: 0;
 }
 .privacy-notice {
-    font-size: 0.8em;
+    font-size: 0.9em;
     margin: 5px 0;
 }
 @media (hover: hover) and (pointer: fine) {
