@@ -109,7 +109,7 @@
     let intervalId;
     let timeOffset = 0; 
     let syncRetries = 0;
-    const MAX_SYNC_RETRIES = 3;
+    const MAX_SYNC_RETRIES = 1;
     const handleManualTyping = (e, instance) => {
     const val = e.target.value.trim();
     const is24hr = document.getElementById('toggle24hr').checked;
@@ -219,7 +219,7 @@
     });
     async function syncTime() {
         if (syncRetries >= MAX_SYNC_RETRIES) {
-            document.getElementById('sync-warning').style.display = 'block'; // Show banner if retries max out
+            document.getElementById('sync-warning').style.display = 'block';
             return;
         }
         try {
@@ -229,12 +229,12 @@
             const data = await response.json();
             const serverMillis = DateTime.fromISO(data.dateTime, { zone: 'UTC' }).toMillis();
             timeOffset = (serverMillis + (performance.now() - start) / 2) - Date.now();
-            document.getElementById('sync-warning').style.display = 'none'; // Hide banner if successful
+            document.getElementById('sync-warning').style.display = 'none';
             } catch (err) { syncRetries++;
             if (syncRetries >= MAX_SYNC_RETRIES) {
-                document.getElementById('sync-warning').style.display = 'block'; // Show banner on final failure
+                document.getElementById('sync-warning').style.display = 'block';
             } else {
-                setTimeout(syncTime, 4000 * syncRetries);
+                setTimeout(syncTime, 2500 * syncRetries);
             }
         }
     }
