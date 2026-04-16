@@ -255,9 +255,10 @@
                 const ds = row.querySelector('.ms-dow');
                 if (di !== activeInput) {
                     if (di && di._flatpickr) {
+                        di._flatpickr.setDate(null, false);
+                    } else {
                         di.value = '';
-                        di._flatpickr.altInput.value = '';
-                    } else di.value = '';
+                    }
                 }
                 if (ai !== activeInput) ai.value = '';
                 ds.innerText = 'EEE';
