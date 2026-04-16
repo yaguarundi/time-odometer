@@ -408,7 +408,7 @@
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
-        const p = (val, unit) => `${Math.trunc(val) + 0} ${unit}${Math.abs(Math.trunc(val)) === 1 ? '' : 's'}`;
+        const p = (val, unit) => { const num = Math.trunc(val) + 0; return new Intl.NumberFormat(navigator.language, { style: 'unit', unit: unit, unitDisplay: 'long' }).format(num); };
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}`;
         const timePart = `${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
         const detailSafeLimit = 28; 
