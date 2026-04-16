@@ -200,7 +200,6 @@ input:invalid {
     flex-direction: column;
     gap: 15px;
     display: none;
-    margin-top: 5px;
 }
 .row {
     background-color: #333;
@@ -377,6 +376,7 @@ input:invalid {
         .container {
             gap: var(--mobile-spacing);
             width: 100%;
+            max-width: 1366px;
         }
         .half-container { 
             padding: 10px; 
