@@ -350,6 +350,7 @@ input:invalid {
 .privacy-notice {
     font-size: 0.9em;
     margin: 5px 0;
+    text-align: center;
 }
 @media (hover: hover) and (pointer: fine) {
     .kofi-icon:hover {
