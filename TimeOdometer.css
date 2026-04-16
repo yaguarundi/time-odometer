@@ -35,6 +35,16 @@ h2 {
     color: #fafafa;
     width: 100%;
 }
+    .sync-warning {
+    display: none;
+    color: #ff4d4d;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+}
 label {
     font-size: 0.9em;
     color: #b3b3b3;
