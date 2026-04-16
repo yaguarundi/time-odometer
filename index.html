@@ -223,29 +223,14 @@
             }
         });
     });
-    const tzSelect = document.getElementById('tzLocation');
+   const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
     const timeZones = Intl.supportedValuesOf('timeZone').filter(tz => tz !== 'UTC');
     timeZones.unshift('UTC');
     const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const userLocale = navigator.language;
     timeZones.forEach(tz => {
         const option1 = document.createElement('option');
-        option1.value = tz; 
-        let baseName = tz.replace(/_/g, ' ');
-        let displayName = baseName;
-        try {
-            const parts = new Intl.DateTimeFormat(userLocale, { 
-                timeZone: tz, 
-                timeZoneName: 'longGeneric' 
-            }).formatToParts(new Date());
-            const tzNamePart = parts.find(p => p.type === 'timeZoneName');
-            if (tzNamePart && tzNamePart.value) {
-                displayName = `${baseName} (${tzNamePart.value})`;
-            }
-        } catch (e) {
-        }
-        option1.textContent = displayName;
+        option1.value = tz; option1.textContent = tz.replace(/_/g, ' ');
         const option2 = option1.cloneNode(true);
         if (tz === userTz) { option1.selected = true; option2.selected = true; }
         tzSelect.appendChild(option1);
