@@ -516,6 +516,7 @@ function updateTimeFormat() {
         refreshAllMilestones(); 
     }
     document.getElementById('toggle24hr').addEventListener('change', updateTimeFormat);
+    document.getElementById('btn-now').click();
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
         const yearText = document.getElementById("current-year");
