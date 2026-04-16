@@ -433,6 +433,9 @@ input:invalid {
             display: block;
             line-height: 1.6; 
         }
+    .detailed-row {
+font-size: 1.1em;
+    }
         .detail-date {
             margin-bottom: 6px;
         }
