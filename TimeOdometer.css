@@ -367,12 +367,15 @@ input:invalid {
         transition: 0.3s ease;
     }
 }
-@media (max-width: 1024px) {
+@media (max-width: 1366px) {
+        :root {
+        --mobile-spacing: 10px; 
+        }
         body { 
-            padding: 10px;
+            padding: var(--mobile-spacing);
         }
         .container {
-            gap: 5px;
+            gap: var(--mobile-spacing);
             width: 100%;
         }
         .half-container { 
