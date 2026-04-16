@@ -203,6 +203,24 @@
                 }
             }
         });
+       document.querySelectorAll('.row').forEach(row => {
+            const unit = row.getAttribute('data-unit'); 
+            const intlUnit = unit.slice(0, -1); 
+            try {
+                const parts = new Intl.NumberFormat(navigator.language, { 
+                    style: 'unit', 
+                    unit: intlUnit, 
+                    unitDisplay: 'long' 
+                }).formatToParts(10);
+                const unitPart = parts.find(part => part.type === 'unit');
+                if (unitPart) {
+                    const label = row.querySelector('.row-label');
+                    label.innerText = unitPart.value;
+                }
+            } catch (e) {
+                console.warn("Could not translate unit:", unit);
+            }
+        });
     });
     const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
@@ -500,10 +518,10 @@ function updateTimeFormat() {
     document.getElementById('toggle24hr').addEventListener('change', updateTimeFormat);
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
-    const yearText = document.getElementById("current-year");
-    if (yearText) {
-    yearText.innerText = new Date().getFullYear();
-    }
-</script>
-</body>
+        const yearText = document.getElementById("current-year");
+            if (yearText) {
+            yearText.innerText = new Date().getFullYear();
+        }
+        </script>
+    </body>
 </html>
