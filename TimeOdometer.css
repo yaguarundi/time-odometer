@@ -342,10 +342,14 @@ input:invalid {
     background-color: #fafafa;
 }
 .copyright {
-    font-size: 0.87em;
+    font-size: 0.9em;
     margin-top: 15px;
     text-align: center;
     margin-bottom: 0;
+}
+.privacy-notice{
+    font-size: 0.8em;
+    margin: 5px 0;
 }
 @media (hover: hover) and (pointer: fine) {
     .kofi-icon:hover {
