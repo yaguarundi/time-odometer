@@ -372,8 +372,10 @@
             ds.innerText = targetDate.toFormat("EEE").toUpperCase();
             if (ai !== activeInput) {
                let msDiff = targetDate.toMillis() - originDate.toMillis();
+                let ls = countLeapSeconds(DateTime.fromMillis(Math.min(originDate.toMillis(), targetDate.toMillis())), DateTime.fromMillis(Math.max(originDate.toMillis(), targetDate.toMillis())));
+                let direction = targetDate >= originDate ? 1 : -1;
                 let amt = 0;
-                if (unit === 'seconds') amt = parseFloat((msDiff / 1000).toFixed(4));
+                if (unit === 'seconds') amt = parseFloat(((msDiff / 1000) + (ls * direction)).toFixed(4));
                 else if (unit === 'minutes') amt = parseFloat((msDiff / 60000).toFixed(4));
                 else if (unit === 'hours') amt = parseFloat((msDiff / 3600000).toFixed(4));
                 else if (unit === 'days') amt = parseFloat((msDiff / 86400000).toFixed(4));
@@ -443,7 +445,14 @@
             const originDate = DateTime.fromISO(originVal, { zone: document.getElementById('tzLocation').value }).startOf('second');
             let td;
             let msOrigin = originDate.toMillis();
-            if (unit === 'seconds') td = DateTime.fromMillis(msOrigin + tVal * 1000).setZone(document.getElementById('targetTzLocation').value);
+            if (unit === 'seconds') {
+                let ms = msOrigin + (tVal * 1000);
+                for(let i=0; i<3; i++) {
+                    let ls = countLeapSeconds(DateTime.fromMillis(Math.min(msOrigin, ms)), DateTime.fromMillis(Math.max(msOrigin, ms)));
+                    ms = tVal < 0 ? msOrigin + (tVal*1000) + (ls*1000) : msOrigin + (tVal*1000) - (ls*1000);
+                }
+                td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
+            }
             else if (unit === 'minutes') td = DateTime.fromMillis(msOrigin + tVal * 60000).setZone(document.getElementById('targetTzLocation').value);
             else if (unit === 'hours') td = DateTime.fromMillis(msOrigin + tVal * 3600000).setZone(document.getElementById('targetTzLocation').value);
             else if (unit === 'days') td = DateTime.fromMillis(msOrigin + tVal * 86400000).setZone(document.getElementById('targetTzLocation').value);
@@ -476,8 +485,11 @@
         if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
         const rawMs = now.toMillis() - bd.toMillis();
+        const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
+        const direction = now >= bd ? 1 : -1;
+        const physicalSeconds = (rawMs / 1000) + (ls * direction);
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
-        document.getElementById('r-sec').innerText = f(rawMs / 1000);
+        document.getElementById('r-sec').innerText = f(physicalSeconds);
         document.getElementById('r-min').innerText = f(rawMs / 60000);
         document.getElementById('r-hour').innerText = f(rawMs / 3600000);
         document.getElementById('r-day').innerText = f(rawMs / 86400000);
