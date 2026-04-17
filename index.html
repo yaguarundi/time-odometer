@@ -296,7 +296,7 @@
             const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
             const ai = row.querySelector('.ms-input');
             const ds = row.querySelector('.ms-dow');
-            ds.innerText = targetDate.toFormat("EEE");
+            ds.innerText = targetDate.toFormat("EEE").toUpperCase();
             ds.style.color = '#E0CBB9';
             if (di !== activeInput) {
                 const newIso = targetDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -308,7 +308,7 @@
                     di.value = newIso;
                 }
             }
-            ds.innerText = targetDate.toFormat("EEE");
+            ds.innerText = targetDate.toFormat("EEE").toUpperCase();
             if (ai !== activeInput) {
                 let amt = 0;
                 if (unit === 'seconds') {
@@ -410,8 +410,8 @@
         const u24 = document.getElementById('toggle24hr').checked;
         if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = 'EEE'; md.style.color = '#634E34'; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
-        if (bd.isValid && bd.year >= 1) { md.innerText = bd.toFormat("EEE"); md.style.color = '#E0CBB9'; } else { md.innerText = 'EEE'; md.style.color = '#634E34'; }
-        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE") : 'EEE';
+        if (bd.isValid && bd.year >= 1) { md.innerText = bd.toFormat("EEE").toUpperCase(); md.style.color = '#E0CBB9'; } else { md.innerText = 'EEE'; md.style.color = '#634E34'; }
+        md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE").toUpperCase() : 'EEE';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
         if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
@@ -427,7 +427,7 @@
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
-        const p = (val, unit) => { const num = Math.trunc(val) + 0; return new Intl.NumberFormat(navigator.language, { style: 'unit', unit: unit, unitDisplay: 'long' }).format(num); };
+        const p = (val, unit) => { const num = Math.trunc(val) + 0; return new Intl.NumberFormat(navigator.language, { style: 'unit', unit: unit, unitDisplay: 'long', numberingSystem: 'latn' }).format(num); };
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}`;
         const timePart = `${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
         const detailSafeLimit = 28; 
@@ -436,8 +436,8 @@
         let detailUniformScale = Math.min(dateScale, timeScale);
         const userBrowserLocale = navigator.language || 'en-US';
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
-        const curDateStr = now.setLocale(userBrowserLocale).toLocaleString(DateTime.DATE_HUGE);
-        const curTimeStr = now.setLocale(userBrowserLocale).toFormat(timeFormat);
+        const curDateStr = now.setLocale("en-US").toFormat("EEE").toUpperCase() + ", " + now.toFormat("yyyy-MM-dd");
+        const curTimeStr = now.setLocale("en-US").toFormat(timeFormat);
         const monoSafeLimit = 28; 
         let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
