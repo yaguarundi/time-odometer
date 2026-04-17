@@ -371,12 +371,14 @@
             }
             ds.innerText = targetDate.toFormat("EEE").toUpperCase();
             if (ai !== activeInput) {
+               let msDiff = targetDate.toMillis() - originDate.toMillis();
                 let amt = 0;
-                if (unit === 'seconds') {
-                    let ms = targetDate.toMillis() - originDate.toMillis();
-                    let ls = countLeapSeconds(DateTime.fromMillis(Math.min(originDate.toMillis(), targetDate.toMillis())), DateTime.fromMillis(Math.max(originDate.toMillis(), targetDate.toMillis())));
-                    amt = targetDate < originDate ? Math.floor(ms/1000) - ls : Math.floor(ms/1000) + ls;
-                } else { amt = parseFloat(targetDate.diff(originDate, unit)[unit].toFixed(4)); }
+                if (unit === 'seconds') amt = parseFloat((msDiff / 1000).toFixed(4));
+                else if (unit === 'minutes') amt = parseFloat((msDiff / 60000).toFixed(4));
+                else if (unit === 'hours') amt = parseFloat((msDiff / 3600000).toFixed(4));
+                else if (unit === 'days') amt = parseFloat((msDiff / 86400000).toFixed(4));
+                else if (unit === 'weeks') amt = parseFloat((msDiff / 604800000).toFixed(4));
+                else amt = parseFloat(targetDate.diff(originDate, unit)[unit].toFixed(4));
                 const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
                 let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
@@ -440,16 +442,13 @@
             const originVal = document.getElementById('birthdatetime').value;
             const originDate = DateTime.fromISO(originVal, { zone: document.getElementById('tzLocation').value }).startOf('second');
             let td;
-            if (unit === 'seconds') {
-                let ms = originDate.toMillis() + (tVal * 1000);
-                for(let i=0; i<3; i++) {
-                    let ls = countLeapSeconds(DateTime.fromMillis(Math.min(originDate.toMillis(), ms)), DateTime.fromMillis(Math.max(originDate.toMillis(), ms)));
-                    ms = tVal < 0 ? originDate.toMillis() + (tVal*1000) + (ls*1000) : originDate.toMillis() + (tVal*1000) - (ls*1000);
-                }
-                td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
-            } else { 
-                td = originDate.plus({[unit]: tVal}).setZone(document.getElementById('targetTzLocation').value); 
-            }
+            let msOrigin = originDate.toMillis();
+            if (unit === 'seconds') td = DateTime.fromMillis(msOrigin + tVal * 1000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'minutes') td = DateTime.fromMillis(msOrigin + tVal * 60000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'hours') td = DateTime.fromMillis(msOrigin + tVal * 3600000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'days') td = DateTime.fromMillis(msOrigin + tVal * 86400000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'weeks') td = DateTime.fromMillis(msOrigin + tVal * 604800000).setZone(document.getElementById('targetTzLocation').value);
+            else td = originDate.plus({[unit]: tVal}).setZone(document.getElementById('targetTzLocation').value);
             if (!td.isValid || td.year > 9999 || td.year < 0001) {
             syncMilestones(null, this);
             return;
@@ -476,15 +475,13 @@
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
         if (!bd.isValid || bd.year < 1 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
-        const ms = now.diff(bd).toMillis();
-        const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
-        const ps = ms < 0 ? Math.floor(ms/1000) - ls : Math.floor(ms/1000) + ls;
+        const rawMs = now.toMillis() - bd.toMillis();
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
-        document.getElementById('r-sec').innerText = f(ps);
-        document.getElementById('r-min').innerText = f(now.diff(bd, 'minutes').minutes);
-        document.getElementById('r-hour').innerText = f(now.diff(bd, 'hours').hours);
-        document.getElementById('r-day').innerText = f(now.diff(bd, 'days').days);
-        document.getElementById('r-week').innerText = f(now.diff(bd, 'weeks').weeks);
+        document.getElementById('r-sec').innerText = f(rawMs / 1000);
+        document.getElementById('r-min').innerText = f(rawMs / 60000);
+        document.getElementById('r-hour').innerText = f(rawMs / 3600000);
+        document.getElementById('r-day').innerText = f(rawMs / 86400000);
+        document.getElementById('r-week').innerText = f(rawMs / 604800000);
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
