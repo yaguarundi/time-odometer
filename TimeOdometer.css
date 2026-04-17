@@ -82,7 +82,7 @@ label {
     text-align: center;
     border-radius: 6px;
     padding: 10px 12px;
-    font-size: 0.85em;
+    font-size: 0.9em;
     border: 1px solid #444;
     box-shadow: 0 4px 16px rgba(0,0,0,0.6);
     position: absolute;
@@ -512,8 +512,7 @@ input:invalid {
             z-index: 2147483647 !important;
             box-shadow: 0 10px 40px rgba(0,0,0,0.9) !important;
             white-space: normal !important; 
-            text-align: center !important; 
-            font-size: 0.75em !important; 
+            text-align: center !important;  
             padding: 10px 12px !important; 
             box-sizing: border-box !important;
         }
