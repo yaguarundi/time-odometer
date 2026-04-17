@@ -36,6 +36,13 @@ h2 {
     margin-bottom: 20px;
     color: #fafafa;
     width: 100%;
+    position: relative; 
+    z-index: 2;
+}
+.input-group:hover,
+.input-group:focus-within,
+.input-group:has(.tooltip-container.is-open) {
+    z-index: 999999;
 }
     .sync-warning {
     display: none;
@@ -48,6 +55,65 @@ h2 {
 label {
     font-size: 0.9em;
     color: #b3b3b3;
+    position: relative;
+    z-index: 10;
+    display: block;
+}
+.tooltip-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle; 
+    margin-left: 4px;
+    cursor: help;
+    z-index: 10;
+}
+.tooltip-icon {
+    width: 14px;
+    height: 14px;
+    color: #634E34;/
+    transition: color 0.3s ease;
+}
+.tooltip-text {
+    visibility: hidden;
+    width: 240px;
+    background-color: #1e1e1e;
+    color: #fafafa;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.85em;
+    border: 1px solid #444;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    position: absolute;
+    z-index: 99999;
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: normal;
+    font-weight: normal;
+    line-height: 1.4;
+}
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #444 transparent transparent transparent;
+}
+.tooltip-container:hover,
+.tooltip-container.is-open {
+    z-index: 99999; 
+}
+.tooltip-container:hover .tooltip-text,
+.tooltip-container.is-open .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 select {
     padding: 8px;
@@ -55,15 +121,23 @@ select {
     border: 1px solid #444;
     border-radius: 6px;
     background-color: #333;
-    color: white;
+    color: #634E34;
     color-scheme: dark;
     width: 100%;
     color: #E0CBB9;
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
+    position: relative;
+    z-index: 1;
+}
+select option {
+    background-color: #1e1e1e;
+    color: #E0CBB9;
 }
 select:focus {
     border-color: #634E34;
+    outline: 2px solid #634E34;
+    outline-offset: -1px;
 }
 .dropdown-row {
     display: flex;
@@ -354,7 +428,29 @@ input:invalid {
     padding-bottom: 10px;
     text-align: center;
 }
+.dropdown-row .input-group:first-child .tooltip-text {
+    left: -15px;
+    transform: none;
+}
+.dropdown-row .input-group:first-child .tooltip-text::after {
+    left: 22px;
+    transform: none;
+}
+.dropdown-row .input-group:last-child .tooltip-text {
+    left: auto;
+    right: -15px;
+    transform: none;
+}
+.dropdown-row .input-group:last-child .tooltip-text::after {
+    left: auto;
+    right: 22px;
+    transform: none;
+}
 @media (hover: hover) and (pointer: fine) {
+    .tooltip-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
     .kofi-icon:hover {
         opacity: 50%;
     }
@@ -398,7 +494,39 @@ input:invalid {
             text-align-last: center;
             margin: 0 auto !important;
         }
-            .results {
+        .tooltip-container {
+            margin-left: 6px;
+            position: static;
+        }
+        .tooltip-container .tooltip-text,
+        .dropdown-row .input-group:first-child .tooltip-text,
+        .dropdown-row .input-group:last-child .tooltip-text {
+            position: absolute !important;
+            bottom: 48px !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: 100% !important;
+            max-width: 295px !important; 
+            margin-left: 0 !important; 
+            z-index: 2147483647 !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9) !important;
+            white-space: normal !important; 
+            text-align: center !important; 
+            font-size: 0.75em !important; 
+            padding: 10px 12px !important; 
+            box-sizing: border-box !important;
+        }
+        .tooltip-container .tooltip-text::after,
+        .dropdown-row .input-group:first-child .tooltip-text::after,
+        .dropdown-row .input-group:last-child .tooltip-text::after {
+            display: block !important; 
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            border-color: #634E34 transparent transparent transparent !important;
+        }
+        .results {
             gap: 10px; 
         }
         .dropdown-row .input-group:last-child {
