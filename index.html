@@ -15,6 +15,7 @@
     <link rel="apple-touch-icon" href="timeodometer.png">
     <link rel="stylesheet" href="TimeOdometer.css">
 </head>
+<body>
 <div class="container">
     <div class="half-container">
     <h2>Time Odometer</h2>
@@ -34,21 +35,37 @@
         </div>
     </div>
     <div class="dropdown-row">
-    <div class="input-group">
-        <label for="tzLocation">Origin Location:</label>
-        <select id="tzLocation"></select>
-    </div>
-    <div class="input-group">
-        <label for="targetTzLocation">Target Location:</label>
-        <select id="targetTzLocation"></select>
-    </div>
+        <div class="input-group">
+            <label for="tzLocation">Origin Location:<span class="tooltip-container">
+                    <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span class="tooltip-text">Event location (e.g. your place of birth).</span>
+                </span>
+            </label>
+            <select id="tzLocation"></select>
+        </div>
+        <div class="input-group">
+            <label for="targetTzLocation">Target Location:<span class="tooltip-container">
+                    <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span class="tooltip-text">For milestones (e.g. your current place).</span>
+                </span>
+            </label>
+            <select id="targetTzLocation"></select>
+        </div>
     </div>
             <div class="settings-panel">
             <label class="toggle-wrapper"><input type="checkbox" id="toggleCommas" checked>Delimiter</label>
             <label class="toggle-wrapper">24-hour<input type="checkbox" id="toggle24hr"></label>
         </div>
         <div class="donation-section">
-    <p class="donation-text">Like it? Please consider a small donation!</p>
+    <p class="donation-text">Like it? Support the project!</p>
     <a href="https://ko-fi.com/yaguarundi" target="_blank" rel="noopener noreferrer" title="Support me on Ko-fi.">
         <img src="kofilogo.png" alt="Ko-fi" class="kofi-icon">
     </a>
@@ -131,6 +148,50 @@
 };
    window.addEventListener('DOMContentLoaded', () => {
         const nativeInputFont = window.getComputedStyle(document.getElementById('birthdatetime')).fontFamily;
+        const tooltips = document.querySelectorAll('.tooltip-container');
+        let activeTooltip = null;
+        let shieldTimer = null;
+        tooltips.forEach(container => {
+            ['pointerdown', 'touchstart', 'click'].forEach(evt => {
+                container.addEventListener(evt, (e) => {
+                    if (window.innerWidth > 1366) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (evt === 'pointerdown') {
+                        if (activeTooltip) {
+                            activeTooltip.classList.remove('is-open');
+                            activeTooltip.closest('.input-group').style.zIndex = '2'; 
+                        }
+
+                        if (activeTooltip === container) {
+                            activeTooltip = null;
+                        } else {
+                            container.classList.add('is-open');
+                            container.closest('.input-group').style.zIndex = '999999'; 
+                            activeTooltip = container;
+                        }
+                    }
+                });
+            });
+        });
+        ['pointerdown', 'touchstart', 'click'].forEach(evt => {
+            document.addEventListener(evt, (e) => {
+                if (window.innerWidth > 1366) return;
+                if (shieldTimer) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                if (activeTooltip && !activeTooltip.contains(e.target)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    activeTooltip.classList.remove('is-open');
+                    activeTooltip.closest('.input-group').style.zIndex = '2'; 
+                    activeTooltip = null;
+                    shieldTimer = setTimeout(() => { shieldTimer = null; }, 300);
+                }
+            }, { capture: true, passive: false });
+        });
         document.querySelectorAll('.main-dow, .ms-dow').forEach(span => {
             span.style.fontFamily = nativeInputFont;
             span.style.fontWeight = "bold";
