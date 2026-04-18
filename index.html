@@ -275,6 +275,15 @@
             },
             onValueUpdate: function(selectedDates, dateStr, instance) {
                 forceLeadingZero(instance);
+                if (instance.altInput) {
+                    const is24hr = document.getElementById('toggle24hr').checked;
+                    const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                    if (instance.altInput.value && instance.altInput.value !== template) {
+                        instance.altInput.style.color = '#E0CBB9';
+                    } else {
+                        instance.altInput.style.color = '#634E34';
+                    }
+                }
             },
             onOpen: function(selectedDates, dateStr, instance) {
                 forceLeadingZero(instance);
