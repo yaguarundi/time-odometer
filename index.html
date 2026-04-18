@@ -132,7 +132,7 @@
     const handleManualTyping = (e, instance) => {
         const val = e.target.value;
         const is24hr = document.getElementById('toggle24hr').checked;
-        const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+        const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
         if (!val) {
             e.target.style.color = '#634E34';
             instance.clear();
@@ -152,7 +152,7 @@
         } else {
             e.target.style.color = (val === template) ? '#634E34' : '#E0CBB9';
         }
-        const incomplete = is24hr ? /[ymdhHs]/.test(val) : /[ymdhHs]/.test(val) || val.endsWith('--');
+        const incomplete = is24hr ? /[ymdhHs]/.test(val) : /[ymdhHs]/.test(val) || val.endsWith('_M');
         if (incomplete) {
             return;
         }
@@ -172,7 +172,7 @@
     const handleInputBlur = (e, instance) => {
         const val = e.target.value;
         const is24hr = document.getElementById('toggle24hr').checked;
-        const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+        const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
         if (!val || val === template) return;
         const dateStr = val.substring(0, 10);
         const dateIsFullyTyped = !/[ymd]/.test(dateStr);
@@ -183,7 +183,7 @@
                 dateIsImpossible = true;
             }
         }
-        const incomplete = is24hr ? /[ymdhHs]/.test(val) : /[ymdhHs]/.test(val) || val.endsWith('--');
+        const incomplete = is24hr ? /[ymdhHs]/.test(val) : /[ymdhHs]/.test(val) || val.endsWith('_M');
         if (dateIsImpossible || incomplete) {
             e.preventDefault();
             e.stopPropagation();
@@ -277,7 +277,7 @@
                 forceLeadingZero(instance);
                 if (instance.altInput) {
                     const is24hr = document.getElementById('toggle24hr').checked;
-                    const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                    const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
                     if (instance.altInput.value && instance.altInput.value !== template) {
                         instance.altInput.style.color = '#E0CBB9';
                     } else {
@@ -292,7 +292,7 @@
         const restrictDateInputKeys = (e) => {
             const input = e.target;
             const is24hr = document.getElementById('toggle24hr').checked;
-            const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+            const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
             const controlKeys = ['Tab', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape'];
             if (controlKeys.includes(e.key) || e.ctrlKey || e.metaKey) return;
             e.preventDefault(); 
@@ -307,27 +307,33 @@
             if (start !== end) {
                 if (e.key === 'Backspace' || e.key === 'Delete') {
                     let chars = val.split('');
-                    for (let i = start; i < end; i++) {
-                        chars[i] = template[i]; 
-                    }
+                    for (let i = start; i < end; i++) chars[i] = template[i]; 
                     input.value = chars.join('');
                     input.setSelectionRange(start, start);
                     input.dispatchEvent(new Event('input', { bubbles: true }));
+                    return;
+                } else if (/^[0-9]$/.test(e.key) || (!is24hr && /^[apAP]$/.test(e.key))) {
+                    let chars = val.split('');
+                    for (let i = start; i < end; i++) chars[i] = template[i]; 
+                    val = chars.join('');
+                    input.value = val;
+                    input.setSelectionRange(start, start);
+                    end = start;
+                } else {
+                    return; 
                 }
-                return;
             }
             const isFormatChar = (i) => [4, 7, 10, 11, 14, 17, (is24hr ? -1 : 20)].includes(i);
             if (e.key === 'Backspace') {
                 if (start > 0) {
                     let idx = start - 1;
-                    while (idx >= 0 && isFormatChar(idx)) {
-                        idx--;
-                    } 
+                    while (idx >= 0 && isFormatChar(idx)) idx--;
+                    
                     if (idx >= 0) {
                         let chars = val.split('');
                         if (!is24hr && idx >= 21) {
-                            chars[21] = '-'; 
-                            chars[22] = '-'; 
+                            chars[21] = '_';
+                            chars[22] = 'M'; 
                             idx = 21;
                         } else {
                             chars[idx] = template[idx]; 
@@ -342,14 +348,12 @@
             if (e.key === 'Delete') {
                 if (start < val.length) {
                     let idx = start;
-                    while (idx < val.length && isFormatChar(idx)) {
-                        idx++; 
-                    }
+                    while (idx < val.length && isFormatChar(idx)) idx++;
                     if (idx < val.length) {
                         let chars = val.split('');
                         if (!is24hr && idx >= 21) {
-                            chars[21] = '-'; 
-                            chars[22] = '-';
+                            chars[21] = '_';
+                            chars[22] = 'M';
                             input.setSelectionRange(21, 21);
                         } else {
                             chars[idx] = template[idx];
@@ -363,13 +367,24 @@
             }
             if (/^[0-9]$/.test(e.key)) {
                 let idx = start;
-                while (idx < val.length && isFormatChar(idx)) {
-                    idx++;
-                }
-                if (idx < val.length && /[ymdhHs-]/.test(template[idx])) {
+                while (idx < val.length && isFormatChar(idx)) idx++; 
+                if (idx < val.length && /[ymdhHs]/.test(template[idx])) {
                     if (!is24hr && idx >= 21) return;
                     let chars = val.split('');
-                    chars[idx] = e.key; 
+                    let keyDigit = parseInt(e.key);
+                    let autoPad = false;
+                    if (template[idx] === 'm' && idx === 5 && keyDigit > 1) autoPad = true; 
+                    if (template[idx] === 'd' && idx === 8 && keyDigit > 3) autoPad = true; 
+                    if (is24hr && template[idx] === 'H' && idx === 12 && keyDigit > 2) autoPad = true; 
+                    if (!is24hr && template[idx] === 'h' && idx === 12 && keyDigit > 1) autoPad = true; 
+                    if (template[idx] === 'm' && idx === 15 && keyDigit > 5) autoPad = true; 
+                    if (template[idx] === 's' && idx === 18 && keyDigit > 5) autoPad = true; 
+                    if (autoPad) {
+                        chars[idx] = '0';
+                        chars[idx + 1] = e.key;
+                    } else {
+                        chars[idx] = e.key; 
+                    }
                     const testStr = chars.join('');
                     const m1 = testStr[5], m2 = testStr[6];
                     const d1 = testStr[8], d2 = testStr[9];
@@ -392,14 +407,10 @@
                     if (mn1 !== 'm' && mn2 !== 'm' && parseInt(mn1+mn2) > 59) isInvalid = true;
                     if (s1 !== 's' && s1 > '5') isInvalid = true;
                     if (s1 !== 's' && s2 !== 's' && parseInt(s1+s2) > 59) isInvalid = true;
-                    if (isInvalid) {
-                        return; 
-                    }
-                    input.value = testStr;
-                    let nextIdx = idx + 1;
-                    while (nextIdx < val.length && isFormatChar(nextIdx)) {
-                        nextIdx++;
-                    }
+                    if (isInvalid) return;
+                    input.value = testStr; 
+                    let nextIdx = autoPad ? idx + 2 : idx + 1;
+                    while (nextIdx < val.length && isFormatChar(nextIdx)) nextIdx++;
                     input.setSelectionRange(nextIdx, nextIdx);
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
@@ -424,7 +435,7 @@
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.backgroundColor = "transparent";
                 instance.altInput.style.cursor = "text";
-                instance.altInput.placeholder = document.getElementById('toggle24hr').checked ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                instance.altInput.placeholder = document.getElementById('toggle24hr').checked ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 instance.altInput.addEventListener('keydown', restrictDateInputKeys);
                 instance.altInput.addEventListener('blur', (e) => handleInputBlur(e, instance), { capture: true });
@@ -433,7 +444,7 @@
                     const start = e.target.selectionStart;
                     const end = e.target.selectionEnd;
                     const is24 = document.getElementById('toggle24hr').checked;
-                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
                     let chars = e.target.value.split('');
                     for (let i = start; i < end; i++) {
                         chars[i] = temp[i];
@@ -452,7 +463,7 @@
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
                 instance.altInput.style.cursor = "text";
-                instance.altInput.placeholder = document.getElementById('toggle24hr').checked ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                instance.altInput.placeholder = document.getElementById('toggle24hr').checked ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 instance.altInput.addEventListener('keydown', restrictDateInputKeys);
                 instance.altInput.addEventListener('blur', (e) => handleInputBlur(e, instance), { capture: true });
@@ -461,7 +472,7 @@
                     const start = e.target.selectionStart;
                     const end = e.target.selectionEnd;
                     const is24 = document.getElementById('toggle24hr').checked;
-                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
                     let chars = e.target.value.split('');
                     for (let i = start; i < end; i++) {
                         chars[i] = temp[i];
@@ -776,7 +787,7 @@
 function updateTimeFormat() {
         const is24hr = document.getElementById('toggle24hr').checked;
         const newAltFormat = is24hr ? "Y-m-d, H:i:S" : "Y-m-d, h:i:S K";
-        const placeholderStr = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+        const placeholderStr = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
         const mainInput = document.getElementById('birthdatetime');
         if (mainInput && mainInput._flatpickr) {
             const currentDate = mainInput._flatpickr.selectedDates[0];
