@@ -22,7 +22,14 @@
     <p class="privacy-notice">🔒&nbsp;Private &amp; Secure</p>
     <div id="sync-warning" class="sync-warning">⚠️&nbsp;Failed connection. Using device clock.</div>
     <div class="input-group">
-        <label for="birthdatetime">Enter Date and Time:</label>
+        <label for="birthdatetime">Enter Date and Time:<span class="tooltip-container">
+                    <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span class="tooltip-text">From years &quot;0&quot;&nbsp;&lpar;1&nbsp;BC&rpar;&nbsp;to 9999 AD.</span>
+                </span></label>
         <div class="main-date-group">
             <div class="input-dow-wrapper">
                 <input type="datetime-local" class="ms-date-input" id="birthdatetime" step="1" min="0000-01-01T00:00:00" max="9999-12-31T23:59:59">
