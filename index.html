@@ -157,12 +157,11 @@
         if (dateIsImpossible) {
             e.target.style.color = '#ff4d4d'; 
         } else {
-            e.target.style.color = (val === template) ? '#634E34' : '#E0CBB9';
+            const isComplete = !/[ymdhHs]/.test(val) && (!is24hr ? !val.endsWith('_M') : true);
+            e.target.style.color = (val === template) ? '#634E34' : (isComplete ? '#E0CBB9' : '#E0CBB9');
         }
         const incomplete = is24hr ? /[ymdhHs]/.test(val) : /[ymdhHs]/.test(val) || val.endsWith('_M');
-        if (incomplete) {
-            return;
-        }
+        if (incomplete) return;
         const format = is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a";
         const parsed = DateTime.fromFormat(val, format);
         if (parsed.isValid && !dateIsImpossible) {
@@ -195,7 +194,6 @@
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation(); 
-
             e.target.value = "";
             e.target.style.color = '#634E34';
             e.target.dispatchEvent(new Event('input', { bubbles: true }));
@@ -285,7 +283,9 @@
                 if (instance.altInput) {
                     const is24hr = document.getElementById('toggle24hr').checked;
                     const template = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
-                    if (instance.altInput.value && instance.altInput.value !== template) {
+                    const currentAltValue = instance.altInput.value;
+                    if (currentAltValue.includes(":60")) {
+                    } else if (instance.altInput.value && instance.altInput.value !== template) {
                         instance.altInput.style.color = '#E0CBB9';
                     } else {
                         instance.altInput.style.color = '#634E34';
@@ -379,6 +379,7 @@
                     if (!is24hr && idx >= 21) return;
                     let chars = val.split('');
                     let keyDigit = parseInt(e.key);
+                    
                     let autoPad = false;
                     if (template[idx] === 'm' && idx === 5 && keyDigit > 1) autoPad = true; 
                     if (template[idx] === 'd' && idx === 8 && keyDigit > 3) autoPad = true; 
@@ -386,6 +387,7 @@
                     if (!is24hr && template[idx] === 'h' && idx === 12 && keyDigit > 1) autoPad = true; 
                     if (template[idx] === 'm' && idx === 15 && keyDigit > 5) autoPad = true; 
                     if (template[idx] === 's' && idx === 18 && keyDigit > 5) autoPad = true; 
+                    
                     if (autoPad) {
                         chars[idx] = '0';
                         chars[idx + 1] = e.key;
@@ -398,6 +400,7 @@
                     const h1 = testStr[12], h2 = testStr[13];
                     const mn1 = testStr[15], mn2 = testStr[16];
                     const s1 = testStr[18], s2 = testStr[19];
+                    
                     let isInvalid = false;
                     if (m1 !== 'm' && m1 > '1') isInvalid = true;
                     if (m1 !== 'm' && m2 !== 'm' && (parseInt(m1+m2) < 1 || parseInt(m1+m2) > 12)) isInvalid = true;
@@ -414,14 +417,12 @@
                     if (mn1 !== 'm' && mn2 !== 'm' && parseInt(mn1+mn2) > 59) isInvalid = true;
                     if (s1 !== 's' && s1 > '5') isInvalid = true;
                     if (s1 !== 's' && s2 !== 's' && parseInt(s1+s2) > 59) isInvalid = true;
+
                     if (isInvalid) return;
-                    input.value = testStr; 
-                    let nextIdx = autoPad ? idx + 2 : idx + 1;
-                    while (nextIdx < val.length && isFormatChar(nextIdx)) nextIdx++;
-                    input.setSelectionRange(nextIdx, nextIdx);
+                    input.value = testStr;
+                    input.setSelectionRange(idx + (autoPad ? 2 : 1), idx + (autoPad ? 2 : 1));
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
-                return;
             }
             if (!is24hr && /^[apAP]$/.test(e.key)) {
                 let idx = start;
@@ -437,6 +438,32 @@
                 return;
             }
         };
+    function isLeapSecondMinute(dateString, timeZone, is24hr) {
+        if (!dateString || dateString.length < 17) return false;
+        try {
+            const format = is24hr ? "yyyy-MM-dd, HH:mm" : "yyyy-MM-dd, hh:mm a";
+            let minuteStr = dateString.substring(0, 17);
+            if (!is24hr) {
+                const ampm = dateString.match(/(AM|PM)/i);
+                if (!ampm) return false;
+                minuteStr += " " + ampm[0];
+            }
+            const dt = DateTime.fromFormat(minuteStr.trim(), format, { zone: timeZone });
+            if (!dt.isValid) return false;
+
+            const utcDt = dt.toUTC();
+            if (utcDt.hour !== 23 || utcDt.minute !== 59) return false;
+
+            const isHistorical = leapSecondDates.some(ls => 
+                ls.year === utcDt.year && 
+                ls.month === utcDt.month && 
+                ls.day === utcDt.day
+            );
+            return isHistorical;
+        } catch (e) {
+            return false;
+        }
+    }
         flatpickr("#birthdatetime", {
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
@@ -488,14 +515,10 @@
                     e.target.setSelectionRange(start, start);
                     e.target.dispatchEvent(new Event('input', { bubbles: true }));
                 });
-                forceLeadingZero(instance);
-                if (instance.hourElement) {
-                    instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
-                }
             }
         });
-       document.querySelectorAll('.row').forEach(row => {
-            const unit = row.getAttribute('data-unit'); 
+        document.querySelectorAll('.row').forEach(row => {
+            const unit = row.getAttribute('data-unit');
             const intlUnit = unit.slice(0, -1); 
             try {
                 const parts = new Intl.NumberFormat(navigator.language, { 
@@ -513,7 +536,7 @@
             }
         });
     });
-   const tzSelect = document.getElementById('tzLocation');
+    const tzSelect = document.getElementById('tzLocation');
     const targetTzSelect = document.getElementById('targetTzLocation');
     const timeZones = Intl.supportedValuesOf('timeZone').filter(tz => tz !== 'UTC');
     timeZones.unshift('UTC');
@@ -553,8 +576,50 @@
         intervalId = setInterval(calculate, 1000);
         syncTime();
     }
-    const leapSecondDates = ["1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", "1974-12-31T23:59:59Z", "1975-12-31T23:59:59Z", "1976-12-31T23:59:59Z", "1977-12-31T23:59:59Z", "1978-12-31T23:59:59Z", "1979-12-31T23:59:59Z", "1981-06-30T23:59:59Z", "1982-06-30T23:59:59Z", "1983-06-30T23:59:59Z", "1985-06-30T23:59:59Z", "1987-12-31T23:59:59Z", "1989-12-31T23:59:59Z", "1990-12-31T23:59:59Z", "1992-06-30T23:59:59Z", "1993-06-30T23:59:59Z", "1994-06-30T23:59:59Z", "1995-12-31T23:59:59Z", "1997-06-30T23:59:59Z", "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z", "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"].map(iso => DateTime.fromISO(iso));
-    function countLeapSeconds(startDateTime, endDateTime) { return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length; }
+    let leapSecondDates = [
+        "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", 
+        "1974-12-31T23:59:59Z", "1975-12-31T23:59:59Z", "1976-12-31T23:59:59Z", 
+        "1977-12-31T23:59:59Z", "1978-12-31T23:59:59Z", "1979-12-31T23:59:59Z", 
+        "1981-06-30T23:59:59Z", "1982-06-30T23:59:59Z", "1983-06-30T23:59:59Z", 
+        "1985-06-30T23:59:59Z", "1987-12-31T23:59:59Z", "1989-12-31T23:59:59Z", 
+        "1990-12-31T23:59:59Z", "1992-06-30T23:59:59Z", "1993-06-30T23:59:59Z", 
+        "1994-06-30T23:59:59Z", "1995-12-31T23:59:59Z", "1997-06-30T23:59:59Z", 
+        "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z", 
+        "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"
+    ].map(iso => DateTime.fromISO(iso));
+    async function fetchLiveLeapSeconds() {
+        try {
+            const response = await fetch('https://data.iana.org/time-zones/tzdb/leap-seconds.list', { cache: 'no-store' });
+            if (!response.ok) throw new Error("Could not reach IANA servers");
+            const text = await response.text();
+            const lines = text.split('\n');
+            const dynamicDates = [];
+            lines.forEach(line => {
+                if (line.startsWith('#') || line.trim() === '') return;
+                const parts = line.trim().split(/\s+/);
+                const ntpSeconds = parseInt(parts[0], 10);
+            if (!isNaN(ntpSeconds)) {
+                const unixMillis = (ntpSeconds - 2208988800) * 1000;
+                dynamicDates.push(DateTime.fromMillis(unixMillis, { zone: 'UTC' }));
+            }
+        });
+        if (dynamicDates.length > 0) {
+            leapSecondDates = dynamicDates;
+            console.log(`Time Odometer: Synced ${leapSecondDates.length} historical leap seconds from IANA.`);
+        }
+    } catch (error) {
+        console.warn("Time Odometer: Using offline leap second fallback.", error);
+    }
+}
+    function countLeapSeconds(startDateTime, endDateTime) { 
+        return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length; }
+    function getInitialTaiOffset(ms1, ms2) {
+        const epoch = 63072000000;
+        const min = Math.min(ms1, ms2);
+        const max = Math.max(ms1, ms2);
+        if (min < epoch && max >= epoch) return 10;
+        return 0;
+    }
     function syncMilestones(targetDateISO, activeInput) {
         const rows = document.querySelectorAll('.row');
         if (!targetDateISO) {
@@ -600,11 +665,14 @@
             }
             ds.innerText = targetDate.toFormat("EEE").toUpperCase();
             if (ai !== activeInput) {
-               let msDiff = targetDate.toMillis() - originDate.toMillis();
-                let ls = countLeapSeconds(DateTime.fromMillis(Math.min(originDate.toMillis(), targetDate.toMillis())), DateTime.fromMillis(Math.max(originDate.toMillis(), targetDate.toMillis())));
+                let msDiff = targetDate.toMillis() - originDate.toMillis();
+                let minMs = Math.min(originDate.toMillis(), targetDate.toMillis());
+                let maxMs = Math.max(originDate.toMillis(), targetDate.toMillis());
+                let ls = countLeapSeconds(DateTime.fromMillis(minMs), DateTime.fromMillis(maxMs));
+                let tai = getInitialTaiOffset(minMs, maxMs);
                 let direction = targetDate >= originDate ? 1 : -1;
                 let amt = 0;
-                if (unit === 'seconds') amt = parseFloat(((msDiff / 1000) + (ls * direction)).toFixed(4));
+                if (unit === 'seconds') amt = parseFloat(((msDiff / 1000) + ((ls + tai) * direction)).toFixed(4));
                 else if (unit === 'minutes') amt = parseFloat((msDiff / 60000).toFixed(4));
                 else if (unit === 'hours') amt = parseFloat((msDiff / 3600000).toFixed(4));
                 else if (unit === 'days') amt = parseFloat((msDiff / 86400000).toFixed(4));
@@ -678,12 +746,14 @@
             const originDate = DateTime.fromISO(originVal, { zone: document.getElementById('tzLocation').value }).startOf('second');
             let td;
             let msOrigin = originDate.toMillis();
-            
             if (unit === 'seconds') {
                 let ms = msOrigin + (tVal * 1000);
                 for(let i=0; i<3; i++) {
-                    let ls = countLeapSeconds(DateTime.fromMillis(Math.min(msOrigin, ms)), DateTime.fromMillis(Math.max(msOrigin, ms)));
-                    ms = tVal < 0 ? msOrigin + (tVal*1000) + (ls*1000) : msOrigin + (tVal*1000) - (ls*1000);
+                    let minMs = Math.min(msOrigin, ms);
+                    let maxMs = Math.max(msOrigin, ms);
+                    let ls = countLeapSeconds(DateTime.fromMillis(minMs), DateTime.fromMillis(maxMs));
+                    let tai = getInitialTaiOffset(minMs, maxMs);
+                    ms = tVal < 0 ? msOrigin + (tVal*1000) + ((ls + tai)*1000) : msOrigin + (tVal*1000) - ((ls + tai)*1000);
                 }
                 td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
             }
@@ -718,21 +788,45 @@
         const tz = document.getElementById('tzLocation').value;
         const rp = document.getElementById('resultsPanel');
         const ep = document.getElementById('extraPanel');
-        const em = document.getElementById('errorMsg');
         const md = document.getElementById('main-dow');
         const uc = document.getElementById('toggleCommas').checked;
         const u24 = document.getElementById('toggle24hr').checked;
+        
         if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = 'EEE'; md.style.color = '#634E34'; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
-        if (bd.isValid && bd.year >= 1) { md.innerText = bd.toFormat("EEE").toUpperCase(); md.style.color = '#E0CBB9'; } else { md.innerText = 'EEE'; md.style.color = '#634E34'; }
         md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE").toUpperCase() : 'EEE';
+        md.style.color = (bd.isValid && bd.year >= 1) ? '#E0CBB9' : '#634E34';
+        
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
         if (!bd.isValid || bd.year < 0000 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
+        const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
+        const curDateStr = now.setLocale("en-US").toFormat("EEE").toUpperCase() + ", " + now.toFormat("yyyy-MM-dd");
+        let curTimeStr = now.setLocale("en-US").toFormat(timeFormat);
+        const currentUTC = now.toUTC();
+        
+        const isLeapSecondDay = leapSecondDates.some(ls => 
+            ls.year === currentUTC.year && 
+            ls.month === currentUTC.month && 
+            ls.day === currentUTC.day
+        );
+        
+        if (isLeapSecondDay && currentUTC.hour === 23 && currentUTC.minute === 59 && currentUTC.second === 59) {
+            window.leapTickCount = (window.leapTickCount || 0) + 1;
+            if (window.leapTickCount > 1) {
+                curTimeStr = curTimeStr.replace(/:59(?!.*:59)/, ':60');
+            }
+        } else {
+            window.leapTickCount = 0;
+        }
         const rawMs = now.toMillis() - bd.toMillis();
-        const ls = countLeapSeconds(DateTime.fromMillis(Math.min(bd.toMillis(), now.toMillis())), DateTime.fromMillis(Math.max(bd.toMillis(), now.toMillis())));
-        const direction = now >= bd ? 1 : -1;
-        const physicalSeconds = (rawMs / 1000) + (ls * direction);
+        const minMs = Math.min(bd.toMillis(), now.toMillis());
+        const maxMs = Math.max(bd.toMillis(), now.toMillis());
+        const lsCount = countLeapSeconds(DateTime.fromMillis(minMs), DateTime.fromMillis(maxMs));
+        const taiOffset = getInitialTaiOffset(minMs, maxMs);
+        const direction = now >= bd ? 1 : -1;  
+        let physicalSeconds = (rawMs / 1000) + ((lsCount + taiOffset) * direction);
+        if (window.leapTickCount > 1) physicalSeconds += 1; 
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
         document.getElementById('r-sec').innerText = f(physicalSeconds);
         document.getElementById('r-min').innerText = f(rawMs / 60000);
@@ -742,29 +836,40 @@
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
+        let displaySeconds = dd.seconds + ((lsCount + taiOffset) * direction);
+        if (window.leapTickCount > 1) displaySeconds += 1;
+        let displayMinutes = dd.minutes;
+        let displayHours = dd.hours;
+        let displayDays = dd.days;
+        if (displaySeconds >= 60 || displaySeconds <= -60) {
+            displayMinutes += Math.trunc(displaySeconds / 60);
+            displaySeconds = displaySeconds % 60;
+        }
+        if (displayMinutes >= 60 || displayMinutes <= -60) {
+            displayHours += Math.trunc(displayMinutes / 60);
+            displayMinutes = displayMinutes % 60;
+        }
+        if (displayHours >= 24 || displayHours <= -24) {
+            displayDays += Math.trunc(displayHours / 24);
+            displayHours = displayHours % 24;
+        }
         const p = (val, unit) => { const num = Math.trunc(val) + 0; return new Intl.NumberFormat(navigator.language, { style: 'unit', unit: unit, unitDisplay: 'long', numberingSystem: 'latn' }).format(num); };
-        const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(dd.days, 'day')}`;
-        const timePart = `${p(dd.hours, 'hour')}, ${p(dd.minutes, 'minute')}, ${p(dd.seconds, 'second')}`;
+        const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(displayDays, 'day')}`;
+        const timePart = `${p(displayHours, 'hour')}, ${p(displayMinutes, 'minute')}, ${p(displaySeconds, 'second')}`;
         const detailSafeLimit = 28; 
         let dateScale = datePart.length > detailSafeLimit ? Math.max(detailSafeLimit / datePart.length, 0.60) : 1;
         let timeScale = timePart.length > detailSafeLimit ? Math.max(detailSafeLimit / timePart.length, 0.60) : 1;
         let detailUniformScale = Math.min(dateScale, timeScale);
-        const userBrowserLocale = navigator.language || 'en-US';
-        const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
-        const curDateStr = now.setLocale("en-US").toFormat("EEE").toUpperCase() + ", " + now.toFormat("yyyy-MM-dd");
-        const curTimeStr = now.setLocale("en-US").toFormat(timeFormat);
         const monoSafeLimit = 28; 
         let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
         let curUniformScale = Math.min(curDateScale, curTimeScale);
-        let curComma = ",";
-        let detailComma = ", ";
         if (window.innerWidth > 1366) {
             detailUniformScale = 1;
             curUniformScale = 1;
         }
-        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}${detailComma}</span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
-        document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}${curComma}</span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
+        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
+        document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}, </span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
     }
     document.getElementById('btn-now').addEventListener('click', () => {
@@ -791,7 +896,7 @@
     document.getElementById('tzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('targetTzLocation').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
     document.getElementById('toggleCommas').addEventListener('change', () => { calculate(); refreshAllMilestones(); });
-function updateTimeFormat() {
+    function updateTimeFormat() {
         const is24hr = document.getElementById('toggle24hr').checked;
         const newAltFormat = is24hr ? "Y-m-d, H:i:S" : "Y-m-d, h:i:S K";
         const placeholderStr = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
@@ -839,6 +944,10 @@ function updateTimeFormat() {
     }
     calculate();
     refreshAllMilestones();
+    fetchLiveLeapSeconds().then(() => {
+        calculate(); 
+        refreshAllMilestones(); 
+    });
     startLocalEngine();
     document.getElementById("current-year").innerText = new Date().getFullYear();
         const yearText = document.getElementById("current-year");
