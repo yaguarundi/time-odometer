@@ -306,10 +306,15 @@
             let end = input.selectionEnd;
             if (start !== end) {
                 if (e.key === 'Backspace' || e.key === 'Delete') {
-                    input.value = "";
+                    let chars = val.split('');
+                    for (let i = start; i < end; i++) {
+                        chars[i] = template[i]; 
+                    }
+                    input.value = chars.join('');
+                    input.setSelectionRange(start, start);
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
-                return; 
+                return;
             }
             const isFormatChar = (i) => [4, 7, 10, 11, 14, 17, (is24hr ? -1 : 20)].includes(i);
             if (e.key === 'Backspace') {
@@ -423,6 +428,20 @@
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 instance.altInput.addEventListener('keydown', restrictDateInputKeys);
                 instance.altInput.addEventListener('blur', (e) => handleInputBlur(e, instance), { capture: true });
+                instance.altInput.addEventListener('cut', (e) => {
+                    e.preventDefault();
+                    const start = e.target.selectionStart;
+                    const end = e.target.selectionEnd;
+                    const is24 = document.getElementById('toggle24hr').checked;
+                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                    let chars = e.target.value.split('');
+                    for (let i = start; i < end; i++) {
+                        chars[i] = temp[i];
+                    }
+                    e.target.value = chars.join('');
+                    e.target.setSelectionRange(start, start);
+                    e.target.dispatchEvent(new Event('input', { bubbles: true }));
+                });
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
                     instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
@@ -437,6 +456,20 @@
                 instance.altInput.addEventListener('input', (e) => handleManualTyping(e, instance));
                 instance.altInput.addEventListener('keydown', restrictDateInputKeys);
                 instance.altInput.addEventListener('blur', (e) => handleInputBlur(e, instance), { capture: true });
+                instance.altInput.addEventListener('cut', (e) => {
+                    e.preventDefault();
+                    const start = e.target.selectionStart;
+                    const end = e.target.selectionEnd;
+                    const is24 = document.getElementById('toggle24hr').checked;
+                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss --";
+                    let chars = e.target.value.split('');
+                    for (let i = start; i < end; i++) {
+                        chars[i] = temp[i];
+                    }
+                    e.target.value = chars.join('');
+                    e.target.setSelectionRange(start, start);
+                    e.target.dispatchEvent(new Event('input', { bubbles: true }));
+                });
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
                     instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
