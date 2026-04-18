@@ -336,7 +336,8 @@ input:invalid {
     border-radius: 6px; 
     border: 1px solid #444; 
     background-color: #1e1e1e; 
-    color: #E0CBB9; 
+    color: #E0CBB9;
+    caret-color: #E0CBB9 !important;
     width: 290px;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
