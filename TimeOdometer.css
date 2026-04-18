@@ -609,7 +609,8 @@ input:invalid {
         align-items: center;
         justify-content: center;
         width: 140px;
-        padding: 12px 0;
+        height: 38px !important;
+        padding: 0 !imporant;
         margin-top: 0;
     }
     #birthdatetime { 
@@ -629,18 +630,10 @@ input:invalid {
         order: 2;
     }
     .btn-now { 
-        order: 3; 
-        width: 140px;
-        padding: 12px 0;
-        margin-top: 0;
-        justify-content: center;
+        order: 3;
     }
     .btn-clear { 
         order: 4; 
-        width: 140px; 
-        padding: 12px 0;
-        margin-top: 0;
-        justify-content: center;
     }
     .milestone-container { 
         flex-direction: column; 
