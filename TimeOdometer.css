@@ -193,7 +193,7 @@ input:invalid {
 .input-dow-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
     justify-content: flex-end;
 }
 #birthdatetime {
@@ -209,11 +209,22 @@ input:invalid {
     color-scheme: dark;
     font-weight: bold;
 }
-.main-dow {
+.main-dow, 
+.ms-dow {
+    padding: 8px 12px;
     font-size: 1em;
-    color: #E0CBB9;
-    white-space: nowrap;
-    min-width: 85px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #1e1e1e;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    width: 50px; 
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: not-allowed;
+    user-select: none;
 }
 .settings-panel {
     display: flex;
@@ -318,31 +329,7 @@ input:invalid {
     gap: 10px;
     flex-wrap: wrap;
 }
-.ms-date-input {
-    padding: 8px 12px; 
-    font-size: 1em; 
-    border-radius: 6px; 
-    border: 1px solid #444; 
-    background-color: #1e1e1e; 
-    color: #E0CBB9; 
-    font-style: normal; 
-    outline: none;
-    width: 290px;
-    text-align: center;
-    color-scheme: dark;
-    font-family: "Courier New", Courier, monospace;
-    font-weight: bold;
-}
-.ms-date-input:focus { 
-    border-color: #634E34;
-}
-.ms-dow {
-    font-size: 1em; 
-    color: #E0CBB9; 
-    font-family: 'Courier New', Courier, monospace;
-    width: 85px; 
-    text-align: left;
-}
+.ms-date-input,
 .ms-input {
     padding: 8px 12px; 
     font-size: 1em; 
@@ -352,10 +339,15 @@ input:invalid {
     color: #E0CBB9; 
     width: 290px;
     font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
     outline: none;
     text-align: center;
-    font-weight: bold;
 }
+.ms-date-input {
+    font-style: normal; 
+    color-scheme: dark;
+}
+.ms-date-input:focus,
 .ms-input:focus { 
     border-color: #634E34; 
 }
@@ -469,199 +461,202 @@ input:invalid {
     }
 }
 @media (max-width: 1366px) {
-        :root {
+    :root {
         --mobile-spacing: 10px; 
-        }
-        body { 
-            padding: var(--mobile-spacing);
-        }
-        .container {
-            gap: var(--mobile-spacing);
-            width: 100%;
-            max-width: 1366px;
-        }
-        .half-container { 
-            padding: 10px; 
-            width: 100%; 
-            box-sizing: border-box !important;
-            box-shadow: none;
-        }
-        select { 
-            width: 100% !important;
-            max-width: 295px !important; 
-            box-sizing: border-box !important;
-            text-align: center;
-            text-align-last: center;
-            margin: 0 auto !important;
-        }
-        .tooltip-container {
-            margin-left: 6px;
-            position: static;
-        }
-        .tooltip-icon {
-            width: 18px;
-            height: 18px;
-        }
-        .tooltip-container .tooltip-text,
-        .dropdown-row .input-group:first-child .tooltip-text,
-        .dropdown-row .input-group:last-child .tooltip-text {
-            position: absolute !important;
-            bottom: 48px !important;
-            left: 50% !important;
-            right: auto !important;
-            transform: translateX(-50%) !important;
-            width: 100% !important;
-            max-width: 295px !important; 
-            margin-left: 0 !important; 
-            z-index: 2147483647 !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9) !important;
-            white-space: normal !important; 
-            text-align: center !important;  
-            padding: 10px 12px !important; 
-            box-sizing: border-box !important;
-        }
-        .tooltip-container .tooltip-text::after,
-        .dropdown-row .input-group:first-child .tooltip-text::after,
-        .dropdown-row .input-group:last-child .tooltip-text::after {
-            display: block !important; 
-            left: 50% !important;
-            right: auto !important;
-            transform: translateX(-50%) !important;
-            border-color: #634E34 transparent transparent transparent !important;
-        }
-        .results {
-            gap: 10px; 
-        }
-        .dropdown-row .input-group:last-child {
-            text-align: center;
-        }
-        .dropdown-row .input-group:first-child select,
-        .dropdown-row .input-group:last-child select {
-            text-align: center;
-            text-align-last: center;
-            background-position: right 10px center;
-            padding-right: 30px;
-            padding-left: 10px; 
-        }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
-            order: 3; 
-            margin-top: 0;
-        }
-        .input-group {
-            text-align: center;
-            align-items: center;
-        }
-        .dropdown-row {
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            margin-top: -10px;
-        }
-        .dropdown-row .input-group {
-            width: 100% !important; 
-            margin-bottom: 0;
-        }
-        .bold-number {
-            font-size: clamp(1.2em, 8vw, 2.5em);
-            max-width: 100%;
-            word-break: break-all;
-        }
-        #r-detailed .detail-date, 
-        #r-detailed .detail-time {
-            display: block;
-            line-height: 1.6; 
-        }
-        #r-detailed .detail-date {
-            margin-bottom: 6px;
-        }
-        #r-detailed {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .donation-section {
-            margin-top: 10px;
-        }
-        .donation-text {
-            padding-top: 0;
-        }
-        #birthdatetime,  
-        .ms-date-input,
-        .ms-input { 
-            width: 100% !important; 
-            max-width: 295px !important; 
-            min-width: 0 !important; 
-            box-sizing: border-box !important; 
-            text-align: center; 
-            margin: 0 auto !important;
-            height: 44px !important;
-            display: block !important;
-        }
-        .main-date-group { 
-            flex-direction: column; 
-            align-items: stretch; 
-            gap: 12px; 
-        }
-        .input-dow-wrapper { 
-            display: contents; 
-        }
-        .btn-now,
-        .btn-clear {
-            text-align: center;
-            align-items: center;
-            justify-content: center;
-            width: 140px;
-            padding: 12px 0;
-            margin-top: 0;
-        }
-        #birthdatetime { order: 1; }
-        .main-dow { 
-            order: 2; 
-            width: 100%; 
-            text-align: center; 
-            min-width: unset;
-            min-height: 20px;
-        }
-        .btn-now { 
-            order: 3; 
-            width: 140px;
-            padding: 12px 0;
-            margin-top: 0;
-            justify-content: center;
-        }
-        .btn-clear { 
-            order: 4; 
-            width: 140px; 
-            padding: 12px 0;
-            margin-top: 0;
-            justify-content: center;
-        }
-        .milestone-container { 
-            flex-direction: column; 
-            align-items: stretch; 
-            gap: 8px; 
-        }
-        .ms-date-group { 
-            flex-direction: column; 
-            width: 100%; 
-            gap: 8px; 
-        }
-        .ms-dow { 
-            width: 100%; 
-            text-align: center; 
-            min-width: unset;
-            min-height: 20px;
-        }
-            .settings-panel {
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-            justify-content: space-between;
-        }
     }
+    body { 
+        padding: var(--mobile-spacing);
+    }
+    .container {
+        gap: var(--mobile-spacing);
+        width: 100%;
+        max-width: 1366px;
+    }
+    .half-container { 
+        padding: 10px; 
+        width: 100%; 
+        box-sizing: border-box !important;
+        box-shadow: none;
+    }
+    select { 
+        width: 100% !important;
+        max-width: 295px !important;
+        height: 38px !important;
+        box-sizing: border-box !important;
+        text-align: center;
+        text-align-last: center;
+        margin: 0 auto !important;
+    }
+    .tooltip-container {
+        margin-left: 6px;
+        position: static;
+    }
+    .tooltip-icon {
+        width: 18px;
+        height: 18px;
+    }
+    .tooltip-container .tooltip-text,
+    .dropdown-row .input-group:first-child .tooltip-text,
+    .dropdown-row .input-group:last-child .tooltip-text {
+        position: absolute !important;
+        bottom: 48px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        width: 100% !important;
+        max-width: 295px !important; 
+        margin-left: 0 !important; 
+        z-index: 2147483647 !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.9) !important;
+        white-space: normal !important; 
+        text-align: center !important;  
+        padding: 10px 12px !important; 
+        box-sizing: border-box !important;
+    }
+    .tooltip-container .tooltip-text::after,
+    .dropdown-row .input-group:first-child .tooltip-text::after,
+    .dropdown-row .input-group:last-child .tooltip-text::after {
+        display: block !important; 
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        border-color: #634E34 transparent transparent transparent !important;
+    }
+    .results {
+        gap: 10px; 
+    }
+    .dropdown-row .input-group:last-child {
+        text-align: center;
+    }
+    .dropdown-row .input-group:first-child select,
+    .dropdown-row .input-group:last-child select {
+        text-align: center;
+        text-align-last: center;
+        background-position: right 10px center;
+        padding-right: 30px;
+        padding-left: 10px; 
+    }
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        width: 100%;
+        order: 3; 
+        margin-top: 0;
+    }
+    .input-group {
+        text-align: center;
+        align-items: center;
+    }
+    .dropdown-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        margin-top: -10px;
+    }
+    .dropdown-row .input-group {
+        width: 100% !important; 
+        margin-bottom: 0;
+    }
+    .bold-number {
+        font-size: clamp(1.2em, 8vw, 2.5em);
+        max-width: 100%;
+        word-break: break-all;
+    }
+    #r-detailed .detail-date, 
+    #r-detailed .detail-time {
+        display: block;
+        line-height: 1.6; 
+    }
+    #r-detailed .detail-date {
+        margin-bottom: 6px;
+    }
+    #r-detailed {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .donation-section {
+        margin-top: 10px;
+    }
+    .donation-text {
+        padding-top: 0;
+    }
+    #birthdatetime,  
+    .ms-date-input,
+    .ms-input { 
+        width: 100% !important; 
+        max-width: 295px !important; 
+        min-width: 0 !important;
+        height: 38px !important;
+        box-sizing: border-box !important; 
+        text-align: center; 
+        margin: 0 auto !important;
+        display: block !important;
+    }
+    .main-date-group { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 12px; 
+    }
+    .input-dow-wrapper { 
+        display: contents; 
+    }
+    .btn-now,
+    .btn-clear {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        width: 140px;
+        padding: 12px 0;
+        margin-top: 0;
+    }
+    #birthdatetime { 
+        order: 1; 
+    }
+    .main-dow, 
+    .ms-dow {
+        width: 80px !important;
+        height: 38px !important;
+        margin: 0 auto;
+        align-self: center;
+        min-width: unset;
+        min-height: unset;
+        box-sizing: border-box !important;
+    }
+    .main-dow {
+        order: 2;
+    }
+    .btn-now { 
+        order: 3; 
+        width: 140px;
+        padding: 12px 0;
+        margin-top: 0;
+        justify-content: center;
+    }
+    .btn-clear { 
+        order: 4; 
+        width: 140px; 
+        padding: 12px 0;
+        margin-top: 0;
+        justify-content: center;
+    }
+    .milestone-container { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 8px; 
+    }
+    .ms-date-group { 
+        flex-direction: column; 
+        width: 100%; 
+        gap: 8px; 
+    }
+    .settings-panel {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        justify-content: space-between;
+    }
+}
 </style>
