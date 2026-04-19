@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css?v=20">
+    <link rel="stylesheet" href="TimeOdometer.css?v=21">
 </head>
 <body>
 <div class="container">
@@ -334,7 +334,6 @@
             onValueUpdate: function(selectedDates, dateStr, instance) {
                 forceLeadingZero(instance);
                 if (instance.altInput) {
-                    // Forcefully restore the 60 visually if Flatpickr tries to erase it
                     if (instance.altInput.dataset.hasLeap60 === "true" && instance.altInput.value.includes(":59")) {
                         instance.altInput.value = instance.altInput.value.replace(/:59(?!.*:59)/, ":60");
                     }
@@ -485,7 +484,11 @@
                     }
                     if (isInvalid) return;
                     input.value = testStr;
-                    input.setSelectionRange(idx + (autoPad ? 2 : 1), idx + (autoPad ? 2 : 1));
+                    let newCursor = idx + (autoPad ? 2 : 1);
+                    while (newCursor < testStr.length && isFormatChar(newCursor)) {
+                        newCursor++;
+                    }
+                    input.setSelectionRange(newCursor, newCursor);
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             }
