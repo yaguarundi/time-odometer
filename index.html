@@ -379,7 +379,6 @@
                     if (!is24hr && idx >= 21) return;
                     let chars = val.split('');
                     let keyDigit = parseInt(e.key);
-                    
                     let autoPad = false;
                     if (template[idx] === 'm' && idx === 5 && keyDigit > 1) autoPad = true; 
                     if (template[idx] === 'd' && idx === 8 && keyDigit > 3) autoPad = true; 
@@ -387,7 +386,6 @@
                     if (!is24hr && template[idx] === 'h' && idx === 12 && keyDigit > 1) autoPad = true; 
                     if (template[idx] === 'm' && idx === 15 && keyDigit > 5) autoPad = true; 
                     if (template[idx] === 's' && idx === 18 && keyDigit > 5) autoPad = true; 
-                    
                     if (autoPad) {
                         chars[idx] = '0';
                         chars[idx + 1] = e.key;
@@ -400,7 +398,6 @@
                     const h1 = testStr[12], h2 = testStr[13];
                     const mn1 = testStr[15], mn2 = testStr[16];
                     const s1 = testStr[18], s2 = testStr[19];
-                    
                     let isInvalid = false;
                     if (m1 !== 'm' && m1 > '1') isInvalid = true;
                     if (m1 !== 'm' && m2 !== 'm' && (parseInt(m1+m2) < 1 || parseInt(m1+m2) > 12)) isInvalid = true;
@@ -611,14 +608,44 @@
         console.warn("Time Odometer: Using offline leap second fallback.", error);
     }
 }
-    function countLeapSeconds(startDateTime, endDateTime) { 
-        return leapSecondDates.filter(ls => ls >= startDateTime && ls <= endDateTime).length; }
-    function getInitialTaiOffset(ms1, ms2) {
-        const epoch = 63072000000;
-        const min = Math.min(ms1, ms2);
-        const max = Math.max(ms1, ms2);
-        if (min < epoch && max >= epoch) return 10;
-        return 0;
+function isLeapSecondMinute(dateString, timeZone, is24hr) {
+        if (!dateString || dateString.length < 17) return false;
+        try {
+            const format = is24hr ? "yyyy-MM-dd, HH:mm" : "yyyy-MM-dd, hh:mm a";
+            let minuteStr = dateString.substring(0, 17);
+            if (!is24hr) {
+                const ampm = dateString.match(/(AM|PM)/i);
+                if (!ampm) return false;
+                minuteStr += " " + ampm[0];
+            }
+            const dt = DateTime.fromFormat(minuteStr.trim(), format, { zone: timeZone });
+            if (!dt.isValid) return false;
+
+            const utcDt = dt.toUTC();
+            if (utcDt.hour !== 23 || utcDt.minute !== 59) return false;
+
+            const isHistorical = leapSecondDates.some(ls => 
+                ls.year === utcDt.year && 
+                ls.month === utcDt.month && 
+                ls.day === utcDt.day
+            );
+            return isHistorical;
+        } catch (e) {
+            return false;
+        }
+    }
+    function getAPM(dt, displayStr, tz, is24hr) {
+        if (!dt || !dt.isValid) return 0;
+        let unixMs = dt.toMillis();
+        let ls = leapSecondDates.filter(lsDate => lsDate.toMillis() <= unixMs).length;
+        if (dt.second === 59) {
+            let isLeap = isLeapSecondMinute(displayStr, tz, is24hr);
+            let has60 = displayStr.includes(':60');
+            if (isLeap && !has60) ls -= 1;
+        }
+        let epoch1972 = 63072000000;
+        let tai = unixMs >= epoch1972 ? 10 : 0;
+        return unixMs + (ls * 1000) + (tai * 1000);
     }
     function syncMilestones(targetDateISO, activeInput) {
         const rows = document.querySelectorAll('.row');
@@ -665,18 +692,19 @@
             }
             ds.innerText = targetDate.toFormat("EEE").toUpperCase();
             if (ai !== activeInput) {
-                let msDiff = targetDate.toMillis() - originDate.toMillis();
-                let minMs = Math.min(originDate.toMillis(), targetDate.toMillis());
-                let maxMs = Math.max(originDate.toMillis(), targetDate.toMillis());
-                let ls = countLeapSeconds(DateTime.fromMillis(minMs), DateTime.fromMillis(maxMs));
-                let tai = getInitialTaiOffset(minMs, maxMs);
-                let direction = targetDate >= originDate ? 1 : -1;
+                const is24hr = document.getElementById('toggle24hr').checked;
+                const originAltInput = document.getElementById('birthdatetime')._flatpickr.altInput;
+                const originAPM = getAPM(originDate, originAltInput.value, originTz, is24hr);
+                let targetAltInput = di && di._flatpickr ? di._flatpickr.altInput : null;
+                let targetDisplayStr = targetAltInput ? targetAltInput.value : di.value;
+                const targetAPM = getAPM(targetDate, targetDisplayStr, targetTz, is24hr);
+                let physicalDiffMs = targetAPM - originAPM;
                 let amt = 0;
-                if (unit === 'seconds') amt = parseFloat(((msDiff / 1000) + ((ls + tai) * direction)).toFixed(4));
-                else if (unit === 'minutes') amt = parseFloat((msDiff / 60000).toFixed(4));
-                else if (unit === 'hours') amt = parseFloat((msDiff / 3600000).toFixed(4));
-                else if (unit === 'days') amt = parseFloat((msDiff / 86400000).toFixed(4));
-                else if (unit === 'weeks') amt = parseFloat((msDiff / 604800000).toFixed(4));
+                if (unit === 'seconds') amt = parseFloat((physicalDiffMs / 1000).toFixed(4));
+                else if (unit === 'minutes') amt = parseFloat((physicalDiffMs / 60000).toFixed(4));
+                else if (unit === 'hours') amt = parseFloat((physicalDiffMs / 3600000).toFixed(4));
+                else if (unit === 'days') amt = parseFloat((physicalDiffMs / 86400000).toFixed(4));
+                else if (unit === 'weeks') amt = parseFloat((physicalDiffMs / 604800000).toFixed(4));
                 else amt = parseFloat(targetDate.diff(originDate, unit)[unit].toFixed(4));
                 const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
@@ -740,47 +768,49 @@
             }
             if (count > 0 && count < digitsBefore) newCursor = this.value.length;
             this.setSelectionRange(newCursor, newCursor);   
-            const tVal = parseFloat(this.value.replace(/,/g, '')); 
+           const tVal = parseFloat(this.value.replace(/,/g, '')); 
             if (isNaN(tVal)) return;
             const originVal = document.getElementById('birthdatetime').value;
             const originDate = DateTime.fromISO(originVal, { zone: document.getElementById('tzLocation').value }).startOf('second');
             let td;
-            let msOrigin = originDate.toMillis();
+            const is24hr = document.getElementById('toggle24hr').checked;
+            const originAltInput = document.getElementById('birthdatetime')._flatpickr.altInput;
+            const originAPM = getAPM(originDate, originAltInput.value, document.getElementById('tzLocation').value, is24hr);
             if (unit === 'seconds') {
-                let ms = msOrigin + (tVal * 1000);
-                for(let i=0; i<3; i++) {
-                    let minMs = Math.min(msOrigin, ms);
-                    let maxMs = Math.max(msOrigin, ms);
-                    let ls = countLeapSeconds(DateTime.fromMillis(minMs), DateTime.fromMillis(maxMs));
-                    let tai = getInitialTaiOffset(minMs, maxMs);
-                    ms = tVal < 0 ? msOrigin + (tVal*1000) + ((ls + tai)*1000) : msOrigin + (tVal*1000) - ((ls + tai)*1000);
-                }
+                let targetAPM = originAPM + (tVal * 1000);
+                let ms = originDate.toMillis() + (tVal * 1000); 
                 td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
+                for(let i=0; i<60; i++) { 
+                    let testDisplayStr = td.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
+                    let testAPM = getAPM(td, testDisplayStr, document.getElementById('targetTzLocation').value, is24hr);
+                    
+                    if (testAPM === targetAPM) {
+                        break;
+                    } else if (testAPM < targetAPM) {
+                        td = td.plus({ seconds: 1 });
+                    } else {
+                        td = td.minus({ seconds: 1 });
+                    }
+                }
             }
-            else if (unit === 'minutes') td = DateTime.fromMillis(msOrigin + tVal * 60000).setZone(document.getElementById('targetTzLocation').value);
-            else if (unit === 'hours') td = DateTime.fromMillis(msOrigin + tVal * 3600000).setZone(document.getElementById('targetTzLocation').value);
-            else if (unit === 'days') td = DateTime.fromMillis(msOrigin + tVal * 86400000).setZone(document.getElementById('targetTzLocation').value);
-            else if (unit === 'weeks') td = DateTime.fromMillis(msOrigin + tVal * 604800000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'minutes') td = DateTime.fromMillis(originDate.toMillis() + tVal * 60000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'hours') td = DateTime.fromMillis(originDate.toMillis() + tVal * 3600000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'days') td = DateTime.fromMillis(originDate.toMillis() + tVal * 86400000).setZone(document.getElementById('targetTzLocation').value);
+            else if (unit === 'weeks') td = DateTime.fromMillis(originDate.toMillis() + tVal * 604800000).setZone(document.getElementById('targetTzLocation').value);
             else td = originDate.plus({[unit]: tVal}).setZone(document.getElementById('targetTzLocation').value);
-            if (!td.isValid || td.year > 9999 || td.year < 0000) {
+            if (!td.isValid) {
                 this.style.color = '#ff4d4d';
                 this.dataset.isInvalid = "true";
                 return;
             }
-            this.style.color = '#E0CBB9';
-            this.dataset.isInvalid = "false";
-            syncMilestones(td.toFormat("yyyy-MM-dd'T'HH:mm:ss"), this);
-        });
-        ai.addEventListener('blur', function() {
-            if (this.dataset.isInvalid === "true") {
-                this.value = '';
+            if (td.year > 9999 || td.year < 0000) {
+                this.style.color = '#ff4d4d';
+                this.dataset.isInvalid = "true";
+            } else {
                 this.style.color = '#E0CBB9';
                 this.dataset.isInvalid = "false";
-                syncMilestones(null, null); 
             }
-        });
-        di.addEventListener('input', function() { 
-            syncMilestones(this.value || null, this); 
+            syncMilestones(td.toFormat("yyyy-MM-dd'T'HH:mm:ss"), this);
         });
     });
     function calculate() {
@@ -791,12 +821,10 @@
         const md = document.getElementById('main-dow');
         const uc = document.getElementById('toggleCommas').checked;
         const u24 = document.getElementById('toggle24hr').checked;
-        
         if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = 'EEE'; md.style.color = '#634E34'; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
         md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE").toUpperCase() : 'EEE';
         md.style.color = (bd.isValid && bd.year >= 1) ? '#E0CBB9' : '#634E34';
-        
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
         if (!bd.isValid || bd.year < 0000 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
@@ -804,13 +832,11 @@
         const curDateStr = now.setLocale("en-US").toFormat("EEE").toUpperCase() + ", " + now.toFormat("yyyy-MM-dd");
         let curTimeStr = now.setLocale("en-US").toFormat(timeFormat);
         const currentUTC = now.toUTC();
-        
         const isLeapSecondDay = leapSecondDates.some(ls => 
             ls.year === currentUTC.year && 
             ls.month === currentUTC.month && 
             ls.day === currentUTC.day
         );
-        
         if (isLeapSecondDay && currentUTC.hour === 23 && currentUTC.minute === 59 && currentUTC.second === 59) {
             window.leapTickCount = (window.leapTickCount || 0) + 1;
             if (window.leapTickCount > 1) {
@@ -819,25 +845,28 @@
         } else {
             window.leapTickCount = 0;
         }
-        const rawMs = now.toMillis() - bd.toMillis();
-        const minMs = Math.min(bd.toMillis(), now.toMillis());
-        const maxMs = Math.max(bd.toMillis(), now.toMillis());
-        const lsCount = countLeapSeconds(DateTime.fromMillis(minMs), DateTime.fromMillis(maxMs));
-        const taiOffset = getInitialTaiOffset(minMs, maxMs);
-        const direction = now >= bd ? 1 : -1;  
-        let physicalSeconds = (rawMs / 1000) + ((lsCount + taiOffset) * direction);
-        if (window.leapTickCount > 1) physicalSeconds += 1; 
+        const bdInput = document.getElementById('birthdatetime');
+        const originDisplayStr = (bdInput && bdInput._flatpickr && bdInput._flatpickr.altInput) 
+            ? bdInput._flatpickr.altInput.value 
+            : iv;
+        const nowDisplayStr = now.toFormat("yyyy-MM-dd") + ", " + curTimeStr;
+        const originAPM = getAPM(bd, originDisplayStr, tz, u24);
+        const nowAPM = getAPM(now, nowDisplayStr, tz, u24);
+        const physicalDiffMs = nowAPM - originAPM;
+        let physicalSeconds = physicalDiffMs / 1000;
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
         document.getElementById('r-sec').innerText = f(physicalSeconds);
-        document.getElementById('r-min').innerText = f(rawMs / 60000);
-        document.getElementById('r-hour').innerText = f(rawMs / 3600000);
-        document.getElementById('r-day').innerText = f(rawMs / 86400000);
-        document.getElementById('r-week').innerText = f(rawMs / 604800000);
+        document.getElementById('r-min').innerText = f(physicalDiffMs / 60000);
+        document.getElementById('r-hour').innerText = f(physicalDiffMs / 3600000);
+        document.getElementById('r-day').innerText = f(physicalDiffMs / 86400000);
+        document.getElementById('r-week').innerText = f(physicalDiffMs / 604800000);
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
-        let displaySeconds = dd.seconds + ((lsCount + taiOffset) * direction);
-        if (window.leapTickCount > 1) displaySeconds += 1;
+        const rawUnixMs = now.toMillis() - bd.toMillis();
+        const extraPhysicsMs = Math.abs(physicalDiffMs) - Math.abs(rawUnixMs);
+        const direction = now >= bd ? 1 : -1;
+        let displaySeconds = dd.seconds + ((extraPhysicsMs / 1000) * direction);
         let displayMinutes = dd.minutes;
         let displayHours = dd.hours;
         let displayDays = dd.days;
