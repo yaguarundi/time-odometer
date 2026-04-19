@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css?v=21">
+    <link rel="stylesheet" href="TimeOdometer.css?v=22">
 </head>
 <body>
 <div class="container">
@@ -627,7 +627,7 @@
         }
         try {
             const start = performance.now();
-            const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC', { cache: 'no-store' });
+            const response = await fetch('https://proxy.timeodometer.app', { cache: 'no-store' });
             if (!response.ok) throw new Error("API Error");
             const data = await response.json();
             const serverMillis = DateTime.fromISO(data.dateTime, { zone: 'UTC' }).toMillis();
