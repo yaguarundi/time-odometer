@@ -327,6 +327,7 @@
             onValueUpdate: function(selectedDates, dateStr, instance) {
                 forceLeadingZero(instance);
                 if (instance.altInput) {
+                    // Forcefully restore the 60 visually if Flatpickr tries to erase it
                     if (instance.altInput.dataset.hasLeap60 === "true" && instance.altInput.value.includes(":59")) {
                         instance.altInput.value = instance.altInput.value.replace(/:59(?!.*:59)/, ":60");
                     }
@@ -790,12 +791,13 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 let targetDisplayStr = targetAltInput ? targetAltInput.value : di.value;
                 const targetAPM = getAPM(targetDate, targetDisplayStr, targetTz, is24hr);
                 let physicalDiffMs = targetAPM - originAPM;
+                let rawUnixMs = targetDate.toMillis() - originDate.toMillis();
                 let amt = 0;
                 if (unit === 'seconds') amt = parseFloat((physicalDiffMs / 1000).toFixed(4));
-                else if (unit === 'minutes') amt = parseFloat((physicalDiffMs / 60000).toFixed(4));
-                else if (unit === 'hours') amt = parseFloat((physicalDiffMs / 3600000).toFixed(4));
-                else if (unit === 'days') amt = parseFloat((physicalDiffMs / 86400000).toFixed(4));
-                else if (unit === 'weeks') amt = parseFloat((physicalDiffMs / 604800000).toFixed(4));
+                else if (unit === 'minutes') amt = parseFloat((rawUnixMs / 60000).toFixed(4));
+                else if (unit === 'hours') amt = parseFloat((rawUnixMs / 3600000).toFixed(4));
+                else if (unit === 'days') amt = parseFloat((rawUnixMs / 86400000).toFixed(4));
+                else if (unit === 'weeks') amt = parseFloat((rawUnixMs / 604800000).toFixed(4));
                 else amt = parseFloat(targetDate.diff(originDate, unit)[unit].toFixed(4));
                 const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
@@ -950,11 +952,12 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         const physicalDiffMs = nowAPM - originAPM;
         let physicalSeconds = physicalDiffMs / 1000;
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
+        const rawUnixMsForOdo = now.toMillis() - bd.toMillis();
         document.getElementById('r-sec').innerText = f(physicalSeconds);
-        document.getElementById('r-min').innerText = f(physicalDiffMs / 60000);
-        document.getElementById('r-hour').innerText = f(physicalDiffMs / 3600000);
-        document.getElementById('r-day').innerText = f(physicalDiffMs / 86400000);
-        document.getElementById('r-week').innerText = f(physicalDiffMs / 604800000);
+        document.getElementById('r-min').innerText = f(rawUnixMsForOdo / 60000);
+        document.getElementById('r-hour').innerText = f(rawUnixMsForOdo / 3600000);
+        document.getElementById('r-day').innerText = f(rawUnixMsForOdo / 86400000);
+        document.getElementById('r-week').innerText = f(rawUnixMsForOdo / 604800000);
         document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
         document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
