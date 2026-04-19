@@ -143,6 +143,9 @@
         if (!val) {
             e.target.style.color = '#634E34';
             instance.clear();
+            if (instance.element.id !== 'birthdatetime') {
+                syncMilestones(null, instance.element);
+            }
             return;
         }
         const dateStr = val.substring(0, 10);
@@ -169,8 +172,12 @@
             e.target.style.color = (val === template) ? '#634E34' : (isComplete ? '#E0CBB9' : '#E0CBB9');
         }
         const incomplete = is24hr ? /[ymdhHs]/.test(val) : /[ymdhHs]/.test(val) || val.endsWith('_M');
-        if (incomplete) return;
-        if (dateIsImpossible || timeIsImpossible) return; 
+        if (incomplete || dateIsImpossible || timeIsImpossible) {
+            if (instance.element.id !== 'birthdatetime') {
+                syncMilestones(null, instance.element);
+            }
+            return; 
+        }
         const tz = e.target.closest('.milestone-container') ? document.getElementById('targetTzLocation').value : document.getElementById('tzLocation').value;
         let checkVal = val;
         let has60 = val.includes(":60") && isLeapSecondMinute(val, tz, is24hr);
