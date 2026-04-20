@@ -102,19 +102,19 @@
         </div>
         <div class="row" data-unit="days">
             <div class="row-main"><span class="row-label">Days</span> <span id="r-day" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.00000"></div>
         </div>
         <div class="row" data-unit="weeks">
             <div class="row-main"><span class="row-label">Weeks</span> <span id="r-week" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.000000"></div>
         </div>
         <div class="row" data-unit="months">
             <div class="row-main"><span class="row-label">Months</span> <span id="r-month" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000000"></div>
         </div>
         <div class="row" data-unit="years">
             <div class="row-main"><span class="row-label">Years</span> <span id="r-year" class="bold-number">0</span></div>
-            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.0000"></div>
+            <div class="milestone-container"><div class="ms-date-group"><input type="datetime-local" class="ms-date-input" step="1"><span class="ms-dow" style="color: #634E34;">EEE</span></div><input type="text" class="ms-input" placeholder="&plusmn;0.00000000"></div>
         </div>
     </div> <div class="results half-container" id="extraPanel">
         <div class="detailed-row" id="r-detailed">Loading...</div>
@@ -816,10 +816,10 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 if (unit === 'seconds') amt = parseFloat(physicalSeconds.toFixed(4));
                 else if (unit === 'minutes') amt = parseFloat((physicalSeconds / 60).toFixed(4));
                 else if (unit === 'hours') amt = parseFloat((physicalSeconds / 3600).toFixed(4));
-                else if (unit === 'days') amt = parseFloat((physicalSeconds / 86400).toFixed(4));
-                else if (unit === 'weeks') amt = parseFloat((physicalSeconds / 604800).toFixed(4));
-                else if (unit === 'months') amt = parseFloat((physicalSeconds / 2629746).toFixed(4));
-                else if (unit === 'years') amt = parseFloat((physicalSeconds / 31556952).toFixed(4));
+                else if (unit === 'days') amt = parseFloat((physicalSeconds / 86400).toFixed(5));
+                else if (unit === 'weeks') amt = parseFloat((physicalSeconds / 604800).toFixed(6));
+                else if (unit === 'months') amt = parseFloat((physicalSeconds / 2629746).toFixed(7));
+                else if (unit === 'years') amt = parseFloat((physicalSeconds / 31556952).toFixed(8));
                 const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
                 let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
