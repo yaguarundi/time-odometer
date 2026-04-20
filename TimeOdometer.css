@@ -28,7 +28,7 @@ body {
 h2 {
     margin-top: 0;
     text-align: center;
-    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
 }
 .input-group {
     display: flex;
