@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css?v=4">
+    <link rel="stylesheet" href="TimeOdometer.css?v=5">
 </head>
 <body>
 <div class="container">
@@ -988,11 +988,11 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         const rawUnixMs = now.toMillis() - bd.toMillis();
         const leapDeltaMs = physicalDiffMs - rawUnixMs;
         const adjustedNow = now.plus({ milliseconds: leapDeltaMs });
-        const totalSeconds = adjustedNow.diff(bd, 'seconds').seconds;
-        const totalMinutes = adjustedNow.diff(bd, 'minutes').minutes;
-        const totalHours   = adjustedNow.diff(bd, 'hours').hours;
-        const totalDays    = adjustedNow.diff(bd, 'days').days;
-        const totalWeeks   = adjustedNow.diff(bd, 'weeks').weeks;
+        const totalSeconds = physicalSeconds;
+        const totalMinutes = physicalSeconds / 60;
+        const totalHours   = physicalSeconds / 3600;
+        const totalDays    = physicalSeconds / 86400;
+        const totalWeeks   = physicalSeconds / 604800;
         const totalMonths  = adjustedNow.diff(bd, 'months').months;
         const totalYears   = adjustedNow.diff(bd, 'years').years;
         document.getElementById('r-sec').innerText   = f(totalSeconds);
