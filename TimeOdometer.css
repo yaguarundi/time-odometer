@@ -570,7 +570,7 @@ input:invalid {
     #r-detailed .detail-time {
         display: block;
         line-height: 1.6;
-        white-space: normal;
+        white-space: nowrap;
     }
     #r-detailed .detail-date {
         margin-bottom: 6px;
