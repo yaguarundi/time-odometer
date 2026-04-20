@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css?v=7">
+    <link rel="stylesheet" href="TimeOdometer.css?v=6">
 </head>
 <body>
 <div class="container">
@@ -1003,19 +1003,14 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         const p = (val, unit) => { const num = Math.trunc(val) + 0; return new Intl.NumberFormat(navigator.language, { style: 'unit', unit: unit, unitDisplay: 'long', numberingSystem: 'latn' }).format(num); };
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(displayDays, 'day')}`;
         const timePart = `${p(displayHours, 'hour')}, ${p(displayMinutes, 'minute')}, ${p(displaySeconds, 'second')}`;
-        const detailSafeLimit = 28; 
-        let dateScale = datePart.length > detailSafeLimit ? Math.max(detailSafeLimit / datePart.length, 0.60) : 1;
-        let timeScale = timePart.length > detailSafeLimit ? Math.max(detailSafeLimit / timePart.length, 0.60) : 1;
-        let detailUniformScale = Math.min(dateScale, timeScale);
         const monoSafeLimit = 28; 
         let curDateScale = curDateStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curDateStr.length, 0.60) : 1;
         let curTimeScale = curTimeStr.length > monoSafeLimit ? Math.max(monoSafeLimit / curTimeStr.length, 0.60) : 1;
         let curUniformScale = Math.min(curDateScale, curTimeScale);
         if (window.innerWidth > 1366) {
-            detailUniformScale = 1;
             curUniformScale = 1;
         }
-        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
+        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${curUniformScale}em;">${timePart}</span>`;
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}, </span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
     }
