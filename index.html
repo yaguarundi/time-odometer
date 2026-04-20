@@ -805,14 +805,15 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 let targetDisplayStr = targetAltInput ? targetAltInput.value : di.value;
                 const targetAPM = getAPM(targetDate, targetDisplayStr, targetTz, is24hr);
                 let physicalDiffMs = targetAPM - originAPM;
-                let rawUnixMs = targetDate.toMillis() - originDate.toMillis();
+                let physicalSeconds = physicalDiffMs / 1000;
                 let amt = 0;
-                if (unit === 'seconds') amt = parseFloat((physicalDiffMs / 1000).toFixed(4));
-                else if (unit === 'minutes') amt = parseFloat((rawUnixMs / 60000).toFixed(4));
-                else if (unit === 'hours') amt = parseFloat((rawUnixMs / 3600000).toFixed(4));
-                else if (unit === 'days') amt = parseFloat((rawUnixMs / 86400000).toFixed(4));
-                else if (unit === 'weeks') amt = parseFloat((rawUnixMs / 604800000).toFixed(4));
-                else amt = parseFloat(targetDate.diff(originDate, unit)[unit].toFixed(4));
+                if (unit === 'seconds') amt = parseFloat(physicalSeconds.toFixed(4));
+                else if (unit === 'minutes') amt = parseFloat((physicalSeconds / 60).toFixed(4));
+                else if (unit === 'hours') amt = parseFloat((physicalSeconds / 3600).toFixed(4));
+                else if (unit === 'days') amt = parseFloat((physicalSeconds / 86400).toFixed(4));
+                else if (unit === 'weeks') amt = parseFloat((physicalSeconds / 604800).toFixed(4));
+                else if (unit === 'months') amt = parseFloat((physicalSeconds / 2629746).toFixed(4));
+                else if (unit === 'years') amt = parseFloat((physicalSeconds / 31556952).toFixed(4));
                 const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
                 let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
@@ -890,32 +891,36 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             const is24hr = document.getElementById('toggle24hr').checked;
             const originAltInput = document.getElementById('birthdatetime')._flatpickr.altInput;
             const originAPM = getAPM(originDate, originAltInput.value, document.getElementById('tzLocation').value, is24hr);
-            if (unit === 'seconds') {
-                let targetAPM = originAPM + (tVal * 1000);
-                let ms = originDate.toMillis() + (tVal * 1000); 
-                td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
-                for(let i=0; i<60; i++) { 
-                    let testDisplayStr = td.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
-                    let testAPM = getAPM(td, testDisplayStr, document.getElementById('targetTzLocation').value, is24hr);
-                    if (testAPM === targetAPM) {
-                        is60 = false;
-                        break;
-                    } else if (testAPM < targetAPM) {
-                        if (targetAPM - testAPM === 1000 && td.second === 59 && isLeapSecondMinute(testDisplayStr, document.getElementById('targetTzLocation').value, is24hr)) {
-                            is60 = true;
-                            break; 
-                        }
-                        td = td.plus({ seconds: 1 });
-                    } else {
-                        td = td.minus({ seconds: 1 });
+            let physicalSecondsToAdd = 0;
+            if (unit === 'seconds') physicalSecondsToAdd = tVal;
+            else if (unit === 'minutes') physicalSecondsToAdd = tVal * 60;
+            else if (unit === 'hours') physicalSecondsToAdd = tVal * 3600;
+            else if (unit === 'days') physicalSecondsToAdd = tVal * 86400;
+            else if (unit === 'weeks') physicalSecondsToAdd = tVal * 604800;
+            else if (unit === 'months') physicalSecondsToAdd = tVal * 2629746;
+            else if (unit === 'years') physicalSecondsToAdd = tVal * 31556952;
+            let targetAPM = originAPM + (physicalSecondsToAdd * 1000);
+            let ms = originDate.toMillis() + (physicalSecondsToAdd * 1000); 
+            td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
+            let safety = 0;
+            while (safety < 100) { 
+                let testDisplayStr = td.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
+                let testAPM = getAPM(td, testDisplayStr, document.getElementById('targetTzLocation').value, is24hr);
+                
+                if (testAPM === targetAPM) {
+                    is60 = false;
+                    break;
+                } else if (testAPM < targetAPM) {
+                    if (targetAPM - testAPM === 1000 && td.second === 59 && isLeapSecondMinute(testDisplayStr, document.getElementById('targetTzLocation').value, is24hr)) {
+                        is60 = true;
+                        break; 
                     }
+                    td = td.plus({ seconds: 1 });
+                } else {
+                    td = td.minus({ seconds: 1 });
                 }
+                safety++;
             }
-            else if (unit === 'minutes') td = DateTime.fromMillis(originDate.toMillis() + tVal * 60000).setZone(document.getElementById('targetTzLocation').value);
-            else if (unit === 'hours') td = DateTime.fromMillis(originDate.toMillis() + tVal * 3600000).setZone(document.getElementById('targetTzLocation').value);
-            else if (unit === 'days') td = DateTime.fromMillis(originDate.toMillis() + tVal * 86400000).setZone(document.getElementById('targetTzLocation').value);
-            else if (unit === 'weeks') td = DateTime.fromMillis(originDate.toMillis() + tVal * 604800000).setZone(document.getElementById('targetTzLocation').value);
-            else td = originDate.plus({[unit]: tVal}).setZone(document.getElementById('targetTzLocation').value);
             if (!td.isValid) {
                 this.style.color = '#ff4d4d';
                 this.dataset.isInvalid = "true";
@@ -975,12 +980,12 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
         const rawUnixMsForOdo = now.toMillis() - bd.toMillis();
         document.getElementById('r-sec').innerText = f(physicalSeconds);
-        document.getElementById('r-min').innerText = f(rawUnixMsForOdo / 60000);
-        document.getElementById('r-hour').innerText = f(rawUnixMsForOdo / 3600000);
-        document.getElementById('r-day').innerText = f(rawUnixMsForOdo / 86400000);
-        document.getElementById('r-week').innerText = f(rawUnixMsForOdo / 604800000);
-        document.getElementById('r-month').innerText = f(now.diff(bd, 'months').months);
-        document.getElementById('r-year').innerText = f(now.diff(bd, 'years').years);
+        document.getElementById('r-min').innerText = f(physicalSeconds / 60);
+        document.getElementById('r-hour').innerText = f(physicalSeconds / 3600);
+        document.getElementById('r-day').innerText = f(physicalSeconds / 86400);
+        document.getElementById('r-week').innerText = f(physicalSeconds / 604800);
+        document.getElementById('r-month').innerText = f(physicalSeconds / 2629746);
+        document.getElementById('r-year').innerText = f(physicalSeconds / 31556952);
         const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
         const rawUnixMs = now.toMillis() - bd.toMillis();
         const extraPhysicsMs = Math.abs(physicalDiffMs) - Math.abs(rawUnixMs);
