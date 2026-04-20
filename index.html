@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css">
+    <link rel="stylesheet" href="TimeOdometer.css?v=4">
 </head>
 <body>
 <div class="container">
@@ -985,6 +985,9 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         let physicalSeconds = physicalDiffMs / 1000;
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
         const rawUnixMsForOdo = now.toMillis() - bd.toMillis();
+        const rawUnixMs = now.toMillis() - bd.toMillis();
+        const leapDeltaMs = physicalDiffMs - rawUnixMs;
+        const adjustedNow = now.plus({ milliseconds: leapDeltaMs });
         const totalSeconds = adjustedNow.diff(bd, 'seconds').seconds;
         const totalMinutes = adjustedNow.diff(bd, 'minutes').minutes;
         const totalHours   = adjustedNow.diff(bd, 'hours').hours;
@@ -999,9 +1002,6 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         document.getElementById('r-week').innerText  = f(totalWeeks);
         document.getElementById('r-month').innerText = f(totalMonths);
         document.getElementById('r-year').innerText  = f(totalYears);
-        const rawUnixMs = now.toMillis() - bd.toMillis();
-        const leapDeltaMs = physicalDiffMs - rawUnixMs;
-        const adjustedNow = now.plus({ milliseconds: leapDeltaMs });
         const dd = adjustedNow.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
         let displaySeconds = dd.seconds;
         let displayMinutes = dd.minutes;
