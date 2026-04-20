@@ -862,7 +862,16 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             let isNeg = val.trim().startsWith('-');
             let rawStr = (unit === 'seconds') ? val.replace(/\D/g, '') : val.replace(/[^\d.]/g, '');
             let p = rawStr.split('.'); 
-            if (p.length > 2) p = [p[0], p.slice(1).join('')];       
+            if (p.length > 2) p = [p[0], p.slice(1).join('')];
+            let maxDecimals = 0;
+            if (unit === 'minutes' || unit === 'hours') maxDecimals = 4;
+            else if (unit === 'days') maxDecimals = 5;
+            else if (unit === 'weeks') maxDecimals = 6;
+            else if (unit === 'months') maxDecimals = 7;
+            else if (unit === 'years') maxDecimals = 8;
+            if (p.length > 1) {
+                p[1] = p[1].substring(0, maxDecimals);
+            }
             if (p[0] !== '') {
                 const useCommas = document.getElementById('toggleCommas').checked;
                 const formattedBase = useCommas ? parseInt(p[0], 10).toLocaleString('en-US') : p[0];
