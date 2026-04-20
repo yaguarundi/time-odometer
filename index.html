@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css?v=28">
+    <link rel="stylesheet" href="TimeOdometer.css">
 </head>
 <body>
 <div class="container">
@@ -648,7 +648,7 @@
         if (intervalId) clearInterval(intervalId);
         intervalId = setInterval(calculate, 1000);
         syncTime();
-        setInterval(syncTime, 5000);
+        setInterval(syncTime, 10000);
     }
     let leapSecondDates = [
         "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", 
