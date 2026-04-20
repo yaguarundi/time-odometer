@@ -569,7 +569,8 @@ input:invalid {
     #r-detailed .detail-date, 
     #r-detailed .detail-time {
         display: block;
-        line-height: 1.6; 
+        line-height: 1.6;
+        white-space: normal;
     }
     #r-detailed .detail-date {
         margin-bottom: 6px;
