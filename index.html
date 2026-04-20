@@ -1034,6 +1034,11 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${detailUniformScale}em;">${datePart}, </span><span class="detail-time" style="font-size: ${detailUniformScale}em;">${timePart}</span>`;
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}, </span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
+        sessionStorage.setItem('odo_birthdate', iv);
+        sessionStorage.setItem('odo_tz', tz);
+        sessionStorage.setItem('odo_targetTz', document.getElementById('targetTzLocation').value);
+        sessionStorage.setItem('odo_commas', uc);
+        sessionStorage.setItem('odo_24hr', u24);
     }
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
@@ -1107,13 +1112,24 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         refreshAllMilestones(); 
     }
     document.getElementById('toggle24hr').addEventListener('change', updateTimeFormat);
+    const savedCommas = sessionStorage.getItem('odo_commas');
+    const saved24hr = sessionStorage.getItem('odo_24hr');
+    const savedTz = sessionStorage.getItem('odo_tz');
+    const savedTargetTz = sessionStorage.getItem('odo_targetTz');
+    const savedBirthDate = sessionStorage.getItem('odo_birthdate');
+    if (savedCommas !== null) document.getElementById('toggleCommas').checked = (savedCommas === 'true');
+    if (saved24hr !== null) document.getElementById('toggle24hr').checked = (saved24hr === 'true');
+    if (savedTz) document.getElementById('tzLocation').value = savedTz;
+    if (savedTargetTz) document.getElementById('targetTzLocation').value = savedTargetTz;
+    updateTimeFormat(); 
     const currentYearNum = new Date().getFullYear();
     const newYearString = `${currentYearNum}-01-01T00:00:00`;
+    const initialDate = savedBirthDate ? savedBirthDate : newYearString;
     const bdInput = document.getElementById('birthdatetime');
     if (bdInput._flatpickr) {
-        bdInput._flatpickr.setDate(newYearString, true);
+        bdInput._flatpickr.setDate(initialDate, true);
     } else {
-        bdInput.value = newYearString;
+        bdInput.value = initialDate;
     }
     calculate();
     refreshAllMilestones();
