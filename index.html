@@ -521,10 +521,8 @@
             }
             const dt = DateTime.fromFormat(minuteStr.trim(), format, { zone: timeZone });
             if (!dt.isValid) return false;
-
             const utcDt = dt.toUTC();
             if (utcDt.hour !== 23 || utcDt.minute !== 59) return false;
-
             const isHistorical = leapSecondDates.some(ls => 
                 ls.year === utcDt.year && 
                 ls.month === utcDt.month && 
@@ -648,7 +646,7 @@
         if (intervalId) clearInterval(intervalId);
         intervalId = setInterval(calculate, 1000);
         syncTime();
-        setInterval(syncTime, 60000);
+        setInterval(syncTime, 180000);
     }
     let leapSecondDates = [
         "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", 
