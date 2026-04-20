@@ -645,7 +645,7 @@
         calculate();
         scheduleNextTick();
         syncTime();
-        setInterval(syncTime, 300000);
+        setInterval(syncTime, 1800000);
     }
     function scheduleNextTick() {
         const exactTime = Date.now() + timeOffset;
