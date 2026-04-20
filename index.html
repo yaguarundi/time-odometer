@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css?v=5">
+    <link rel="stylesheet" href="TimeOdometer.css">
 </head>
 <body>
 <div class="container">
@@ -993,8 +993,8 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         const totalHours   = physicalSeconds / 3600;
         const totalDays    = physicalSeconds / 86400;
         const totalWeeks   = physicalSeconds / 604800;
-        const totalMonths  = adjustedNow.diff(bd, 'months').months;
-        const totalYears   = adjustedNow.diff(bd, 'years').years;
+        const totalMonths  = adjustedNow.toUTC().diff(bd.toUTC(), 'months').months;
+        const totalYears   = adjustedNow.toUTC().diff(bd.toUTC(), 'years').years;
         document.getElementById('r-sec').innerText   = f(totalSeconds);
         document.getElementById('r-min').innerText   = f(totalMinutes);
         document.getElementById('r-hour').innerText  = f(totalHours);
@@ -1002,7 +1002,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         document.getElementById('r-week').innerText  = f(totalWeeks);
         document.getElementById('r-month').innerText = f(totalMonths);
         document.getElementById('r-year').innerText  = f(totalYears);
-        const dd = adjustedNow.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
+        const dd = adjustedNow.toUTC().diff(bd.toUTC(), ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
         let displaySeconds = dd.seconds;
         let displayMinutes = dd.minutes;
         let displayHours = dd.hours;
