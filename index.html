@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="icon" type="image/png" href="timeodometer.png">
     <link rel="apple-touch-icon" href="timeodometer.png">
-    <link rel="stylesheet" href="TimeOdometer.css">
+    <link rel="stylesheet" href="TimeOdometer.css?v=2">
 </head>
 <body>
 <div class="container">
@@ -674,7 +674,7 @@
                 const ntpSeconds = parseInt(parts[0], 10);
             if (!isNaN(ntpSeconds)) {
                 const unixMillis = (ntpSeconds - 2208988800) * 1000;
-                dynamicDates.push(DateTime.fromMillis(unixMillis, { zone: 'UTC' }));
+                dynamicDates.push(DateTime.fromMillis(unixMillis, { zone: 'UTC' }).minus({ seconds: 1 }));
             }
         });
         if (dynamicDates.length > 0) {
