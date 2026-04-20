@@ -991,26 +991,14 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         document.getElementById('r-week').innerText = f(physicalSeconds / 604800);
         document.getElementById('r-month').innerText = f(physicalSeconds / 2629746);
         document.getElementById('r-year').innerText = f(physicalSeconds / 31556952);
-        const dd = now.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
         const rawUnixMs = now.toMillis() - bd.toMillis();
-        const extraPhysicsMs = Math.abs(physicalDiffMs) - Math.abs(rawUnixMs);
-        const direction = now >= bd ? 1 : -1;
-        let displaySeconds = dd.seconds + ((extraPhysicsMs / 1000) * direction);
+        const leapDeltaMs = physicalDiffMs - rawUnixMs;
+        const adjustedNow = now.plus({ milliseconds: leapDeltaMs });
+        const dd = adjustedNow.diff(bd, ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']);
+        let displaySeconds = dd.seconds;
         let displayMinutes = dd.minutes;
         let displayHours = dd.hours;
         let displayDays = dd.days;
-        if (displaySeconds >= 60 || displaySeconds <= -60) {
-            displayMinutes += Math.trunc(displaySeconds / 60);
-            displaySeconds = displaySeconds % 60;
-        }
-        if (displayMinutes >= 60 || displayMinutes <= -60) {
-            displayHours += Math.trunc(displayMinutes / 60);
-            displayMinutes = displayMinutes % 60;
-        }
-        if (displayHours >= 24 || displayHours <= -24) {
-            displayDays += Math.trunc(displayHours / 24);
-            displayHours = displayHours % 24;
-        }
         const p = (val, unit) => { const num = Math.trunc(val) + 0; return new Intl.NumberFormat(navigator.language, { style: 'unit', unit: unit, unitDisplay: 'long', numberingSystem: 'latn' }).format(num); };
         const datePart = `${p(dd.years, 'year')}, ${p(dd.months, 'month')}, ${p(dd.weeks, 'week')}, ${p(displayDays, 'day')}`;
         const timePart = `${p(displayHours, 'hour')}, ${p(displayMinutes, 'minute')}, ${p(displaySeconds, 'second')}`;
