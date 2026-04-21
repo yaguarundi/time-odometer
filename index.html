@@ -811,6 +811,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 let targetDisplayStr = targetAltInput ? targetAltInput.value : di.value;
                 const targetAPM = getAPM(targetDate, targetDisplayStr, targetTz, is24hr);
                 let physicalDiffMs = targetAPM - originAPM;
+                let physicalSeconds = physicalDiffMs / 1000;
                 let rawUnixMs = targetDate.toMillis() - originDate.toMillis();
                 let leapDeltaMs = physicalDiffMs - rawUnixMs;
                 const adjustedTarget = targetDate.plus({ milliseconds: leapDeltaMs });
@@ -820,8 +821,8 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 else if (unit === 'hours') amt = parseFloat((physicalSeconds / 3600).toFixed(4));
                 else if (unit === 'days') amt = parseFloat((physicalSeconds / 86400).toFixed(5));
                 else if (unit === 'weeks') amt = parseFloat((physicalSeconds / 604800).toFixed(6));
-                else if (unit === 'months') amt = parseFloat(targetDate.toUTC().diff(originDate.toUTC(), 'months').months.toFixed(7));
-                else if (unit === 'years') amt = parseFloat(targetDate.toUTC().diff(originDate.toUTC(), 'years').years.toFixed(8));
+                else if (unit === 'months') amt = parseFloat(adjustedTarget.toUTC().diff(originDate.toUTC(), 'months').months.toFixed(7));
+                else if (unit === 'years') amt = parseFloat(adjustedTarget.toUTC().diff(originDate.toUTC(), 'years').years.toFixed(8));
                 const useCommas = document.getElementById('toggleCommas').checked;
                 let s = Math.abs(amt).toString().split('.');
                 let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
