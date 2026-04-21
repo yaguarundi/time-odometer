@@ -815,19 +815,23 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 let rawUnixMs = targetDate.toMillis() - originDate.toMillis();
                 let leapDeltaMs = physicalDiffMs - rawUnixMs;
                 const adjustedTarget = targetDate.plus({ milliseconds: leapDeltaMs });
-                let amt = 0;
-                if (unit === 'seconds') amt = parseFloat(physicalSeconds.toFixed(4));
-                else if (unit === 'minutes') amt = parseFloat((physicalSeconds / 60).toFixed(4));
-                else if (unit === 'hours') amt = parseFloat((physicalSeconds / 3600).toFixed(4));
-                else if (unit === 'days') amt = parseFloat((physicalSeconds / 86400).toFixed(5));
-                else if (unit === 'weeks') amt = parseFloat((physicalSeconds / 604800).toFixed(6));
-                else if (unit === 'months') amt = parseFloat(adjustedTarget.toUTC().diff(originDate.toUTC(), 'months').months.toFixed(7));
-                else if (unit === 'years') amt = parseFloat(adjustedTarget.toUTC().diff(originDate.toUTC(), 'years').years.toFixed(8));
+                let rawAmt = 0;
+                let decimals = 0;
+                if (unit === 'seconds') { rawAmt = physicalSeconds; decimals = 4; }
+                else if (unit === 'minutes') { rawAmt = physicalSeconds / 60; decimals = 4; }
+                else if (unit === 'hours') { rawAmt = physicalSeconds / 3600; decimals = 4; }
+                else if (unit === 'days') { rawAmt = physicalSeconds / 86400; decimals = 5; }
+                else if (unit === 'weeks') { rawAmt = physicalSeconds / 604800; decimals = 6; }
+                else if (unit === 'months') { rawAmt = adjustedTarget.toUTC().diff(originDate.toUTC(), 'months').months; decimals = 7; }
+                else if (unit === 'years') { rawAmt = adjustedTarget.toUTC().diff(originDate.toUTC(), 'years').years; decimals = 8; }
+                let isNeg = rawAmt < 0;
+                let amtStr = Math.abs(rawAmt).toFixed(decimals);
+                amtStr = amtStr.replace(/(\.\d*?[1-9])0+$/, "$1").replace(/\.0+$/, "");
                 const useCommas = document.getElementById('toggleCommas').checked;
-                let s = Math.abs(amt).toString().split('.');
+                let s = amtStr.split('.');
                 let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
                 let res = formattedInteger + (s.length > 1 ? '.' + s[1] : '');
-                ai.value = (amt < 0 ? '-' : '') + res;
+                ai.value = (isNeg ? '-' : '') + res;
             }
         });
     }
