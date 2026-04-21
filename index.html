@@ -906,7 +906,6 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             const is24hr = document.getElementById('toggle24hr').checked;
             const originAltInput = document.getElementById('birthdatetime')._flatpickr.altInput;
             const originAPM = getAPM(originDate, originAltInput.value, document.getElementById('tzLocation').value, is24hr);
-            let td;
             let targetAPM;
             if (unit === 'months' || unit === 'years') {
                 td = originDate.plus({ [unit]: tVal }).setZone(document.getElementById('targetTzLocation').value);
