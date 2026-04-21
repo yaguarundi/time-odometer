@@ -69,7 +69,8 @@
     </div>
             <div class="settings-panel">
             <label class="toggle-wrapper"><input type="checkbox" id="toggleCommas" checked>Separator</label>
-            <label class="toggle-wrapper">24-hour<input type="checkbox" id="toggle24hr"></label>
+            <label class="toggle-wrapper"><input type="checkbox" id="toggle24hr">24-hour</label>
+            <label class="toggle-wrapper"><input type="checkbox" id="toggleLeapSec" checked>Leap</label>
         </div>
         <div class="donation-section">
     <p class="donation-text">Like it? Support the project!</p>
@@ -121,7 +122,7 @@
         <div class="current-time" id="r-current-time">--</div>
         <div class="time-offset" id="r-time-offset"></div>
         <div class="footer">
-        <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links">
+        <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links.">
             <span class="linktree-icon"></span>
         </a>
         <p class="copyright">&copy; <span id="current-year">2026</span>&nbsp;Yago&nbsp;Yaguarundi.&nbsp;All rights reserved.</p>
@@ -506,33 +507,7 @@
                 return;
             }
         };
-    function isLeapSecondMinute(dateString, timeZone, is24hr) {
-        if (!dateString || dateString.length < 17) return false;
-        try {
-            const format = is24hr ? "yyyy-MM-dd, HH:mm" : "yyyy-MM-dd, hh:mm a";
-            let minuteStr = dateString.substring(0, 17);
-            if (!is24hr) {
-                const ampm = dateString.match(/(AM|PM)/i);
-                if (!ampm) {
-                    minuteStr += " PM";
-                } else {
-                    minuteStr += " " + ampm[0].toUpperCase();
-                }
-            }
-            const dt = DateTime.fromFormat(minuteStr.trim(), format, { zone: timeZone });
-            if (!dt.isValid) return false;
-            const utcDt = dt.toUTC();
-            if (utcDt.hour !== 23 || utcDt.minute !== 59) return false;
-            const isHistorical = leapSecondDates.some(ls => 
-                ls.year === utcDt.year && 
-                ls.month === utcDt.month && 
-                ls.day === utcDt.day
-            );
-            return isHistorical;
-        } catch (e) {
-            return false;
-        }
-    }
+        
         flatpickr("#birthdatetime", {
             ...fpConfig,
             onReady: function(selectedDates, dateStr, instance) {
@@ -691,7 +666,8 @@
         console.warn("Time Odometer: Using offline leap second fallback.", error);
     }
 }
-function isLeapSecondMinute(dateString, timeZone, is24hr) {
+    function isLeapSecondMinute(dateString, timeZone, is24hr) {
+        if (!document.getElementById('toggleLeapSec').checked) return false;
         if (!dateString || dateString.length < 17) return false;
         try {
             const format = is24hr ? "yyyy-MM-dd, HH:mm" : "yyyy-MM-dd, hh:mm a";
@@ -720,6 +696,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
     function getAPM(dt, displayStr, tz, is24hr) {
         if (!dt || !dt.isValid) return 0;
         let unixMs = dt.toMillis();
+        if (!document.getElementById('toggleLeapSec').checked) return unixMs;
         let ls = leapSecondDates.filter(lsDate => lsDate.toMillis() <= unixMs).length;
         if (dt.second === 59) {
             let isLeap = isLeapSecondMinute(displayStr, tz, is24hr);
@@ -835,16 +812,22 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             }
         });
     }
+    let lastActiveMilestoneInput = null;
     function refreshAllMilestones() {
-        let anchor = null;
-        const inputs = document.querySelectorAll('.milestone-container .ms-date-input.flatpickr-input');
-        const searchList = inputs.length > 0 ? inputs : document.querySelectorAll('.milestone-container .ms-date-input');
-        searchList.forEach(i => { 
-            if (!anchor && i.value) anchor = i.value; 
-        });
-        syncMilestones(anchor, null);
+    if (lastActiveMilestoneInput && lastActiveMilestoneInput.value && lastActiveMilestoneInput.value !== '-' && lastActiveMilestoneInput.dataset.isInvalid !== "true") {
+        lastActiveMilestoneInput.dispatchEvent(new Event('input', { bubbles: true }));
+        return;
+    }
+    let anchor = null;
+    const inputs = document.querySelectorAll('.milestone-container .ms-date-input.flatpickr-input');
+    const searchList = inputs.length > 0 ? inputs : document.querySelectorAll('.milestone-container .ms-date-input');
+    searchList.forEach(i => { 
+        if (!anchor && i.value) anchor = i.value; 
+    });
+    syncMilestones(anchor, null);
     }
     document.querySelectorAll('.row').forEach(row => {
+        lastActiveMilestoneInput = null;
         const unit = row.getAttribute('data-unit');
         const ai = row.querySelector('.ms-input');
         const di = row.querySelector('.ms-date-input');
@@ -856,6 +839,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             }
         });
         ai.addEventListener('input', function() {
+            lastActiveMilestoneInput = this;
             let val = this.value; 
             if (!val || val === '-' || val === '') { 
                 this.style.color = '#E0CBB9';
@@ -987,7 +971,8 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             ls.month === currentUTC.month && 
             ls.day === currentUTC.day
         );
-        if (isLeapSecondDay && currentUTC.hour === 23 && currentUTC.minute === 59 && currentUTC.second === 59) {
+        const useLeaps = document.getElementById('toggleLeapSec').checked;
+        if (useLeaps && isLeapSecondDay && currentUTC.hour === 23 && currentUTC.minute === 59 && currentUTC.second === 59) {
             window.leapTickCount = (window.leapTickCount || 0) + 1;
             if (window.leapTickCount > 1) {
                 curTimeStr = curTimeStr.replace(/:59(?!.*:59)/, ':60');
@@ -1051,6 +1036,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         sessionStorage.setItem('odo_targetTz', document.getElementById('targetTzLocation').value);
         sessionStorage.setItem('odo_commas', uc);
         sessionStorage.setItem('odo_24hr', u24);
+        sessionStorage.setItem('odo_leap', document.getElementById('toggleLeapSec').checked);
     }
     document.getElementById('btn-now').addEventListener('click', () => {
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(document.getElementById('tzLocation').value).startOf('second');
@@ -1069,6 +1055,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         } else {
             bdInput.value = '';
         }
+        lastActiveMilestoneInput = null;
         syncMilestones(null, null);
         calculate();
     });
@@ -1081,6 +1068,7 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         const newAltFormat = is24hr ? "Y-m-d, H:i:S" : "Y-m-d, h:i:S K";
         const placeholderStr = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
         const mainInput = document.getElementById('birthdatetime');
+        const useLeaps = document.getElementById('toggleLeapSec').checked; // <-- Moved to the top!
         if (mainInput && mainInput._flatpickr) {
             const currentDate = mainInput._flatpickr.selectedDates[0];
             mainInput._flatpickr.set('time_24hr', is24hr);
@@ -1088,15 +1076,19 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             mainInput._flatpickr.altInput.placeholder = placeholderStr; 
             if (currentDate) {
                 mainInput._flatpickr.setDate(currentDate, false);
-                if (mainInput._flatpickr.altInput.dataset.hasLeap60 === "true" && currentDate.getSeconds() === 59) {
+                if (useLeaps && mainInput._flatpickr.altInput.dataset.hasLeap60 === "true" && currentDate.getSeconds() === 59) {
                     mainInput._flatpickr.altInput.value = mainInput._flatpickr.altInput.value.replace(/:59(?!.*:59)/, ":60");
+                } else if (!useLeaps) {
+                    mainInput._flatpickr.altInput.dataset.hasLeap60 = "false";
                 }
             } else if (mainInput.value) {
                 const dt = DateTime.fromISO(mainInput.value);
                 if (dt.isValid) {
                     mainInput._flatpickr.setDate(dt.toJSDate(), false);
-                    if (mainInput._flatpickr.altInput.dataset.hasLeap60 === "true" && dt.second === 59) {
+                    if (useLeaps && mainInput._flatpickr.altInput.dataset.hasLeap60 === "true" && dt.second === 59) {
                         mainInput._flatpickr.altInput.value = mainInput._flatpickr.altInput.value.replace(/:59(?!.*:59)/, ":60");
+                    } else if (!useLeaps) {
+                        mainInput._flatpickr.altInput.dataset.hasLeap60 = "false";
                     }
                 }
             }
@@ -1107,13 +1099,17 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 input._flatpickr.set('time_24hr', is24hr);
                 input._flatpickr.set('altFormat', newAltFormat);
                 input._flatpickr.altInput.placeholder = placeholderStr;
+                
                 if (savedIso) {
                     const dt = DateTime.fromISO(savedIso);
                     if (dt.isValid) {
                         input.value = savedIso;
                         let newDisplay = dt.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
-                        if (input._flatpickr.altInput.dataset.hasLeap60 === "true" && dt.second === 59) {
+                        
+                        if (useLeaps && input._flatpickr.altInput.dataset.hasLeap60 === "true" && dt.second === 59) {
                             newDisplay = newDisplay.replace(/:59(?!.*:59)/, ":60");
+                        } else if (!useLeaps) {
+                            input._flatpickr.altInput.dataset.hasLeap60 = "false";
                         }
                         input._flatpickr.altInput.value = newDisplay;
                     }
@@ -1124,15 +1120,22 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
         refreshAllMilestones(); 
     }
     document.getElementById('toggle24hr').addEventListener('change', updateTimeFormat);
+    document.getElementById('toggleLeapSec').addEventListener('change', () => {
+    updateTimeFormat();
+    calculate();
+    refreshAllMilestones();
+    });
     const savedCommas = sessionStorage.getItem('odo_commas');
     const saved24hr = sessionStorage.getItem('odo_24hr');
     const savedTz = sessionStorage.getItem('odo_tz');
     const savedTargetTz = sessionStorage.getItem('odo_targetTz');
     const savedBirthDate = sessionStorage.getItem('odo_birthdate');
+    const savedLeap = sessionStorage.getItem('odo_leap');
     if (savedCommas !== null) document.getElementById('toggleCommas').checked = (savedCommas === 'true');
     if (saved24hr !== null) document.getElementById('toggle24hr').checked = (saved24hr === 'true');
     if (savedTz) document.getElementById('tzLocation').value = savedTz;
     if (savedTargetTz) document.getElementById('targetTzLocation').value = savedTargetTz;
+    if (savedLeap !== null) document.getElementById('toggleLeapSec').checked = (savedLeap === 'true');
     updateTimeFormat(); 
     const currentYearNum = new Date().getFullYear();
     const newYearString = `${currentYearNum}-01-01T00:00:00`;
