@@ -811,7 +811,9 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
                 let targetDisplayStr = targetAltInput ? targetAltInput.value : di.value;
                 const targetAPM = getAPM(targetDate, targetDisplayStr, targetTz, is24hr);
                 let physicalDiffMs = targetAPM - originAPM;
-                let physicalSeconds = physicalDiffMs / 1000;
+                let rawUnixMs = targetDate.toMillis() - originDate.toMillis();
+                let leapDeltaMs = physicalDiffMs - rawUnixMs;
+                const adjustedTarget = targetDate.plus({ milliseconds: leapDeltaMs });
                 let amt = 0;
                 if (unit === 'seconds') amt = parseFloat(physicalSeconds.toFixed(4));
                 else if (unit === 'minutes') amt = parseFloat((physicalSeconds / 60).toFixed(4));
@@ -908,9 +910,10 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             const originAPM = getAPM(originDate, originAltInput.value, document.getElementById('tzLocation').value, is24hr);
             let targetAPM;
             if (unit === 'months' || unit === 'years') {
-                td = originDate.plus({ [unit]: tVal }).setZone(document.getElementById('targetTzLocation').value);
-                let tempDisplay = td.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
-                targetAPM = getAPM(td, tempDisplay, document.getElementById('targetTzLocation').value, is24hr);
+                let anniversary = originDate.plus({ [unit]: tVal });
+                let calendarDistanceMs = anniversary.toMillis() - originDate.toMillis();
+                targetAPM = originAPM + calendarDistanceMs;
+                td = anniversary.setZone(document.getElementById('targetTzLocation').value);
             } else {
                 let physicalSecondsToAdd = 0;
                 if (unit === 'seconds') physicalSecondsToAdd = tVal;
