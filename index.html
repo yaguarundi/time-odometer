@@ -906,22 +906,27 @@ function isLeapSecondMinute(dateString, timeZone, is24hr) {
             const is24hr = document.getElementById('toggle24hr').checked;
             const originAltInput = document.getElementById('birthdatetime')._flatpickr.altInput;
             const originAPM = getAPM(originDate, originAltInput.value, document.getElementById('tzLocation').value, is24hr);
-            let physicalSecondsToAdd = 0;
-            if (unit === 'seconds') physicalSecondsToAdd = tVal;
-            else if (unit === 'minutes') physicalSecondsToAdd = tVal * 60;
-            else if (unit === 'hours') physicalSecondsToAdd = tVal * 3600;
-            else if (unit === 'days') physicalSecondsToAdd = tVal * 86400;
-            else if (unit === 'weeks') physicalSecondsToAdd = tVal * 604800;
-            else if (unit === 'months') physicalSecondsToAdd = tVal * 2629746;
-            else if (unit === 'years') physicalSecondsToAdd = tVal * 31556952;
-            let targetAPM = originAPM + (physicalSecondsToAdd * 1000);
-            let ms = originDate.toMillis() + (physicalSecondsToAdd * 1000); 
-            td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
+            let td;
+            let targetAPM;
+            if (unit === 'months' || unit === 'years') {
+                td = originDate.plus({ [unit]: tVal }).setZone(document.getElementById('targetTzLocation').value);
+                let tempDisplay = td.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
+                targetAPM = getAPM(td, tempDisplay, document.getElementById('targetTzLocation').value, is24hr);
+            } else {
+                let physicalSecondsToAdd = 0;
+                if (unit === 'seconds') physicalSecondsToAdd = tVal;
+                else if (unit === 'minutes') physicalSecondsToAdd = tVal * 60;
+                else if (unit === 'hours') physicalSecondsToAdd = tVal * 3600;
+                else if (unit === 'days') physicalSecondsToAdd = tVal * 86400;
+                else if (unit === 'weeks') physicalSecondsToAdd = tVal * 604800;
+                targetAPM = originAPM + (physicalSecondsToAdd * 1000);
+                let ms = originDate.toMillis() + (physicalSecondsToAdd * 1000);
+                td = DateTime.fromMillis(ms).setZone(document.getElementById('targetTzLocation').value);
+            }
             let safety = 0;
             while (safety < 100) { 
                 let testDisplayStr = td.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
                 let testAPM = getAPM(td, testDisplayStr, document.getElementById('targetTzLocation').value, is24hr);
-                
                 if (testAPM === targetAPM) {
                     is60 = false;
                     break;
