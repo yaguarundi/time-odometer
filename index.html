@@ -1069,7 +1069,7 @@
         const newAltFormat = is24hr ? "Y-m-d, H:i:S" : "Y-m-d, h:i:S K";
         const placeholderStr = is24hr ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
         const mainInput = document.getElementById('birthdatetime');
-        const useLeaps = document.getElementById('toggleLeapSec').checked; // <-- Moved to the top!
+        const useLeaps = document.getElementById('toggleLeapSec').checked;
         if (mainInput && mainInput._flatpickr) {
             const currentDate = mainInput._flatpickr.selectedDates[0];
             mainInput._flatpickr.set('time_24hr', is24hr);
@@ -1124,7 +1124,8 @@
     document.getElementById('toggleLeapSec').addEventListener('change', () => {
     updateTimeFormat();
     calculate();
-    refreshAllMilestones();
+    lastActiveMilestoneInput = null;
+    syncMilestones(null, null);
     });
     const savedCommas = sessionStorage.getItem('odo_commas');
     const saved24hr = sessionStorage.getItem('odo_24hr');
