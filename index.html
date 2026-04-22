@@ -950,6 +950,7 @@
     function calculate() {
         const iv = document.getElementById('birthdatetime').value;
         const tz = document.getElementById('tzLocation').value;
+        const targetTz = document.getElementById('targetTzLocation').value;
         const rp = document.getElementById('resultsPanel');
         const ep = document.getElementById('extraPanel');
         const md = document.getElementById('main-dow');
@@ -959,7 +960,7 @@
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
         md.innerText = (bd.isValid && bd.year >= 1) ? bd.toFormat("EEE").toUpperCase() : 'EEE';
         md.style.color = (bd.isValid && bd.year >= 1) ? '#E0CBB9' : '#634E34';
-        const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(tz).startOf('second');
+        const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(targetTz).startOf('second');
         if (!bd.isValid || bd.year < 0000 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
@@ -986,7 +987,7 @@
             : iv;
         const nowDisplayStr = now.toFormat("yyyy-MM-dd") + ", " + curTimeStr;
         const originAPM = getAPM(bd, originDisplayStr, tz, u24);
-        const nowAPM = getAPM(now, nowDisplayStr, tz, u24);
+        const nowAPM = getAPM(now, nowDisplayStr, targetTz, u24);
         const physicalDiffMs = nowAPM - originAPM;
         let physicalSeconds = physicalDiffMs / 1000;
         const f = (n) => uc ? (Math.trunc(n) + 0).toLocaleString('en-US') : (Math.trunc(n) + 0).toString();
