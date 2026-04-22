@@ -754,13 +754,13 @@
                         if (isLeap) {
                             let shouldBe60 = false;
                             if (force60 !== null) {
-                                shouldBe60 = force60;
-                            } else if (activeInput === di) {
-                                shouldBe60 = di._flatpickr.altInput.dataset.hasLeap60 === "true"; 
-                            } else {
-                                const originAlt = document.getElementById('birthdatetime')._flatpickr.altInput;
-                                shouldBe60 = originAlt.dataset.hasLeap60 === "true";
-                            }
+                            shouldBe60 = force60;
+                                } else if (activeInput && activeInput._flatpickr && activeInput._flatpickr.altInput) {
+                                    shouldBe60 = activeInput._flatpickr.altInput.dataset.hasLeap60 === "true";
+                                } else {
+                                    const originAlt = document.getElementById('birthdatetime')._flatpickr.altInput;
+                                    shouldBe60 = originAlt.dataset.hasLeap60 === "true";
+                                    }
                             if (shouldBe60) {
                                 displayStr = displayStr.replace(/:59(?!.*:59)/, ':60');
                                 di._flatpickr.altInput.dataset.hasLeap60 = "true";
