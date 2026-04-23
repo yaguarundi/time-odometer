@@ -1160,14 +1160,23 @@
             if (yearText) {
             yearText.innerText = new Date().getFullYear();
         }
-    // Easter Egg
+    // Easter Egg for DESKTOP ONLY
     let typedKeys = '';
-    const targetWords = ['yago', 'yaguarundi', 'jaguarundi'];
-    const maxWordLength = Math.max(...targetWords.map(w => w.length));
+    const easterEggs = {
+        'https://en.wikipedia.org/wiki/Jaguarundi': ['yago', 'yaguarundi', 'jaguarundi'],
+        'https://en.wikipedia.org/wiki/Skynet_(Terminator)': ['skynet', 'cyberdyne'],
+        'https://en.wikipedia.org/wiki/DeLorean_time_machine': ['delorean', 'docbrown'],
+        'https://en.wikipedia.org/wiki/TARDIS': ['tardis', 'timelord', 'dalek'],
+        'https://en.wikipedia.org/wiki/Groundhog_Day_(film)': ['groundhogday', 'philconnors']
+        // Not relating to time-travel theme.
+        'https://pokemondb.net/pokedex/liepard': ['liepard']
+    };
+    const allWords = Object.values(easterEggs).flat();
+    const maxWordLength = Math.max(...allWords.map(w => w.length));
     document.addEventListener('keydown', (e) => {
         const activeTag = document.activeElement.tagName.toLowerCase();
         if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') {
-            typedKeys = '';
+            typedKeys = ''; 
             return;
         }
         if (e.key.length === 1) {
@@ -1175,9 +1184,12 @@
             if (typedKeys.length > maxWordLength) {
                 typedKeys = typedKeys.slice(-maxWordLength);
             }
-            if (targetWords.some(word => typedKeys.endsWith(word))) {
-                window.open('https://en.wikipedia.org/wiki/Jaguarundi', '_blank', 'noopener,noreferrer');
-                typedKeys = '';
+            for (const [url, words] of Object.entries(easterEggs)) {
+                if (words.some(word => typedKeys.endsWith(word))) {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                    typedKeys = ''; 
+                    break;
+                }
             }
         }
     });
