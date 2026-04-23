@@ -129,6 +129,7 @@ select {
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
     position: relative;
+    cursor: pointer;
     z-index: 1;
 }
 select option {
