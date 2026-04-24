@@ -533,22 +533,31 @@
                     e.target.setSelectionRange(start, start);
                     e.target.dispatchEvent(new Event('input', { bubbles: true }));
                 });
-                const forceCursorToStart = (e) => {
+                const enforceCursorToStart = (e) => {
                     const is24 = document.getElementById('toggle24hr').checked;
                     const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
                     if (!e.target.value || e.target.value === temp) {
                         e.target.value = temp;
-                        setTimeout(() => e.target.setSelectionRange(0, 0), 0);
+                        requestAnimationFrame(() => {
+                            e.target.setSelectionRange(0, 0);
+                        });
                     }
                 };
-                instance.altInput.addEventListener('focus', forceCursorToStart);
-                instance.altInput.addEventListener('click', forceCursorToStart);
+                instance.altInput.addEventListener('mouseup', enforceCursorToStart);
+                instance.altInput.addEventListener('focus', enforceCursorToStart);
+                instance.altInput.addEventListener('keyup', (e) => {
+                    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                        enforceCursorToStart(e);
+                    }
+                });
                 instance.altInput.addEventListener('paste', (e) => {
                     e.preventDefault();
-                    const pasteData = (e.clipboardData || window.clipboardData).getData('text');
-                    e.target.value = pasteData.trim();
+                    e.stopPropagation();
+                    const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
+                    e.target.value = pasteData;
                     e.target.dispatchEvent(new Event('input', { bubbles: true }));
-                });
+                }, { capture: true });
+                instance.altInput.addEventListener('drop', (e) => e.preventDefault());
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
                     instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
@@ -577,6 +586,31 @@
                     e.target.setSelectionRange(start, start);
                     e.target.dispatchEvent(new Event('input', { bubbles: true }));
                 });
+                const enforceCursorToStart = (e) => {
+                    const is24 = document.getElementById('toggle24hr').checked;
+                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
+                    if (!e.target.value || e.target.value === temp) {
+                        e.target.value = temp;
+                        requestAnimationFrame(() => {
+                            e.target.setSelectionRange(0, 0);
+                        });
+                    }
+                };
+                instance.altInput.addEventListener('mouseup', enforceCursorToStart);
+                instance.altInput.addEventListener('focus', enforceCursorToStart);
+                instance.altInput.addEventListener('keyup', (e) => {
+                    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                        enforceCursorToStart(e);
+                    }
+                });
+                instance.altInput.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
+                    e.target.value = pasteData;
+                    e.target.dispatchEvent(new Event('input', { bubbles: true }));
+                }, { capture: true });
+                instance.altInput.addEventListener('drop', (e) => e.preventDefault());
             }
         });
         document.querySelectorAll('.row').forEach(row => {
