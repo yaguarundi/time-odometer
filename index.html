@@ -533,6 +533,22 @@
                     e.target.setSelectionRange(start, start);
                     e.target.dispatchEvent(new Event('input', { bubbles: true }));
                 });
+                const forceCursorToStart = (e) => {
+                    const is24 = document.getElementById('toggle24hr').checked;
+                    const temp = is24 ? "yyyy-mm-dd, HH:mm:ss" : "yyyy-mm-dd, hh:mm:ss _M";
+                    if (!e.target.value || e.target.value === temp) {
+                        e.target.value = temp;
+                        setTimeout(() => e.target.setSelectionRange(0, 0), 0);
+                    }
+                };
+                instance.altInput.addEventListener('focus', forceCursorToStart);
+                instance.altInput.addEventListener('click', forceCursorToStart);
+                instance.altInput.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                    e.target.value = pasteData.trim();
+                    e.target.dispatchEvent(new Event('input', { bubbles: true }));
+                });
                 forceLeadingZero(instance);
                 if (instance.hourElement) {
                     instance.hourElement.addEventListener('input', () => forceLeadingZero(instance));
