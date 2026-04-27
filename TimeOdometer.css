@@ -233,6 +233,15 @@ input:invalid {
     justify-content: space-between;
     background-color: transparent;
 }
+.current-group {
+    background-color: #333;
+    border-radius: 6px;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 4px; 
+}
 .button-group {
     display: flex;
     gap: 10px;
