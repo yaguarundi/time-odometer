@@ -793,7 +793,7 @@
             const di = row.querySelector('.ms-date-input.flatpickr-input') || row.querySelector('.ms-date-input');
             const ai = row.querySelector('.ms-input');
             const ds = row.querySelector('.ms-dow');
-            ds.innerText = targetDate.setLocale(navigator.language).toFormat("EEE").toUpperCase();
+            ds.innerText = targetDate.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace('.', '');
             ds.style.color = '#E0CBB9';
             let displayStr = targetDate.toFormat(is24hr ? "yyyy-MM-dd, HH:mm:ss" : "yyyy-MM-dd, hh:mm:ss a");
             if (di !== activeInput) {
@@ -1010,13 +1010,13 @@
         const u24 = document.getElementById('toggle24hr').checked;
         if (!iv) { rp.style.display = 'none'; ep.style.display = 'none'; md.innerText = 'EEE'; md.style.color = '#634E34'; return; }
         const bd = DateTime.fromISO(iv, { zone: tz }).startOf('second');
-        md.innerText = (bd.isValid && bd.year >= 1) ? bd.setLocale(navigator.language).toFormat("EEE").toUpperCase() : 'EEE';
+        md.innerText = (bd.isValid && bd.year >= 1) ? bd.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace('.', '') : 'EEE';
         md.style.color = (bd.isValid && bd.year >= 1) ? '#E0CBB9' : '#634E34';
         const now = DateTime.local().plus({ milliseconds: timeOffset }).setZone(targetTz).startOf('second');
         if (!bd.isValid || bd.year < 0000 || bd.year > 9999) { rp.style.display = 'none'; ep.style.display = 'none'; return; }
         rp.style.display = 'flex'; ep.style.display = 'flex';
         const timeFormat = u24 ? "HH:mm:ss" : "hh:mm:ss a";
-        const curDateStr = now.setLocale(navigator.language).toFormat("EEE").toUpperCase() + ", " + now.toFormat("yyyy-MM-dd");
+        const curDateStr = now.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace('.', '') + ", " + now.toFormat("yyyy-MM-dd");
         let curTimeStr = now.setLocale("en-US").toFormat(timeFormat);
         const currentUTC = now.toUTC();
         const isLeapSecondDay = leapSecondDates.some(ls => 
