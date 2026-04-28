@@ -773,7 +773,11 @@
                         di.value = '';
                     }
                 }
-                if (ai !== activeInput) ai.value = '';
+                if (ai !== activeInput) {
+                ai.value = '';
+                ai.style.color = '#E0CBB9';
+                ai.dataset.isInvalid = "false";
+            }
                 ds.innerText = 'EEE';
                 ds.style.color = '#634E34';
             });
@@ -860,7 +864,9 @@
                 let s = amtStr.split('.');
                 let formattedInteger = useCommas ? parseInt(s[0], 10).toLocaleString('en-US') : s[0];
                 let res = formattedInteger + (s.length > 1 ? '.' + s[1] : '');
-                ai.value = (isNeg ? '-' : '') + res;
+                    ai.value = (isNeg ? '-' : '') + res;
+                    ai.style.color = '#E0CBB9';
+                    ai.dataset.isInvalid = "false";
             }
         });
     }
