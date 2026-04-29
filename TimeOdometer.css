@@ -234,7 +234,7 @@ input:invalid {
     background-color: transparent;
 }
 .current-group {
-    background-color: #333;
+    background-color: #E0CBB9;
     border-radius: 6px;
     padding: 12px 10px;
     display: flex;
@@ -369,8 +369,8 @@ input:invalid {
     opacity: 1;
 }
 .detailed-row {
-    background-color: #E0CBB9;
-    color: #1e1e1e;
+    background-color: #333;
+    color: #E0CBB9;
     padding: 10px;
     border-radius: 6px;
     font-family: "Courier New", Courier, monospace;
@@ -383,7 +383,7 @@ input:invalid {
     text-align: center;
     font-weight: bold;
     font-size: 1em;
-    color: #E0CBB9;
+    color: #333;
     font-family: "Courier New", Courier, monospace;
 }
 #r-detailed .detail-date, 
