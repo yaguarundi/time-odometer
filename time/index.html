@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Time | Time Odometer</title>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <link rel="stylesheet" href="/TimeOdometer.css/">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            overscroll-behavior: none;
+            position: relative;
+            background-color: #634E34;
+        }
+
+        body {
+            display: block;
+        }
+
+        #time-page-container {
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .top-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .timezone-selector {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .timezone-selector select {
+            width: 100%;
+            max-width: 300px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E0CBB9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px;
+            text-align: center;
+            text-align-last: center;
+        }
+        
+        .time-section {
+            text-align: center;
+            padding: 25px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #E0CBB9;
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+        }
+        
+        .section-top {
+            font-size: clamp(2.5em, 8vw, 4.5em);
+            text-transform: uppercase;
+            height: 60px;
+            line-height: 60px;
+            overflow: visible;
+        }
+        
+        .section-middle {
+            font-size: clamp(2.5em, 8vw, 4.5em);
+            border-top: 2px solid #634E34; 
+            border-bottom: 2px solid #634E34;
+            height: 60px;
+            line-height: 60px;
+            overflow: visible;
+        }
+        
+        .section-bottom {
+            font-size: clamp(2.5em, 8vw, 4.5em);
+            height: 60px;
+            line-height: 60px;
+            overflow: visible;
+        }
+        
+        .ampm-label {
+            margin-left: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            #time-page-container {
+                max-width: 100%;
+                padding: 0 5px;
+            }
+            .time-section {
+                padding: 15px 10px;
+            }
+            .section-top, 
+            .section-middle, 
+            .section-bottom {
+                font-size: clamp(1.8em, 10vw, 3.5em); 
+            }
+            .ampm-label {
+                margin-left: 15px;
+            }
+            .sync-warning {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="time-page-container">
+    <div class="half-container">
+        <div class="top-controls">
+            <label class="toggle-wrapper">
+                <input type="checkbox" id="toggle24hr">24-hour</label>
+        </div>
+        
+        <div class="timezone-selector">
+            <select id="targetTzLocation" aria-label="Select Timezone"></select>
+        </div>
+
+        <div id="sync-warning" class="sync-warning" style="display: none; text-align: center; margin-top: 15px; padding-bottom: 15px">⚠️&nbsp;Failed connection. Using device clock.</div>
+        
+        <div class="donation-section" style="margin-top: 0;">
+            <p class="donation-text">Would appreciate support &lpar;$1 is fine&rpar;&excl;</p>
+            <a href="https://ko-fi.com/yaguarundi" target="_blank" rel="noopener noreferrer" title="Support me on Ko-fi.">
+                <img src="kofilogo.png" alt="Ko-fi" class="kofi-icon">
+            </a>
+        </div>
+    </div>
+
+    <div class="half-container">
+        <div class="time-section section-top" id="display-day">---</div>
+        
+        <div class="time-section section-middle" id="display-time">
+            <span id="time-digits">-:--:--</span>
+            <span id="time-ampm" class="ampm-label"></span>
+        </div>
+        
+        <div class="time-section section-bottom" id="display-date">---- -- --</div>
+    </div>
+
+    <div class="half-container footer" style="border-top: none; margin-top: 0; padding-top: 15px;">
+        <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links.">
+            <span class="linktree-icon" style="padding-top: 15px;"></span>
+        </a>
+
+        <div class="copyright" style="margin: 15px 0 15px 0;">
+            <p style="margin: 0;">&copy; <span id="current-year">2026</span>&nbsp;Yago&nbsp;Yaguarundi.&nbsp;All rights reserved.</p>
+        </div>
+    </div>
+</div>
+<script>
+    const DateTime = luxon.DateTime;
+    let timeOffsetMs = 0;
+    let intervalId;
+    let syncRetries = 0;
+    const MAX_SYNC_RETRIES = 1;
+    const SYNC_INTERVAL_MS = 30 * 60 * 1000;
+    
+    const toggle24hr = document.getElementById('toggle24hr');
+    const targetTzSelect = document.getElementById('targetTzLocation');
+    
+    const timeZones = Intl.supportedValuesOf('timeZone').filter(tz => tz !== 'UTC');
+    timeZones.unshift('UTC');
+    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    timeZones.forEach(tz => {
+        const option = document.createElement('option');
+        option.value = tz; 
+        option.textContent = tz.replace(/_/g, ' ');
+        if (tz === userTz) { 
+            option.selected = true; 
+        }
+        targetTzSelect.appendChild(option);
+    });
+
+    let leapSecondDates = [
+        "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", 
+        "1974-12-31T23:59:59Z", "1975-12-31T23:59:59Z", "1976-12-31T23:59:59Z", 
+        "1977-12-31T23:59:59Z", "1978-12-31T23:59:59Z", "1979-12-31T23:59:59Z", 
+        "1981-06-30T23:59:59Z", "1982-06-30T23:59:59Z", "1983-06-30T23:59:59Z", 
+        "1985-06-30T23:59:59Z", "1987-12-31T23:59:59Z", "1989-12-31T23:59:59Z", 
+        "1990-12-31T23:59:59Z", "1992-06-30T23:59:59Z", "1993-06-30T23:59:59Z", 
+        "1994-06-30T23:59:59Z", "1995-12-31T23:59:59Z", "1997-06-30T23:59:59Z", 
+        "1998-12-31T23:59:59Z", "2005-12-31T23:59:59Z", "2008-12-31T23:59:59Z", 
+        "2012-06-30T23:59:59Z", "2015-06-30T23:59:59Z", "2016-12-31T23:59:59Z"
+    ].map(iso => DateTime.fromISO(iso));
+
+    async function fetchLiveLeapSeconds() {
+        try {
+            const response = await fetch('https://time-proxy-v3-1077347133188.us-central1.run.app', { cache: 'no-store' });
+            if (!response.ok) throw new Error("Could not reach IANA servers.");
+            const text = await response.text();
+            const lines = text.split('\n');
+            const dynamicDates = [];
+            lines.forEach(line => {
+                if (line.startsWith('#') || line.trim() === '') return;
+                const parts = line.trim().split(/\s+/);
+                const ntpSeconds = parseInt(parts[0], 10);
+                const taiOffset = parseInt(parts[1], 10);
+                if (!isNaN(ntpSeconds) && taiOffset > 10) {
+                    const unixMillis = (ntpSeconds - 2208988800) * 1000;
+                    dynamicDates.push(DateTime.fromMillis(unixMillis, { zone: 'UTC' }).minus({ seconds: 1 }));
+                }
+            });
+            if (dynamicDates.length > 0) leapSecondDates = dynamicDates;
+        } catch (error) {
+            console.warn("Time Odometer: Using offline leap second fallback.", error);
+        }
+    }
+
+    async function syncTime() {
+        if (syncRetries >= MAX_SYNC_RETRIES) {
+            document.getElementById('sync-warning').style.display = 'block';
+            return;
+        }
+        try {
+            const start = performance.now();
+            const response = await fetch('https://time-proxy-v3-1077347133188.us-central1.run.app/time', { cache: 'no-store' });
+            if (!response.ok) throw new Error("API Error.");
+            const data = await response.json();
+            const serverMillis = data.now;
+            timeOffsetMs = (serverMillis + (performance.now() - start) / 2) - Date.now();
+            document.getElementById('sync-warning').style.display = 'none';
+            syncRetries = 0; 
+        } catch (err) {
+            console.warn("Sync failed, using device clock.", err);
+            syncRetries++;
+            if (syncRetries >= MAX_SYNC_RETRIES) {
+                document.getElementById('sync-warning').style.display = 'block';
+            } else {
+                setTimeout(syncTime, 1500 * syncRetries);
+            }
+        }
+    }
+
+    function startClock() {
+        updateDOM();
+        scheduleNextTick();
+    }
+
+    function scheduleNextTick() {
+        const exactTime = Date.now() + timeOffsetMs;
+        const msUntilNextSecond = 1000 - (exactTime % 1000);
+        if (intervalId) clearTimeout(intervalId);
+        intervalId = setTimeout(() => {
+            updateDOM();
+            scheduleNextTick();
+        }, msUntilNextSecond);
+    }
+
+    function updateDOM() {
+        const is24hr = toggle24hr.checked;
+        const selectedTz = targetTzSelect.value;
+        const now = DateTime.local().plus({ milliseconds: timeOffsetMs }).setZone(selectedTz);
+        
+        document.getElementById('display-day').innerText = now.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace(/\./g, '');
+
+        const timeFormatStr = is24hr ? "HH:mm:ss" : "h:mm:ss";
+        const dateFormatStr = is24hr ? "yyyy-MM-dd" : "yyyy-M-d";
+
+        document.getElementById('display-date').innerText = now.toFormat(dateFormatStr);
+
+        let timeString = now.toFormat(timeFormatStr);
+
+        const currentUTC = now.toUTC();
+        const isLeapSecondDay = leapSecondDates.some(ls => 
+            ls.year === currentUTC.year && 
+            ls.month === currentUTC.month && 
+            ls.day === currentUTC.day
+        );
+
+        if (isLeapSecondDay && currentUTC.hour === 23 && currentUTC.minute === 59 && currentUTC.second === 59) {
+            window.leapTickCount = (window.leapTickCount || 0) + 1;
+            if (window.leapTickCount > 1) {
+                timeString = timeString.replace(/:59(?!.*:59)/, ':60');
+            }
+        } else {
+            window.leapTickCount = 0;
+        }
+
+        const ampmLabel = document.getElementById('time-ampm');
+        document.getElementById('time-digits').innerText = timeString;
+
+        if (is24hr) {
+            ampmLabel.style.display = "none"; 
+        } else {
+            ampmLabel.innerText = now.toFormat("a");
+            ampmLabel.style.display = ""; 
+        }
+    }
+
+    toggle24hr.addEventListener('change', updateDOM);
+    targetTzSelect.addEventListener('change', updateDOM);
+
+    fetchLiveLeapSeconds();
+    startClock();
+    syncTime();
+
+    setInterval(() => {
+        syncRetries = 0;
+        syncTime();
+    }, SYNC_INTERVAL_MS);
+
+    const yearText = document.getElementById("current-year");
+    if (yearText) {
+        yearText.innerText = new Date().getFullYear();
+    }
+</script>
+</body>
+</html>
