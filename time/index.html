@@ -75,29 +75,13 @@
         }
         
         .section-top {
-            font-size: clamp(1.2em, 5.5vw, 2.5em);
+            font-size: clamp(1.5em, 6vw, 3em);
             text-transform: uppercase;
-            display: flex;
-            position: relative;
-            padding: 25px 5px 15px 5px;
-        }
-
-        #display-day, #display-date {
-            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 25px 10px 15px 10px;
             white-space: nowrap;
-        }
-
-        .date-separator {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            background-color: #634E34;
-            top: 28px;
-            bottom: 0;
         }
         
         .section-middle {
@@ -119,9 +103,6 @@
             }
             .section-top {
                 font-size: clamp(1em, 5vw, 1.8em); 
-            }
-            .date-separator {
-                top: 18px; 
             }
             .ampm-label {
                 margin-left: 15px;
@@ -155,11 +136,7 @@
     </div>
 
     <div class="half-container">
-        <div class="time-section section-top">
-            <span id="display-day">---</span>
-            <div class="date-separator"></div>
-            <span id="display-date">---- -- --</span>
-        </div>
+        <div class="time-section section-top" id="display-date-full">---</div>
         
         <div class="time-section section-middle" id="display-time">
             <span id="time-digits">-:--:--</span>
@@ -271,8 +248,6 @@
         zeroWrapper.style.display = is24hr ? "none" : "flex";
         
         const now = DateTime.local().plus({ milliseconds: timeOffsetMs });
-        
-        document.getElementById('display-day').innerText = now.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace(/\./g, '');
 
         let timeFormatStr;
         let dateFormatStr;
@@ -285,8 +260,12 @@
             dateFormatStr = hasZero ? "yyyy-MM-dd" : "yyyy-M-d";
         }
 
-        document.getElementById('display-date').innerText = now.toFormat(dateFormatStr);
-
+        const dayStr = now.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace(/\./g, '');
+        
+        const dateStr = now.toFormat(dateFormatStr);
+        
+        document.getElementById('display-date-full').innerText = `${dayStr}, ${dateStr}`;
+        
         let timeString = now.toFormat(timeFormatStr);
         const currentUTC = now.toUTC();
         const isLeapSecondDay = leapSecondDates.some(ls => 
