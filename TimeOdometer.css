@@ -26,8 +26,7 @@ body {
     width: 100%;
 }
 h2,
-h3
-{
+h3 {
     text-align: center;
     margin-top: 0;
 }
@@ -430,11 +429,6 @@ input:invalid {
     margin-top: 15px;
     text-align: center;
     margin-bottom: 0;
-}
-.privacy-notice {
-    font-size: 0.9em;
-    padding-bottom: 10px;
-    text-align: center;
 }
 .dropdown-row .input-group:first-child .tooltip-text {
     left: -15px;
