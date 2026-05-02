@@ -127,13 +127,11 @@
 <body>
 <div class="container" id="time-page-container">
     <div class="half-container">
-        <div class="top-controls">
+        <div class="top-controls" style="gap: 15px;">
             <label class="toggle-wrapper">
                 <input type="checkbox" id="toggle24hr">24-hour</label>
-        </div>
-        
-        <div class="timezone-selector">
-            <select id="targetTzLocation" aria-label="Select Timezone"></select>
+            <label class="toggle-wrapper" id="zero-wrapper">
+                <input type="checkbox" id="toggleZero">Lead zero</label>
         </div>
 
         <div id="sync-warning" class="sync-warning" style="display: none; text-align: center; margin-top: 15px; padding-bottom: 15px">⚠️&nbsp;Failed connection. Using device clock.</div>
@@ -176,21 +174,8 @@
     const SYNC_INTERVAL_MS = 30 * 60 * 1000;
     
     const toggle24hr = document.getElementById('toggle24hr');
-    const targetTzSelect = document.getElementById('targetTzLocation');
-    
-    const timeZones = Intl.supportedValuesOf('timeZone').filter(tz => tz !== 'UTC');
-    timeZones.unshift('UTC');
-    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
-    timeZones.forEach(tz => {
-        const option = document.createElement('option');
-        option.value = tz; 
-        option.textContent = tz.replace(/_/g, ' ');
-        if (tz === userTz) { 
-            option.selected = true; 
-        }
-        targetTzSelect.appendChild(option);
-    });
+    const toggleZero = document.getElementById('toggleZero');
+    const zeroWrapper = document.getElementById('zero-wrapper');
 
     let leapSecondDates = [
         "1972-06-30T23:59:59Z", "1972-12-31T23:59:59Z", "1973-12-31T23:59:59Z", 
@@ -269,18 +254,28 @@
 
     function updateDOM() {
         const is24hr = toggle24hr.checked;
-        const selectedTz = targetTzSelect.value;
-        const now = DateTime.local().plus({ milliseconds: timeOffsetMs }).setZone(selectedTz);
+        const hasZero = toggleZero.checked;
+        
+        zeroWrapper.style.display = is24hr ? "none" : "flex";
+        
+        const now = DateTime.local().plus({ milliseconds: timeOffsetMs });
         
         document.getElementById('display-day').innerText = now.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace(/\./g, '');
 
-        const timeFormatStr = is24hr ? "HH:mm:ss" : "h:mm:ss";
-        const dateFormatStr = is24hr ? "yyyy-MM-dd" : "yyyy-M-d";
+        let timeFormatStr;
+        let dateFormatStr;
+
+        if (is24hr) {
+            timeFormatStr = "HH:mm:ss";
+            dateFormatStr = "yyyy-MM-dd";
+        } else {
+            timeFormatStr = hasZero ? "hh:mm:ss" : "h:mm:ss";
+            dateFormatStr = hasZero ? "yyyy-MM-dd" : "yyyy-M-d";
+        }
 
         document.getElementById('display-date').innerText = now.toFormat(dateFormatStr);
 
         let timeString = now.toFormat(timeFormatStr);
-
         const currentUTC = now.toUTC();
         const isLeapSecondDay = leapSecondDates.some(ls => 
             ls.year === currentUTC.year && 
@@ -309,7 +304,7 @@
     }
 
     toggle24hr.addEventListener('change', updateDOM);
-    targetTzSelect.addEventListener('change', updateDOM);
+    toggleZero.addEventListener('change', updateDOM);
 
     fetchLiveLeapSeconds();
     startClock();
