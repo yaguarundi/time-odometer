@@ -75,21 +75,29 @@
         }
         
         .section-top {
-            font-size: clamp(1.8em, 6vw, 3em);
+            font-size: clamp(1.2em, 5.5vw, 2.5em);
             text-transform: uppercase;
-            height: 60px; 
-            line-height: 60px; 
-            overflow: visible; 
+            display: flex;
+            position: relative;
+            padding: 25px 5px 15px 5px;
+        }
+
+        #display-day, #display-date {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            white-space: nowrap;
         }
 
         .date-separator {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             width: 2px;
-            height: 0.8em;
             background-color: #634E34;
-            margin: 0 15px;
+            top: 28px;
+            bottom: 0;
         }
         
         .section-middle {
@@ -107,13 +115,13 @@
                 padding: 0 10px;
             }
             .time-section {
-                padding: 15px 10px;
+                padding: 15px 5px;
             }
             .section-top {
-                font-size: clamp(1.2em, 7vw, 2em); 
+                font-size: clamp(1em, 5vw, 1.8em); 
             }
             .date-separator {
-                margin: 0 10px;
+                top: 18px; 
             }
             .ampm-label {
                 margin-left: 15px;
