@@ -99,13 +99,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .btn-swap:hover, 
-        .btn-swap:focus {
-            background-color: #634E34;
-            color: #1e1e1e;
-            outline: none;
-        }
-
         .swap-icon {
             width: 22px;
             height: 22px;
@@ -115,6 +108,13 @@
             transform: rotate(180deg);
         }
 
+        @media (hover: hover) and (pointer: fine) {
+        .btn-swap:hover {
+            background-color: #634E34;
+            color: #1e1e1e;
+            outline: none;
+        }
+        }
         @media (max-width: 1366px) {
             #scale-page-container {
                 max-width: 100%;
