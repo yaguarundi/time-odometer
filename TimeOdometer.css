@@ -130,7 +130,6 @@ select {
     width: 100%;
     color: #E0CBB9;
     font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
     position: relative;
     cursor: pointer;
     z-index: 1;
@@ -180,10 +179,6 @@ select:focus {
     background-position: left 10px center;
     background-size: 12px;
     padding-left: 30px;
-}
-#tzLocation option, 
-#targetTzLocation option {
-    font-weight: bold;
 }
 input:invalid {
     border-color: #ff4d4d;
