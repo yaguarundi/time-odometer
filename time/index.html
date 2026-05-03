@@ -260,7 +260,7 @@
             dateFormatStr = hasZero ? "yyyy-MM-dd" : "yyyy-M-d";
         }
 
-        const dayStr = now.setLocale(navigator.language).toFormat("EEE").toUpperCase().replace(/\./g, '');
+        const dayStr = now.setLocale("en-US").toFormat("EEE").toUpperCase().replace(/\./g, '');
         
         const dateStr = now.toFormat(dateFormatStr);
         
