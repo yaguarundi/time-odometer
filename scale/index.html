@@ -217,14 +217,13 @@
     let activeInputId = 'input1';
 
     function formatNumber(num) {
-        let str = parseFloat(num.toFixed(8)).toString();
+        let str = num.toFixed(10).replace(/0+$/, '').replace(/\.$/, ''); 
+        if (str === "") str = "0";
         let parts = str.split('.');
-        
         let formattedBase = parts[0];
-        if (toggleSeparator.checked) {
+        if (toggleSeparator.checked && parts[0] !== '') {
             formattedBase = parseInt(parts[0], 10).toLocaleString('en-US');
         }
-        
         return formattedBase + (parts.length > 1 ? '.' + parts[1] : '');
     }
 
@@ -234,17 +233,16 @@
         
         let val = el.value;
         let rawStr = val.replace(/[^\d.]/g, '');
-        
 
         let parts = rawStr.split('.');
         if (parts.length > 2) parts = [parts[0], parts.slice(1).join('')];
-        if (parts.length > 1) parts[1] = parts[1].substring(0, 8);
+        
+        if (parts.length > 1) parts[1] = parts[1].substring(0, 10); 
         
         let formattedBase = parts[0];
         if (toggleSeparator.checked && parts[0] !== '') {
             formattedBase = parseInt(parts[0], 10).toLocaleString('en-US');
         }
-      
         let cursor = el.selectionStart;
         let digitsBefore = val.substring(0, cursor).replace(/[^\d.]/g, '').length;
 
