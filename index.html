@@ -138,6 +138,7 @@
     let timeOffset = 0; 
     let syncRetries = 0;
     const MAX_SYNC_RETRIES = 1;
+    const SYNC_INTERVAL_MS = 30 * 60 * 1000;
     const handleManualTyping = (e, instance) => {
         const val = e.target.value;
         const is24hr = document.getElementById('toggle24hr').checked;
@@ -1212,6 +1213,10 @@
         refreshAllMilestones(); 
     });
     startLocalEngine();
+    setInterval(() => {
+        syncRetries = 0;
+        syncTime();
+    }, SYNC_INTERVAL_MS);
     document.getElementById("current-year").innerText = new Date().getFullYear();
         const yearText = document.getElementById("current-year");
             if (yearText) {
