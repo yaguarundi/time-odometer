@@ -469,7 +469,7 @@ input:invalid {
         transition: 0.3s ease;
     }
 }
-@media (max-width: 1366px) {
+@media (max-width: 1024px) {
     :root {
         --mobile-spacing: 10px; 
     }
@@ -479,7 +479,7 @@ input:invalid {
     .container {
         gap: var(--mobile-spacing);
         width: 100%;
-        max-width: 1366px;
+        max-width: 1024px;
     }
     .half-container { 
         padding: 10px; 
