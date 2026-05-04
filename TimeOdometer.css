@@ -384,9 +384,13 @@ input:invalid {
     color: #333;
     font-family: "Courier New", Courier, monospace;
 }
+#r-detailed {
+    line-height: 1.6;
+    text-wrap: balance;
+}
 #r-detailed .detail-date, 
 #r-detailed .detail-time {
-    white-space: nowrap;
+    white-space: normal;
 }
 .footer {
     text-align: center;
