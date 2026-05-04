@@ -385,7 +385,7 @@ input:invalid {
     font-family: "Courier New", Courier, monospace;
 }
 #r-detailed {
-    line-height: 1.6;
+    line-height: 1.5;
     text-wrap: balance;
 }
 #r-detailed .detail-date, 
