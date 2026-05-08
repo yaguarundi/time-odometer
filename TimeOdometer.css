@@ -135,7 +135,7 @@ select {
     color-scheme: dark;
     width: 100%;
     color: #E0CBB9;
-    font-family: 'Noto', monospace;
+    font-family: Courier, monospace;
     position: relative;
     cursor: pointer;
     z-index: 1;
@@ -222,7 +222,7 @@ input:invalid {
     border-radius: 6px;
     border: 1px solid #444;
     background-color: #1e1e1e;
-    font-family: 'Noto', monospace;
+    font-family: Courier, monospace;
     font-weight: bold;
     width: 50px; 
     min-width: 50px;
@@ -326,9 +326,10 @@ input:invalid {
 }
 .bold-number {
     font-weight: bold;
-    font-family: 'Noto', monospace;
+    font-family: Courier, monospace;
     font-size: 2.5em; 
     color: #E0CBB9;
+    padding-top: 5px;
 }
 .milestone-container {
     display: flex;
@@ -353,7 +354,7 @@ input:invalid {
     color: #E0CBB9;
     caret-color: #E0CBB9 !important;
     width: 290px;
-    font-family: 'Noto', monospace;
+    font-family: Courier, monospace;
     font-weight: bold;
     outline: none;
     text-align: center;
@@ -376,7 +377,7 @@ input:invalid {
     color: #E0CBB9;
     padding: 10px;
     border-radius: 6px;
-    font-family: 'Noto', monospace;
+    font-family: Courier, monospace;
     font-weight: bold;
     text-align: center;
     margin-bottom: 4px;
@@ -387,7 +388,7 @@ input:invalid {
     font-weight: bold;
     font-size: 1em;
     color: #333;
-    font-family: 'Noto', monospace;
+    font-family: Courier, monospace;
 }
 #r-detailed {
     line-height: 1.5;
