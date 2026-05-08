@@ -1087,7 +1087,7 @@
             detailUniformScale = 1;
             curUniformScale = 1;
         }
-        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale * 1}em;">${datePart}, </span><span class="detail-time" style="font-size: ${curUniformScale * 1}em;">${timePart}</span>`;
+        document.getElementById('r-detailed').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale * 0.95}em;">${datePart}, </span><span class="detail-time" style="font-size: ${curUniformScale * 0.95}em;">${timePart}</span>`;
         document.getElementById('r-current-time').innerHTML = `<span class="detail-date" style="font-size: ${curUniformScale}em;">${curDateStr}, </span> <span class="detail-time" style="font-size: ${curUniformScale}em;">${curTimeStr}</span>`;
         document.getElementById('r-time-offset').innerHTML = `<span style="font-size: ${curUniformScale}em;">(UTC ${now.toFormat("ZZ")})</span>`;
         sessionStorage.setItem('odo_birthdate', iv);
