@@ -329,7 +329,6 @@ input:invalid {
     font-family: 'Noto', monospace;
     font-size: 2.5em; 
     color: #E0CBB9;
-    padding-top: 5px;
 }
 .milestone-container {
     display: flex;
