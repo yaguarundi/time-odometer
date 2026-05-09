@@ -577,7 +577,7 @@ input:invalid {
     .detailed-row,
     .current-group
     {
-        font-size: clamp(0.70em, 1vw, 2.5em);
+        font-size: clamp(0.75em, 1vw, 2.5em);
     }
     #r-detailed .detail-date, 
     #r-detailed .detail-time {
