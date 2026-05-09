@@ -7,7 +7,8 @@
     font-style: normal;
 }
 body {
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-family: Helvetica, sans-serif;
+    font-variant-numeric: tabular-nums;
     background-color: #634E34;
     color: #fafafa;
     -webkit-text-size-adjust: 100%;
@@ -135,7 +136,7 @@ select {
     color-scheme: dark;
     width: 100%;
     color: #E0CBB9;
-    font-family: Courier, monospace;
+    font-family: Courier, Helvetica;
     position: relative;
     cursor: pointer;
     z-index: 1;
@@ -222,7 +223,7 @@ input:invalid {
     border-radius: 6px;
     border: 1px solid #444;
     background-color: #1e1e1e;
-    font-family: Courier, monospace;
+    font-family: Courier, Helvetica;
     font-weight: bold;
     width: 50px; 
     min-width: 50px;
@@ -326,7 +327,7 @@ input:invalid {
 }
 .bold-number {
     font-weight: bold;
-    font-family: Courier, monospace;
+    font-family: Courier, Helvetica;
     font-size: 2.5em; 
     color: #E0CBB9;
     padding-top: 5px;
@@ -354,7 +355,7 @@ input:invalid {
     color: #E0CBB9;
     caret-color: #E0CBB9 !important;
     width: 290px;
-    font-family: Courier, monospace;
+    font-family: Courier, Helvetica;
     font-weight: bold;
     outline: none;
     text-align: center;
@@ -377,7 +378,7 @@ input:invalid {
     color: #E0CBB9;
     padding: 10px;
     border-radius: 6px;
-    font-family: Courier, monospace;
+    font-family: Courier, Helvetica;
     font-weight: bold;
     text-align: center;
     margin-bottom: 4px;
@@ -388,7 +389,7 @@ input:invalid {
     font-weight: bold;
     font-size: 1em;
     color: #333;
-    font-family: Courier, monospace;
+    font-family: Courier, Helvetica;
 }
 #r-detailed {
     line-height: 1.5;
