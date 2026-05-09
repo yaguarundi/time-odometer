@@ -386,7 +386,6 @@ input:invalid {
     font-family: 'HelveticaMonospacedPro-Rg', Courier;
 }
 #r-detailed {
-    line-height: 1.5;
     text-wrap: balance;
 }
 #r-detailed .detail-date, 
