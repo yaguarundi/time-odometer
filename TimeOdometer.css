@@ -2,7 +2,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 @font-face {
     font-family: 'Arial-Mono';
-    src: url('../Arial-Mono.ttf') format('ttf');
+    src: url('Arial-Mono.ttf');
 }
 body {
     font-family: Helvetica, Arial, sans-serif;
