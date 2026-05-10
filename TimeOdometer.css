@@ -24,7 +24,7 @@ select,
 .detailed-row,
 .current-time,
 .time-offset {
-    font-family: 'Arial-Mono', 'HelveticaMonospacedPro-Rg', Courier;
+    font-family: 'HelveticaMonospacedPro-Rg', 'Arial-Mono', Courier;
 }
 .container {
     display: flex;
