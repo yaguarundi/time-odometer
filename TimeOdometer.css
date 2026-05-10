@@ -577,15 +577,24 @@ input:invalid {
     .current-group {
         width: 100%;
         box-sizing: border-box;
-        font-size: min(1em, 3.2vw); 
+        font-size: min(1em, 3.7vw); 
         padding: 12px 10px;
         overflow: hidden;
+    }
+    #r-detailed,
+    .current-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
     #r-detailed .detail-date, 
     #r-detailed .detail-time {
         display: block;
-        line-height: 1.5;
+        line-height: 1.2;
         white-space: nowrap;
+        margin: 0 !important;
     }
     detailed .detail-date {
         margin-bottom: 6px;
