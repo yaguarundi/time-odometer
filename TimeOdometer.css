@@ -1,7 +1,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
 @font-face {
-    font-family: 'Arial Mono';
+    font-family: 'Arial-Mono';
     src: url('../Arial-Mono.ttf') format('ttf');
 }
 body {
