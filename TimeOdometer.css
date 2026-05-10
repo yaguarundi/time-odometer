@@ -574,17 +574,20 @@ input:invalid {
         word-break: break-all;
     }
     .detailed-row,
-    .current-group
-    {
-        font-size: clamp(0.75em, 1vw, 2.5em);
+    .current-group {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: min(1em, 3.2vw); 
+        padding: 12px 10px;
+        overflow: hidden;
     }
     #r-detailed .detail-date, 
     #r-detailed .detail-time {
         display: block;
-        line-height: 1.6;
+        line-height: 1.5;
         white-space: nowrap;
     }
-    #r-detailed .detail-date {
+    detailed .detail-date {
         margin-bottom: 6px;
     }
     #r-detailed {
