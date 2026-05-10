@@ -395,11 +395,18 @@ input:invalid {
     color: #333;
 }
 #r-detailed {
-    text-wrap: balance;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 #r-detailed .detail-date, 
 #r-detailed .detail-time {
-    white-space: normal;
+    display: block;
+    line-height: 1.2;
+    white-space: nowrap;
+    margin: 0 !important;
 }
 .footer {
     text-align: center;
