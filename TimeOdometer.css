@@ -1,10 +1,8 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
-@font face {
+@font-face {
     font-family: 'Arial Mono';
-    src: url('Arial-Mono.ttf') format('ttf');
-    font-weight: normal;
-    font-style: normal;
+    src: url('../Arial-Mono.ttf') format('ttf');
 }
 body {
     font-family: Helvetica, Arial, sans-serif;
