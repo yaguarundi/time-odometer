@@ -1,9 +1,5 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
-@font-face {
-    font-family: 'Arial-Mono';
-    src: url('Arial-Mono.ttf');
-}
 body {
     font-family: Helvetica, Arial, sans-serif;
     font-variant-numeric: tabular-nums;
@@ -24,7 +20,7 @@ select,
 .detailed-row,
 .current-time,
 .time-offset {
-    font-family: 'HelveticaMonospacedPro-Rg', 'Arial-Mono', Courier;
+    font-family: Courier, monospace, Helvetica, Arial;
 }
 .container {
     display: flex;
