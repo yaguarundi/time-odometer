@@ -135,8 +135,31 @@
             font-size: 0.85em;
             color: #b3b3b3;
         }
+        .linktree-icon {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
+        -webkit-mask: url('https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linktree.svg') no-repeat center / contain;
+        transition: 0.3s ease;
+        background-color: #fafafa;
+        margin-top: 25px;
+        padding-top: 25px;
+        }
+        .copyright {
+        font-size: 0.9em;
+        margin-top: 15px;
+        text-align: center;
+        margin-bottom: 0;
+        }
 
-        @media (max-width: 768px) {
+        @media (hover: hover) and (pointer: fine) {
+            .linktree-icon:hover {
+        background-color: #42e661;
+            }
+        }
+        
+        @media (max-width: 1024px) {
             body { padding: 10px; }
             .ball {
                 width: 38px;
@@ -158,7 +181,7 @@
 </div>
 
 <div class="container">
-    <div class="half-container footer" style="margin-top: 25px; padding-top: 25px;">
+    <div class="half-container footer">
         <a href="https://linktr.ee/yaguarundi" target="_blank" rel="noopener noreferrer" title="Links.">
             <span class="linktree-icon" style="padding-top: 15px;"></span>
         </a>
