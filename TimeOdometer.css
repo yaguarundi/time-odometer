@@ -1,4 +1,5 @@
 <style>
+@import url(https://db.onlinewebfonts.com/c/395410b1fd4cca8cfb17bd78a9c34889?family=Helvetica+Monospaced+W06+Rg);
 *, *::before, *::after { box-sizing: border-box; }
 body {
     font-family: Helvetica, Arial, sans-serif;
@@ -20,7 +21,7 @@ select,
 .detailed-row,
 .current-time,
 .time-offset {
-    font-family: Courier, monospace, Helvetica, Arial;
+    font-family: "Helvetica Monospaced W06 Rg", Courier, monospace, Helvetica, Arial;
 }
 .container {
     display: flex;
